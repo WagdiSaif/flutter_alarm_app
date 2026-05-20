@@ -1,4 +1,4 @@
-import 'package:alarmapp/core/models/alarm_model.dart';
+import 'package:alarmapp/core/data/models/alarm_model.dart';
 
 abstract class AlarmRepository {
   Future<void> saveAlarm(AlarmModel alarm);

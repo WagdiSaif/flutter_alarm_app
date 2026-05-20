@@ -1,6 +1,6 @@
 import 'package:alarmapp/core/enum/enums.dart';
 import 'package:alarmapp/helper/constants.dart';
-import 'package:alarmapp/core/models/alarm_days_model.dart';
+import 'package:alarmapp/core/data/models/alarm_days_model.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter/material.dart';

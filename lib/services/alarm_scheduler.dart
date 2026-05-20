@@ -7,9 +7,9 @@ import 'package:alarmapp/core/exceptions/database_exceptions.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:alarmapp/core/enum/enums.dart';
-import 'package:alarmapp/core/models/alarm_days_model.dart';
+import 'package:alarmapp/core/data/models/alarm_days_model.dart';
 
-import 'package:alarmapp/core/models/alarm_model.dart';
+import 'package:alarmapp/core/data/models/alarm_model.dart';
 import 'package:alarmapp/services/time_manager.dart';
 
 import 'package:flutter/material.dart';

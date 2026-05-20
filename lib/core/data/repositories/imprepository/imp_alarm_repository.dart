@@ -1,7 +1,7 @@
 import 'package:alarmapp/core/data/database/app_database.dart';
 import 'package:alarmapp/core/extensions.dart';
-import 'package:alarmapp/core/models/alarm_days_model.dart';
-import 'package:alarmapp/core/models/alarm_model.dart';
+import 'package:alarmapp/core/data/models/alarm_days_model.dart';
+import 'package:alarmapp/core/data/models/alarm_model.dart';
 
 import 'package:alarmapp/core/data/repositories/alarm_repository.dart';
 
