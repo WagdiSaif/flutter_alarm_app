@@ -1,80 +1,47 @@
-import 'dart:convert';
-import 'dart:isolate';
-import 'dart:ui';
-import 'package:alarmapp/core/app_color.dart';
-import 'package:alarmapp/helper/sizer.dart';
-import 'package:alarmapp/home.dart';
-import 'package:alarmapp/services/alarm_service.dart';
-import 'package:alarmapp/services/alarm_storage.dart';
 
-import 'package:alarmapp/ui/homescreen.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:alarm/alarm.dart';
+import 'package:alarmapp/services/alarm_shared_preference.dart';
+import 'package:alarmapp/core/app_theme/app_theme.dart';
+import 'package:alarmapp/helper/constants.dart';
+import 'package:alarmapp/helper/sizer.dart';
+import 'package:alarmapp/services/time_manager.dart';
+
+import 'package:alarmapp/ui/alarm_rining_screen.dart';
+
+import 'package:alarmapp/ui/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
-
-void main() async{
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final container = ProviderContainer();
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AndroidAlarmManager.initialize();
+await Alarm.init();
+await AlarmSharedPrefs.initialize();
+await TimeManager.initTimeZone();
 
-    await AlarmStorage.init();
-  // Initialize communication port (required)
-  FlutterForegroundTask.initCommunicationPort();
-  
-
-  
-  // Initialize foreground task
-   FlutterForegroundTask.init(
-    iosNotificationOptions: IOSNotificationOptions(),
-    androidNotificationOptions: AndroidNotificationOptions(
-      channelId: 'alarm_service',
-      channelName: 'Alarm Service',
-      channelDescription: 'Plays alarm sound continuously',
-     
-      priority: NotificationPriority.HIGH,
-      onlyAlertOnce: true,
-    ),
-    foregroundTaskOptions: ForegroundTaskOptions(
-      eventAction: ForegroundTaskEventAction.nothing(), // No repeating events needed
-      autoRunOnBoot: true,
-      autoRunOnMyPackageReplaced: true,
-      allowWakeLock: true, // Keep device awake for alarm
-    ),
-  );
-
-
- await AlarmNotificationService.initializeForeground();
- // Restore alarms if app was closed
-  final service = AlarmNotificationService();
-  // await service.restoreAlarms();
-  // final prefs = AlarmStorage.sharedPreferences;
-  // final pendingAlarmString = prefs.getString('pending_alarm');
-
-  runApp(ProviderScope(child:const MyApp()));
+ //await Alarm.set(alarmSettings: AlarmSettings(assetAudioPath: AppConstants.defaultSound, id: 233, dateTime: DateTime.now().subtract(Duration(hours: 3),), volumeSettings: VolumeSettings.fade(fadeDuration: Duration(microseconds: 22)), notificationSettings: NotificationSettings(title: DateTime.now().subtract(Duration(hours: 3)).toString(), body: DateTime.now().subtract(Duration(hours: 3)).toString()),));
+  runApp( ProviderScope( child: MyApp()));
 }
-
-/// Called when background isolate sends data
-
-
-
 class MyApp extends StatelessWidget {
-  
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
+      routes:<String,WidgetBuilder> {
+        '/': (context) => SizerUitles(builder: (context) => HomeScreen()),
+        '/ringingScreen': (context) => RingingAlarmScreen(),
+      },
+
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-
-
+      title: 'Alarm App ',
       theme: AppTheme.theme,
-      home: SizerUitles(builder: (context) => Homescreen(),)
+      navigatorKey: navigatorKey,
+      initialRoute: '/',
     );
   }
 }
-
-

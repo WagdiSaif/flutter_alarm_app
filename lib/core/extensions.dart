@@ -1,14 +1,20 @@
-import 'package:intl/intl.dart';
 
-extension  ToAmPm on DateTime{
+import 'package:flutter/material.dart';
 
-String get amPmTime=>  DateFormat('a').format(this);
+import 'package:timezone/timezone.dart' as tz;
+
+extension ToMinutesTime on TimeOfDay{
+
+int get toMinutes=>((this).hour*60+(this).minute);
 }
-extension  ToHourseDate on DateTime{
+extension ToTimeOfDay on int{
 
-String get toHours=>  DateFormat('HH').format(this);
+TimeOfDay get toTimeOfDay=>(TimeOfDay(hour: (this)~/60, minute: (this)%60));
 }
-extension  ToMinutesDate on DateTime{
+extension ToTimeZones on DateTime {
+  tz.TZDateTime get toLocalTz =>
+      tz.TZDateTime.from(this, tz.local);
 
-String get toMinutes=>  DateFormat('mm').format(this);
+  tz.TZDateTime get toUtcTz =>
+      tz.TZDateTime.from(this, tz.UTC);
 }

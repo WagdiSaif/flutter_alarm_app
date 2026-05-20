@@ -1,468 +1,477 @@
-import 'package:alarmapp/core/extensions.dart';
-import 'package:alarmapp/model/datetime_setting.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:alarmapp/core/app_theme/app_colors.dart';
+import 'package:alarmapp/data/database/app_database.dart';
+import 'package:alarmapp/core/app_theme/app_theme.dart';
+import 'package:alarmapp/core/utils/functions.dart';
+import 'package:alarmapp/data/repositories/alarm_repository.dart';
+import 'package:alarmapp/data/repositories/imprepository/imp_alarm_repository.dart';
+import 'package:alarmapp/helper/helper_message.dart';
+import 'package:alarmapp/models/alarm_model.dart';
+
+import 'package:alarmapp/providers/alarm_controller.dart';
+import 'package:alarmapp/services/time_manager.dart';
+import 'package:alarmapp/services/alarm_permission.dart';
+import 'package:alarmapp/services/alarm_scheduler.dart';
+import 'package:alarmapp/services/alarm_service.dart';
+
+import 'package:alarmapp/ui/alarm_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:alarmapp/helper/sizer.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 
-import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:timezone/timezone.dart' as tz;
 
-import '../helper/helper_message.dart';
+final databaseProvider = Provider<AlarmDatabase>((ref) {
+  final db = AlarmDatabase();
+  ref.onDispose(() {
+    db.close();
+  });
+  return db;
+});
+final alarmRepositoryProvider = Provider<AlarmRepository>((ref) {
+  final db = ref.watch(databaseProvider);
 
-StateProvider<bool> isAM = StateProvider(
-  (ref) => DateTime.now().amPmTime == 'AM' ? true : false,
-);
-StateProvider<bool> isPM = StateProvider(
-  (ref) => DateTime.now().amPmTime == 'PM' ? true : false,
-);
-StateProvider<int> hoursIndex = StateProvider(
-  (ref) => int.parse(DateTime.now().toHours),
-);
+  return ImpAlarmRepository(db);
+});
+final serviceProvider = Provider<AlarmService>((ref) {
+  final repository = ref.watch(alarmRepositoryProvider);
+  return AlarmService(repository);
+});
+final schedulerProvider = Provider<AlarmScheduler>((ref) {
+  return AlarmScheduler();
+});
+final alarmControllerProvider = Provider<AlarmController>((ref) {
+  final service = ref.watch(serviceProvider);
+  final scheduler = ref.watch(schedulerProvider);
 
-StateProvider<int> minutesIndex = StateProvider(
-  (ref) => int.parse(DateTime.now().toMinutes),
-);
+  return AlarmController(service, scheduler);
+});
+final alarmProvider = StreamProvider.autoDispose<List<AlarmModel>>((ref) {
+  final alarms = ref.watch(alarmControllerProvider);
+  return alarms.alarmStream();
+});
 
 class AddAlarmScreen extends ConsumerStatefulWidget {
   const AddAlarmScreen({super.key});
-
   @override
-  ConsumerState<AddAlarmScreen> createState() => _AddAlarmScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _AddAlarmScreen();
 }
 
-class _AddAlarmScreenState extends ConsumerState<AddAlarmScreen> {
-  int selectedHour = 3;
-
-  int selectedMinute = 59;
-
-  late final FixedExtentScrollController _hoursController;
-  late final FixedExtentScrollController _minutesController;
-  late DateTimeSetting _dataTime;
-
-  List<int> get getHoursList => List<int>.generate(
-    12,
-    (index) => Duration(hours: index + 1, minutes: 0, seconds: 0).inHours,
-  );
-
-  List<int> get getMinutesList =>
-      List<int>.generate(60, (index) => Duration(minutes: index).inMinutes);
-
+class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
   @override
   void initState() {
     super.initState();
-
-    _dataTime = DateTimeSetting(
-      year: DateTime.now().year,
-      month: DateTime.now().month,
-      hour: ref.read<int>(hoursIndex),
-      second: DateTime.now().second,
-      minute: ref.read<int>(minutesIndex),
-      day: DateTime.now().day,
-      microsecond: DateTime.now().microsecond,
-      millisecond: DateTime.now().millisecond,
-      peroid: ref.read<bool>(isPM) ? 'PM' : 'AM',
-    );
-
-    _hoursController = FixedExtentScrollController(
-      initialItem: ref.read<int>(hoursIndex),
-    );
-    _minutesController = FixedExtentScrollController(
-      initialItem: ref.read<int>(minutesIndex),
-    );
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  double height = 0.0;
+  double width = 0.0;
+
+  @override
   Widget build(BuildContext context) {
-    final isTimeAm = ref.watch<bool>(isAM);
-    final isTimePm = ref.watch<bool>(isPM);
-    final currentHours = ref.watch(hoursIndex);
-    final currentMinutes = ref.watch(minutesIndex);
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+    final alarmsData = ref.watch(alarmProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '${_dataTime.hour} : ${_dataTime.minute.toString().padLeft(2, '0')}: ${_dataTime.peroid}',
-          style: const TextStyle(fontSize: 16),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () async {
-            // _dataTime.hour = hoursIndex.value;
-            // _dataTime.minute = minutesIndex.value;
-            if (kDebugMode) {
-              print(
-                'minutes  ${_dataTime.minute}hourse ${_dataTime.hour}period :${_dataTime.peroid}  \$  ${_dataTime.totDateTime}}',
-              );
-            }
-            // await CreateAlarm.instanceAlarm.setAlarm(_dataTime);
-            final message =
-                '${_dataTime.hour} : ${_dataTime.minute}: ${_dataTime.peroid}';
-            if (context.mounted) {
-              HelperMessage.scaffoldSetAlarmMessage(context, message);
-            }
-            // CreateAlarm.instanceAlarm.checkAlarm(_dataTime);
-          },
-          icon: const Icon(Icons.check_sharp),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.close_sharp),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              // mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            height: height * 0.07,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  width: 30.sw,
-                  height: 30.sh,
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Text(
-                          'PM',
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: isTimePm ? Colors.red : Colors.black,
-                          ),
-                        ),
-                      ),
-
-                      Center(
-                        child: Text(
-                          'AM',
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: isTimeAm ? Colors.red : Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-
-
-                SizedBox(
-                  width: 30.sw,
-                  height: 30.sh,
-                  child: ListWheelScrollView.useDelegate(
-                    itemExtent: 50,
-                    squeeze: 1,
-
-                    controller: _hoursController,
-                    physics: const FixedExtentScrollPhysics(),
-                    onSelectedItemChanged: (index) {
-                      _listenForScrollNotification(
-                        currentMinutes,
-                        currentHours,
-                        isTimeAm,
-                        isTimePm,
-
-                        _hoursController.position.userScrollDirection,
-                        index,
-                      );
-
-                      if (kDebugMode) {
-                        print(
-                          'scrolling is${_hoursController.position.userScrollDirection}',
-                        );
-                      }
-
-                      ref
-                          .read(hoursIndex.notifier)
-                          .state = getHoursList[index] == 12
-                          ? 0
-                          : getHoursList[index] + 12;
-                      if (kDebugMode) {
-                        // print('index is :   ${hoursIndex.value}');
-                      }
-                    },
-                    childDelegate: ListWheelChildLoopingListDelegate(
-                      children: getHoursList.map((int e) {
-                        int compair = e == 12 ? 0 : e + 12;
-                        return Center(
-                          child: Text(
-                            // textDirection: TextDirection,
-                            e.toString(),
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: currentHours == compair
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: currentHours == compair
-                                  ? Colors.red
-                                  : Colors.black,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-
-                SizedBox(
-                  width: 30.sw,
-                  height: 30.sh,
-                  child: ListWheelScrollView.useDelegate(
-                    squeeze: 1,
-                    itemExtent: 50,
-                    controller: _minutesController,
-                    onSelectedItemChanged: (index) {
-                      ref.read(minutesIndex.notifier).state =
-                          getMinutesList[index];
-                      _dataTime.minute = ref.read(minutesIndex.notifier).state;
-                      if (kDebugMode) {
-                        print(
-                          'mibtes index is ${ref.read(minutesIndex.notifier).state}',
-                        );
-
-                        print(
-                          'minutes  ${_dataTime.minute}hourse ${_dataTime.hour}period :${_dataTime.peroid}  \$  ${_dataTime.totDateTime}}',
-                        );
-                      }
-                    },
-                    // clipBehavior: Clip.antiAlias,
-                    // controller: _controller,
-                    physics: const FixedExtentScrollPhysics(),
-                    childDelegate: ListWheelChildLoopingListDelegate(
-                      children: getMinutesList.map((int element) {
-                        return Center(
-                          child: Text(
-                            element.toString(),
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: currentMinutes == element
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: currentMinutes == element
-                                  ? Colors.red
-                                  : Colors.black,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
+         
+                Text('Alarm', style: Theme.of(context).textTheme.headlineLarge),
+                PopupMenuButton(
+                  
+                  itemBuilder: (context) => [
+                    PopupMenuItem(child: Text('data')),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 30),
-            ListTile(
-              title: const Text('Ringtone'),
-              subtitle: const Text('Default ringtone'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Stack(
+                        children: [
+                          alarmsData.when(
+                            data: (alarms) {
+                              if (alarms.isEmpty) {
+                                return _buildEmptyAlarms();
+                              }
+                              return SingleChildScrollView(
+                                padding: EdgeInsets.only(bottom: 15),
+                                child: Column(
+                                  children: alarms
+                                      .map(
+                                        (alarm) => Dismissible(
+                                          confirmDismiss: (direction) async {
+                                            //  await  direction.
+                                            return true;
+                                          },
+                                          onDismissed: (direction) {
+                                            debugPrint("Hello dismissble");
+                                          },
+                                          key: GlobalKey(
+                                            debugLabel: alarm.alarmId
+                                                .toString(),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(9.0),
+                                            child: Container(
+                                              constraints: BoxConstraints(
+                                                maxHeight: height * .17,
+                                                minHeight: height * .15,
+                                              ),
+                                            
+                                              padding: EdgeInsets.all(7),
+
+                                              decoration: BoxDecoration(
+                                                color: alarm.isEnabled
+                                                    ? AppColors.containerBg
+                                                    : AppColors
+                                                          .containerBgPale95,
+
+                                          
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  showModalBottomSheet(
+                                                    showDragHandle: true,
+                                                    isScrollControlled: true,
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlarmBottomSheet(
+                                                          alarm: alarm,
+                                                        ),
+                                                  );
+                                                },
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      _checkNextTriggerDay(
+                                                        alarm,
+                                                      ),
+                                                      style: Theme.of(
+                                                        context,
+                                                      ).textTheme.titleLarge,
+                                                    ),
+
+                                                    Text(
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      alarm.name,
+                                                    ),
+
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        Row(
+                                                          textBaseline:
+                                                              TextBaseline
+                                                                  .alphabetic,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .baseline,
+                                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              TimeManager.formatTimeShow(
+                                                                alarm.firedTime,
+                                                                context,
+                                                              ),
+                                                              style:
+                                                                  Theme.of(
+                                                                        context,
+                                                                      )
+                                                                      .textTheme
+                                                                      .titleLarge,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets.only(
+                                                                    left: 0,
+                                                                  ),
+                                                              child: Text(
+                                                                alarm
+                                                                    .firedTime
+                                                                    .period
+                                                                    .name
+                                                                    .toUpperCase(),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Switch(
+                                                          value:
+                                                              alarm.isEnabled,
+                                                          onChanged: (_) async {
+                                                            await ref
+                                                                .read<
+                                                                  AlarmController
+                                                                >(
+                                                                  alarmControllerProvider,
+                                                                )
+                                                                .toggleAlarm(
+                                                                  alarm,
+                                                                );
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              );
+                            },
+                            error: (error, _) => Text('Error:'),
+                            loading: () => _buildEmptyAlarms(),
+                          ),
+
+                          Positioned(
+                            bottom: 1,
+                            left: width * 0.04,
+                            // right: 0,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: AppColors.primaryBlue,
+                                shape: BoxShape.circle,
+                              ),
+                              // alignment: Alignment.bottomCenter,
+                              margin: const EdgeInsets.only(bottom: 3),
+                              height: 70,
+                              width: 70,
+
+                              child: Center(
+                                child: IconButton(
+                                  onPressed: () async {
+                                    await pickTimeAndCreateAlarm(context, ref);
+                                  },
+                                  icon: const Icon(Icons.add, size: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SwitchListTile(
-              title: const Text('Vibrate when alarm sounds'),
-              value: true,
-              onChanged: (value) {},
-            ),
-            SwitchListTile(
-              title: const Text('Delete after goes off'),
-              value: false,
-              onChanged: (value) {},
-            ),
-            ListTile(
-              title: const Text('Label'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  bool _listenForScrollNotification(
-    int currentMinutes,
-    int currentHours,
-    bool isTimeAm,
-    bool isTimePm,
-    ScrollDirection scrollDirection,
-    int index,
-  ) {
-    if (kDebugMode) {
-      print('Current hour index: ${getHoursList[index]}');
+  Widget _buildEmptyAlarms() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.alarm),
+          Text('No Alarms', style: Theme.of(context).textTheme.headlineLarge),
+        ],
+      ),
+    );
+  }
+  //DateTime.now();
+
+  String _checkNextTriggerDay(AlarmModel alarm) {
+    final now = tz.TZDateTime.now(tz.local);
+    if (alarm.isEnabled && alarm.alarmDaysModel.isEmpty) {
+      if (now.isAfter(alarm.nextTrigger)) {
+        return 'Tomorrow';
+      }
+      return 'Today';
+    } else if (alarm.isEnabled && alarm.alarmDaysModel.isNotEmpty) {
+      final weakDayAlarms = alarm.alarmDaysModel
+          .map((day) => '${day.repeatedDays?.shortName} ')
+          .toList();
+
+      return weakDayAlarms.join();
+    } else {
+      return "Not scheduled";
     }
-    int currentHours = DateFormat('hh:mm:ss')
-        .parse(DateFormat('hh:mm:ss').format(DateTime.now()), true)
-        .microsecondsSinceEpoch;
-    // Get the current hour from the hoursList
-    int hour = getHoursList[index];
+  }
 
-    _dataTime.hour = hour + 12;
-    _dataTime.minute = currentMinutes;
+  Future<void> pickTimeAndCreateAlarm(
+    BuildContext context,
 
-    final dateFormated = DateTimeSetting.fromDate(_dataTime);
-    if (kDebugMode) {
-      print('minutes is${dateFormated.totDateTime}');
-    }
-    _dataTime = dateFormated;
-    int alarmTime = DateFormat('HH:mm:ss')
-        .parse(DateFormat('HH:mm:ss').format(_dataTime.totDateTime), true)
-        .microsecondsSinceEpoch;
-    final currentPeroid = DateFormat('a').format(DateTime.now());
-    // Determine if we're moving forward or backward
-    bool isMovingForward = scrollDirection == ScrollDirection.forward;
+    WidgetRef ref,
+  ) async {
+    final selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
 
-    // Check current state of isAM and isPM
-    // bool wasAM = isTimeAm;
-    // bool wasPM = isPM.value;
+    if (selectedTime != null) {
+      final fireAt = TimeManager.calculateNextTriggerTime(selectedTime);
+      if (!context.mounted) return;
+      final alarmNote =
+          '${getAlarmDay(fireAt.weekday).shortName}  ${TimeManager.formatTimeShow(selectedTime, context)} ${selectedTime.period.name.toUpperCase()}. Swip to Stop';
+      bool allowed = false;
 
-    // Create a DateTime object for the current day and the specific hour
-// Add 12 for PM
+      allowed = await _requestPermissions(context);
+      debugPrint("Permissions allowed: $allowed");
 
-    // final df = TimeOfDay(hour: Duration(hours: hour).inHours, minute: 0);
+      if (allowed) {
+        debugPrint('alarms.nextTrigg selected is $fireAt');
+        final isAdded = await ref
+            .read<AlarmController>(alarmControllerProvider)
+            .addAlarm(
+              selectedTime: selectedTime,
+              title: alarmNote,
+              fireAt: fireAt,
+            );
+        if (isAdded) {
+          final nowDateTime = tz.TZDateTime.now(tz.local);
+          final hours = fireAt.difference(nowDateTime).inHours;
+          final messageHuors = hours > 0 ? '${hours}hours and' : null;
 
-    // final TimeOfDayFormat timeOfDayFormat = MaterialLocalizations.of(context).timeOfDayFormat(
-    //     alwaysUse24HourFormat: true,
-    //   );
-
-    if (isTimePm && !isMovingForward) {
-      // Case 1: If the current period is PM and we are moving backward
-      if (hour == 12) {
-        // Transition from PM to AM, moving to the next day
-        isTimePm = false;
-        isTimeAm = true;
-
-        _dataTime.day = DateTime.now().day + 1;
-        _dataTime.peroid = 'AM';
-      } else if (hour == 11) {
-        // Stay within PM but shift backward within the same day
-        isTimePm = true;
-        isTimeAm = false;
-        _dataTime.day = DateTime.now().day;
-        _dataTime.peroid = 'PM';
-      }
-    } else if (isTimePm && isMovingForward) {
-      // Case 2: If the current period is PM and we are moving forward
-      if (hour == 12) {
-        // Stay within PM, still at the current day
-        isTimePm = true;
-        isTimeAm = false;
-        _dataTime.day = DateTime.now().day + 1;
-        _dataTime.peroid = 'PM';
-      } else if (hour == 11) {
-        // Transition from PM to AM within the same day
-        isTimePm = false;
-        isTimeAm = true;
-        _dataTime.day = DateTime.now().day + 1;
-        _dataTime.peroid = 'AM';
-      }
-    } else if (isTimeAm && !isMovingForward) {
-      // Case 3: If the current period is AM and we are moving backward
-      if (hour == 12) {
-        // Transition from AM to PM, moving to the next day
-        isTimePm = true;
-        isTimeAm = false;
-        _dataTime.day = DateTime.now().day + 1;
-        _dataTime.peroid = 'PM';
-      } else if (hour == 11) {
-        // Stay within AM but shift backward within the current day
-        isTimePm = false;
-        isTimeAm = true;
-        _dataTime.day = DateTime.now().day;
-        _dataTime.peroid = 'AM';
-      }
-    } else if (isTimeAm && isMovingForward) {
-      // Case 4: If the current period is AM and we are moving forward
-      if (hour == 12) {
-        // Transition within AM, staying in the same period
-        isTimePm = false;
-        isTimeAm = true;
-        _dataTime.day = DateTime.now().day + 1;
-        _dataTime.peroid = isTimeAm ? 'AM' : 'PM';
-      } else if (hour == 11) {
-        // Transition from AM to PM
-        isTimePm = true;
-        isTimeAm = false;
-        _dataTime.day = DateTime.now().day;
-        _dataTime.peroid = isTimeAm ? 'AM' : 'PM';
+          HelperMessage.showToastSetAlarmMessage(
+            'Alarm Set for ${messageHuors ?? ''} ${fireAt.difference(nowDateTime).inMinutes} minutes from now',
+          );
+        }
+        debugPrint(
+          'current DateTime.NotificationService().addAlarm():$isAdded',
+        );
       }
     }
+  }
 
-    if (isTimePm && currentPeroid == 'AM') {
-      _dataTime.day = DateTime.now().day + 1;
-      _dataTime.peroid = 'PM';
-    } else if (isTimeAm && currentPeroid == 'PM') {
-      _dataTime.day = DateTime.now().day + 1;
-      _dataTime.peroid = 'AM';
+  Future<bool> _requestPermissions(BuildContext context) async {
+    final hasExact = await Permission.scheduleExactAlarm.isGranted;
+    final hasNotif = await Permission.notification.isGranted;
 
-      if (kDebugMode) {
-        print('here we are1');
-      }
-    } else if (alarmTime < currentHours) {
-      if ((hour != 11 && hour != 12)) {
-        _dataTime.day = DateTime.now().day + 1;
-        _dataTime.peroid = isTimeAm ? 'AM' : 'PM';
-        if (kDebugMode) {
-          print('here we insed4');
+    if (hasExact && hasNotif) {
+      return true;
+    }
+
+    if (!context.mounted) return false;
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Permissions Required"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "This app needs the following permissions to work properly:",
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Icon(Icons.notifications, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      "• Notifications - to alert you when alarm rings",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.alarm, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text("• Exact alarms - to ring at precise time"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("Continue"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != true) {
+      return false;
+    }
+
+    // Request permissions
+
+    // final notif = await AlarmPermission.requestNotificationPermission();
+
+    // debugPrint('📢 Requesting exact alarm permission...');
+    // final exact = await AlarmPermission.ensureExactAlarmPermission();
+    // debugPrint('Exact alarm permission result: $exact');
+
+    // Check final status
+
+    bool finalNotif = await Permission.notification.isGranted;
+    final finalExact = await Permission.scheduleExactAlarm.isGranted;
+
+    debugPrint('Final permissions - Notif: $finalNotif, Exact: $finalExact');
+    if (Platform.isAndroid) {
+      if (!finalNotif || !finalExact) {
+        // Some permissions were denied
+        if (context.mounted) {
+          AlarmPermission.showPermissionHelpDialog(context);
         }
       }
-      // else if ((hour != 11 && hour != 12)) {
-      //   _dataTime.day = DateTime.now().day + 1;
-      //   _dataTime.peroid = isTimeAm ? 'AM' : 'PM';
-      // }
-      // else {
-      //   _dataTime.day = DateTime.now().day + 1;
-      //   _dataTime.peroid = 'AM';
-      // }
-      if (kDebugMode) {
-        print('here we are4');
+      return finalNotif && finalExact;
+    } else {
+      if (!finalNotif) {
+        // Some permissions were denied
+        //  await AlarmPermission.checkBatteryOptimizationDisabled();
+        if (!context.mounted) return false;
+        finalNotif = await AlarmPermission.requestNotificationPermission();
+        debugPrint(
+          'Final requestNotificationPermission - Notif: $finalNotif, Exact:',
+        );
       }
-    } else if (alarmTime > currentHours) {
-      if ((hour != 11 && hour != 12)) {
-        _dataTime.day = DateTime.now().day;
-        _dataTime.peroid = isTimeAm ? 'AM' : 'PM';
-        if (kDebugMode) {
-          print('here we insed3');
-        }
-      }
-      // else if ((hour != 11 && hour != 12)) {
-      //   _dataTime.day = DateTime.now().day + 1;
-      //   _dataTime.peroid = isTimeAm ? 'AM' : 'PM';
-      // }
-      // else {
-      //   _dataTime.day = DateTime.now().day + 1;
-      //   _dataTime.peroid = 'AM';
-      // }
-      if (kDebugMode) {
-        print('here we are3');
-      }
+      return finalNotif;
     }
-    if (kDebugMode) {
-      print('alarmTime$alarmTime currenthours$currentHours');
-      // print(
-      //     'datetime format ${DateFormat('yyyy-MM-dd hh:mm ss').parse(DateFormat('yyyy-MM-dd hh:mm ss').format(_dataTime.totDateTime)).microsecondsSinceEpoch} ${
-
-      //     }');
-    }
-
- 
-    DateTime.timestamp();
-
-    final dateFormated1 = DateTimeSetting.fromDate(_dataTime);
-    if (kDebugMode) {
-      print('The Alram in Time $hour ${isTimeAm ? 'AM' : 'PM'}}');
-
-      print(
-        'minutes  ${_dataTime.minute}hourse ${_dataTime.hour}period :${_dataTime.peroid}  \$  ${_dataTime.totDateTime}}',
-      );
-    }
-    return true;
   }
 }

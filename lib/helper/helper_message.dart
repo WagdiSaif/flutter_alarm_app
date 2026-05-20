@@ -1,11 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:alarmapp/core/app_theme/app_colors.dart';
+import 'package:alarmapp/core/app_theme/app_theme.dart';
+
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HelperMessage {
-  static void scaffoldSetAlarmMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Alarm set for$message"),
-      ),
+  static Future<void> showToastSetAlarmMessage( String message) async {
+ Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 2,
+        backgroundColor: AppColors.primaryBlueLight,
+        textColor: AppColors.textPrimary,
+        fontSize: 16.0
     );
   }
 }

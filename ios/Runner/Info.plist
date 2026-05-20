@@ -45,5 +45,32 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+<key>NSUserNotificationUsageDescription</key>
+<string>This app needs notifications to trigger alarms.</string>
+<key>PermissionGroupNotification</key>
+<string>We need notification permission to alert you when the alarm goes off</string>
+
+
+<key>UNUserNotificationCenter</key>
+<string>Alarm notifications</string>
+
+
+<key>UIBackgroundModes</key>
+<array>
+    <string>audio</string>
+    <string>fetch</string>
+    <string>remote-notification</string>
+</array>
+
+
+
+
+<key>AudioServicesPlaySystemSound</key>
+<string>Used for vibration</string>
+
+<!-- Timezone (no permission, but keep for clarity if needed) -->
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Used to determine timezone for alarms.</string>
 </dict>
 </plist>
