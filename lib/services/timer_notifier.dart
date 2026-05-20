@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:alarmapp/models/timer_state.dart';
+import 'package:alarmapp/core/models/timer_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 

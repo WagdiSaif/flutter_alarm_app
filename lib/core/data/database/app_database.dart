@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:alarmapp/core/exceptions/database_exceptions.dart';
-import 'package:alarmapp/data/database/tables/alarms_table.dart';
+import 'package:alarmapp/core/data/database/tables/alarms_table.dart';
 
 import 'package:drift/drift.dart';
 import 'package:alarmapp/helper/constants.dart';

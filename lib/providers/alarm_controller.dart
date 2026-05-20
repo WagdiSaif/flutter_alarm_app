@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:alarmapp/services/alarm_shared_preference.dart';
 import 'package:alarmapp/core/extensions.dart';
 
-import 'package:alarmapp/models/alarm_model.dart';
+import 'package:alarmapp/core/models/alarm_model.dart';
 import 'package:alarmapp/services/alarm_scheduler.dart';
 import 'package:alarmapp/services/alarm_service.dart';
 

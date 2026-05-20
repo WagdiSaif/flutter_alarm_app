@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:alarmapp/core/app_theme/app_colors.dart';
-import 'package:alarmapp/data/database/app_database.dart';
+import 'package:alarmapp/core/data/database/app_database.dart';
 import 'package:alarmapp/core/app_theme/app_theme.dart';
 import 'package:alarmapp/core/utils/functions.dart';
-import 'package:alarmapp/data/repositories/alarm_repository.dart';
-import 'package:alarmapp/data/repositories/imprepository/imp_alarm_repository.dart';
+import 'package:alarmapp/core/data/repositories/alarm_repository.dart';
+import 'package:alarmapp/core/data/repositories/imprepository/imp_alarm_repository.dart';
 import 'package:alarmapp/helper/helper_message.dart';
-import 'package:alarmapp/models/alarm_model.dart';
+import 'package:alarmapp/core/models/alarm_model.dart';
 
 import 'package:alarmapp/providers/alarm_controller.dart';
 import 'package:alarmapp/services/time_manager.dart';

@@ -6,7 +6,7 @@ import 'package:alarmapp/core/enum/enums.dart';
 import 'package:alarmapp/helper/constants.dart';
 import 'package:alarmapp/helper/helper_message.dart';
 
-import 'package:alarmapp/models/alarm_model.dart';
+import 'package:alarmapp/core/models/alarm_model.dart';
 import 'package:alarmapp/providers/alarm_controller.dart';
 import 'package:alarmapp/services/time_manager.dart';
 import 'package:alarmapp/ui/add_alarm_screen.dart';

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import '../../../core/enum/enums.dart';
+import '../../../enum/enums.dart';
 import 'alarms_table.dart' show AlarmsTable;
 
 class AlarmDaysTable extends Table {
