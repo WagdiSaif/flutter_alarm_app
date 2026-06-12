@@ -1,13 +1,10 @@
-
-import 'package:alarmapp/helper/sizer.dart';
+import 'package:alarmapp/sizer.dart';
 import 'package:alarmapp/core/app_theme/app_texts_styles.dart';
 import 'package:alarmapp/core/data/models/timer_state.dart';
-import 'package:alarmapp/services/timer_notifier.dart';
+import 'package:alarmapp/providers/timer_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alarmapp/core/app_theme/app_colors.dart';
-
-
 
 final timerProvider = StateNotifierProvider<TimerNotifier, TimerState>((ref) {
   return TimerNotifier();
@@ -20,7 +17,8 @@ class TimerPresetScreen extends ConsumerStatefulWidget {
   ConsumerState<TimerPresetScreen> createState() => _TimerPresetScreenState();
 }
 
-class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with SingleTickerProviderStateMixin {
+class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _scaleAnimation;
 
@@ -31,22 +29,68 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
       duration: const Duration(milliseconds: 800),
       vsync: this,
     )..repeat(reverse: true);
-    
+
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
   }
-    final presets = [
-      {'label': '1m', 'duration': const Duration(minutes: 1), 'icon': Icons.looks_one, 'color': AppColors.success},
-      {'label': '3m', 'duration': const Duration(minutes: 3), 'icon': Icons.looks_3, 'color': Colors.teal.shade400},
-      {'label': '5m', 'duration': const Duration(minutes: 5), 'icon': Icons.looks_5, 'color': AppColors.primaryBlue},
-      {'label': '10m', 'duration': const Duration(minutes: 10), 'icon': Icons.looks_one, 'color': AppColors.primaryBlueLight},
-      {'label': '15m', 'duration': const Duration(minutes: 15), 'icon': Icons.looks_one, 'color': Colors.indigo.shade400},
-      {'label': '30m', 'duration': const Duration(minutes: 30), 'icon': Icons.looks_3, 'color': Colors.purple.shade400},
-      {'label': '45m', 'duration': const Duration(minutes: 45), 'icon': Icons.looks_4, 'color': Colors.pink.shade400},
-      {'label': '1h', 'duration': const Duration(hours: 1), 'icon': Icons.timer, 'color': AppColors.warning},
-      {'label': '2h', 'duration': const Duration(hours: 2), 'icon': Icons.timer, 'color': AppColors.error},
-    ];
+
+  final presets = [
+    {
+      'label': '1m',
+      'duration': const Duration(minutes: 1),
+      'icon': Icons.looks_one,
+      'color': AppColors.success,
+    },
+    {
+      'label': '3m',
+      'duration': const Duration(minutes: 3),
+      'icon': Icons.looks_3,
+      'color': Colors.teal.shade400,
+    },
+    {
+      'label': '5m',
+      'duration': const Duration(minutes: 5),
+      'icon': Icons.looks_5,
+      'color': AppColors.primaryBlue,
+    },
+    {
+      'label': '10m',
+      'duration': const Duration(minutes: 10),
+      'icon': Icons.looks_one,
+      'color': AppColors.primaryBlueLight,
+    },
+    {
+      'label': '15m',
+      'duration': const Duration(minutes: 15),
+      'icon': Icons.looks_one,
+      'color': Colors.indigo.shade400,
+    },
+    {
+      'label': '30m',
+      'duration': const Duration(minutes: 30),
+      'icon': Icons.looks_3,
+      'color': Colors.purple.shade400,
+    },
+    {
+      'label': '45m',
+      'duration': const Duration(minutes: 45),
+      'icon': Icons.looks_4,
+      'color': Colors.pink.shade400,
+    },
+    {
+      'label': '1h',
+      'duration': const Duration(hours: 1),
+      'icon': Icons.timer,
+      'color': AppColors.warning,
+    },
+    {
+      'label': '2h',
+      'duration': const Duration(hours: 2),
+      'icon': Icons.timer,
+      'color': AppColors.error,
+    },
+  ];
   @override
   void dispose() {
     _pulseController.dispose();
@@ -68,17 +112,16 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
   Widget build(BuildContext context) {
     final timerState = ref.watch(timerProvider);
 
-
     final displayDuration = timerState.remaining == Duration.zero
         ? timerState.selectedDuration
         : timerState.remaining;
-    
-    final isLowTime = timerState.isRunning && timerState.remaining.inSeconds < 10;
+
+    final isLowTime =
+        timerState.isRunning && timerState.remaining.inSeconds < 10;
     final progress = timerState.selectedDuration.inSeconds > 0
-        ? (timerState.remaining.inSeconds / timerState.selectedDuration.inSeconds)
+        ? (timerState.remaining.inSeconds /
+              timerState.selectedDuration.inSeconds)
         : 1.0;
-
-
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -100,7 +143,10 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                   ),
                   if (timerState.isRunning)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.success.withValues(alpha: .2),
                         borderRadius: BorderRadius.circular(20),
@@ -130,7 +176,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                 ],
               ),
             ),
-            
+
             // Timer Display with Progress Ring
             Expanded(
               flex: 2,
@@ -154,7 +200,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                         ],
                       ),
                     ),
-                    
+
                     // Progress Ring (using LinearProgressIndicator wrapped in Circular)
                     SizedBox(
                       width: 60.sw,
@@ -168,7 +214,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                         ),
                       ),
                     ),
-                    
+
                     // Timer Text with Animation
                     AnimatedScale(
                       scale: timerState.isRunning ? _scaleAnimation.value : 1.0,
@@ -182,7 +228,9 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                               fontSize: 52,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'monospace',
-                              color: isLowTime ? AppColors.error : AppColors.textPrimary,
+                              color: isLowTime
+                                  ? AppColors.error
+                                  : AppColors.textPrimary,
                               letterSpacing: 2,
                             ),
                           ),
@@ -192,7 +240,9 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                               width: 40,
                               height: 2,
                               decoration: BoxDecoration(
-                                color: AppColors.textPrimary.withValues(alpha:0.3),
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.3,
+                                ),
                                 borderRadius: BorderRadius.circular(1),
                               ),
                             ),
@@ -203,7 +253,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                 ),
               ),
             ),
-            
+
             // Control Buttons
             Container(
               padding: const EdgeInsets.symmetric(vertical: 24),
@@ -215,7 +265,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                       icon: Icons.play_arrow,
                       label: 'Start',
                       color: AppColors.success,
-                      onPressed:  ref.read(timerProvider.notifier).start,
+                      onPressed: ref.read(timerProvider.notifier).start,
                       isPrimary: true,
                     ),
                   if (timerState.isRunning)
@@ -223,7 +273,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                       icon: Icons.pause,
                       label: 'Pause',
                       color: AppColors.warning,
-                      onPressed:  ref.read(timerProvider.notifier).pause,
+                      onPressed: ref.read(timerProvider.notifier).pause,
                       isPrimary: true,
                     ),
                   const SizedBox(width: 20),
@@ -231,13 +281,13 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                     icon: Icons.stop,
                     label: 'Reset',
                     color: AppColors.error,
-                    onPressed:  ref.read(timerProvider.notifier).reset,
+                    onPressed: ref.read(timerProvider.notifier).reset,
                     isPrimary: false,
                   ),
                 ],
               ),
             ),
-            
+
             // Presets Section
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -257,18 +307,20 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
                     itemCount: presets.length,
                     itemBuilder: (context, index) {
                       final preset = presets[index];
-                      final isSelected = timerState.selectedDuration == preset['duration'];
+                      final isSelected =
+                          timerState.selectedDuration == preset['duration'];
                       final presetColor = preset['color'] as Color;
-                      
+
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         decoration: BoxDecoration(
@@ -287,7 +339,9 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                           border: isSelected
                               ? null
                               : Border.all(
-                                  color: AppColors.textDisabled.withValues(alpha: .2),
+                                  color: AppColors.textDisabled.withValues(
+                                    alpha: .2,
+                                  ),
                                   width: 1,
                                 ),
                           boxShadow: [
@@ -302,14 +356,18 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () =>  ref.read(timerProvider.notifier).selectPreset(preset['duration'] as Duration),
+                            onTap: () => ref
+                                .read(timerProvider.notifier)
+                                .selectPreset(preset['duration'] as Duration),
                             borderRadius: BorderRadius.circular(16),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
                                   preset['icon'] as IconData,
-                                  color: isSelected ? AppColors.textPrimary : presetColor,
+                                  color: isSelected
+                                      ? AppColors.textPrimary
+                                      : presetColor,
                                   size: 28,
                                 ),
                                 const SizedBox(height: 8),
@@ -317,7 +375,9 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                                   preset['label'].toString(),
                                   style: AppTextStyles.bodySmall.copyWith(
                                     fontWeight: FontWeight.w600,
-                                    color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                                    color: isSelected
+                                        ? AppColors.textPrimary
+                                        : AppColors.textSecondary,
                                   ),
                                 ),
                               ],
@@ -330,7 +390,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 20),
           ],
         ),
@@ -353,7 +413,10 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen> with Sing
               style: ElevatedButton.styleFrom(
                 backgroundColor: color,
                 foregroundColor: AppColors.textPrimary,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 16,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
                 ),

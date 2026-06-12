@@ -1,18 +1,13 @@
 import 'package:alarmapp/core/app_theme/app_colors.dart';
 import 'package:alarmapp/core/app_theme/app_texts_styles.dart';
 import 'package:flutter/material.dart';
-
-
-
-
-
 class AppTheme {
   static ThemeData get theme {
     return ThemeData(
   
       brightness: Brightness.dark,
       
-      // Color Scheme
+  
       colorScheme: const ColorScheme.dark(
       
         primary: AppColors.primaryBlue,
@@ -34,12 +29,10 @@ class AppTheme {
         
         outline: AppColors.textPrimary,
       ),
-      popupMenuTheme: PopupMenuThemeData(color: AppColors.containerBg),
+      popupMenuTheme: PopupMenuThemeData(color: AppColors.backgroundDark,surfaceTintColor: AppColors.containerBg),
       // Text Theme
       textTheme: const TextTheme(
-        // displayLarge: headlineLarge,
-        // displayMedium: AppTextStyles,
-        // displaySmall: headlineSmall,
+     
         
         headlineLarge: AppTextStyles.headlineLarge,
         headlineMedium: AppTextStyles.headlineMedium,
@@ -53,8 +46,7 @@ class AppTheme {
         bodyMedium: AppTextStyles.bodyMedium,
         bodySmall: AppTextStyles.bodySmall,
         
-        // labelLarge: AppTextStyles,l,
-        // labelMedium: labelMedium,
+
       ),
       
       // App Bar
@@ -63,7 +55,7 @@ class AppTheme {
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
         centerTitle: true,
-        // titleTextStyle: AppTextStyles.t,
+ 
       ),
       
       // Buttons
@@ -99,7 +91,7 @@ class AppTheme {
 
         style:ElevatedButton.styleFrom(
   // backgroundColor: Colors.amber,
-        // backgroundColor: color,
+        backgroundColor: AppColors.primaryBlue,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

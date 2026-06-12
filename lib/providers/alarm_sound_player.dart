@@ -8,7 +8,7 @@ class AlarmSoundPlayer extends StateNotifier<(String?, bool)> {
   AlarmSoundPlayer() : super((null, false));
 
   AudioPlayer? _player;
-  Future<void> play(String selectedSound) async {
+  Future<void> playDeviceSound(String selectedSound) async {
     try {
     
       await stop();
@@ -16,18 +16,37 @@ class AlarmSoundPlayer extends StateNotifier<(String?, bool)> {
 
       state = (selectedSound, true);
       await Future.delayed(const Duration(milliseconds: 100));
-      final session = await AudioSession.instance;
-      await session.configure(
-        const AudioSessionConfiguration(
-          androidAudioAttributes: AndroidAudioAttributes(
-            usage: AndroidAudioUsage.alarm,
-            contentType: AndroidAudioContentType.sonification,
-          ),
-          androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
-        ),
-      );
+      await _setAudioSession();
 
-      await session.setActive(true);
+  
+      final path = selectedSound;
+      final assetPath = path;
+
+      await _player!.setLoopMode(LoopMode.all);
+      await _player!.setVolume(1.0);
+     
+      await _player!.setFilePath(assetPath);
+
+      
+      await _player!.play();
+
+
+    } catch (e, _) {
+   
+      _player = null;
+      state = (null, false);
+    }
+  }
+
+  Future<void> playAssetSound(String selectedSound) async {
+    try {
+    
+      await stop();
+      _player = AudioPlayer();
+
+      state = (selectedSound, true);
+      await Future.delayed(const Duration(milliseconds: 100));
+      await _setAudioSession();
 
   
       final path = selectedSound;
@@ -35,6 +54,7 @@ class AlarmSoundPlayer extends StateNotifier<(String?, bool)> {
 
       await _player!.setLoopMode(LoopMode.one);
       await _player!.setVolume(1.0);
+     
       await _player!.setAsset(assetPath);
 
       
@@ -46,6 +66,21 @@ class AlarmSoundPlayer extends StateNotifier<(String?, bool)> {
       _player = null;
       state = (null, false);
     }
+  }
+
+  Future<void> _setAudioSession() async {
+    final session = await AudioSession.instance;
+    await session.configure(
+      const AudioSessionConfiguration(
+        androidAudioAttributes: AndroidAudioAttributes(
+          usage: AndroidAudioUsage.alarm,
+          contentType: AndroidAudioContentType.sonification,
+        ),
+        androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+      ),
+    );
+    
+    await session.setActive(true);
   }
 
 

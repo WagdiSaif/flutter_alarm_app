@@ -6,7 +6,6 @@ import 'package:alarmapp/core/data/repositories/alarm_repository.dart';
 
 import 'package:alarmapp/core/data/models/alarm_model.dart';
 
-
 class AlarmService {
   final AlarmRepository _alarmRepository;
 
@@ -37,14 +36,13 @@ class AlarmService {
       return false;
     }
   }
-  Future<List<AlarmModel>> getAllAlarms() async {
 
-        try {
-   return await  _alarmRepository.fetchAllAlarms();
-  
+  Future<List<AlarmModel>> getAllAlarms() async {
+    try {
+      return await _alarmRepository.fetchAllAlarms();
     } catch (e, stack) {
       log('fetch All Alrms failed', error: e, stackTrace: stack);
-     return [];
+      return [];
     }
   }
 
@@ -85,7 +83,23 @@ class AlarmService {
     }
   }
 
+  Stream<List<Map<String, dynamic>>> watchAlarmSounds() {
+    return _alarmRepository.alarmsSlounds();
+  }
 
+  Future<void> addSound(String path) async {
+    try {
+      await _alarmRepository.addAlarmSound(path);
+    } catch (e, stack) {
+      log("Add Alarm Sound Failed", error: e, stackTrace: stack);
+    }
+  }
 
-
+  Future<void> removeSound(int id) async {
+    try {
+      await _alarmRepository.removeSoundById(id);
+    } catch (e, stack) {
+      log("Delete Alarm Sound Failed", error: e, stackTrace: stack);
+    }
+  }
 }

@@ -1,5 +1,5 @@
 
-import 'package:alarmapp/helper/constants.dart';
+import 'package:alarmapp/core/constant/constant.dart';
 import 'package:drift/drift.dart';
 
 @TableIndex(name: 'idx_nextTrigger', columns: {#nextTrigger})

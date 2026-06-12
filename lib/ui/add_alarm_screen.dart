@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:alarmapp/core/app_theme/app_colors.dart';
 import 'package:alarmapp/core/data/database/app_database.dart';
-import 'package:alarmapp/core/app_theme/app_theme.dart';
+
 import 'package:alarmapp/core/utils/functions.dart';
 import 'package:alarmapp/core/data/repositories/alarm_repository.dart';
-import 'package:alarmapp/core/data/repositories/imprepository/imp_alarm_repository.dart';
-import 'package:alarmapp/helper/helper_message.dart';
+import 'package:alarmapp/core/data/repositories/impl/impl_alarm_repository.dart';
+import 'package:alarmapp/sizer.dart';
+import 'package:alarmapp/ui/widgets/helper_message.dart';
 import 'package:alarmapp/core/data/models/alarm_model.dart';
 
 import 'package:alarmapp/providers/alarm_controller.dart';
@@ -15,7 +16,7 @@ import 'package:alarmapp/services/alarm_permission.dart';
 import 'package:alarmapp/services/alarm_scheduler.dart';
 import 'package:alarmapp/services/alarm_service.dart';
 
-import 'package:alarmapp/ui/alarm_bottom_sheet.dart';
+import 'package:alarmapp/ui/widgets/alarm_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,7 @@ final databaseProvider = Provider<AlarmDatabase>((ref) {
 final alarmRepositoryProvider = Provider<AlarmRepository>((ref) {
   final db = ref.watch(databaseProvider);
 
-  return ImpAlarmRepository(db);
+  return ImplAlarmRepository(db);
 });
 final serviceProvider = Provider<AlarmService>((ref) {
   final repository = ref.watch(alarmRepositoryProvider);
@@ -50,8 +51,11 @@ final alarmControllerProvider = Provider<AlarmController>((ref) {
 });
 final alarmProvider = StreamProvider.autoDispose<List<AlarmModel>>((ref) {
   final alarms = ref.watch(alarmControllerProvider);
-  return alarms.alarmStream();
+  return alarms.alarmStream;
 });
+StateProvider<bool> isShowBottomSheetProvider = StateProvider<bool>(
+  (ref) => false,
+);
 
 class AddAlarmScreen extends ConsumerStatefulWidget {
   const AddAlarmScreen({super.key});
@@ -70,29 +74,22 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     super.dispose();
   }
 
-  double height = 0.0;
-  double width = 0.0;
-
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
-    final alarmsData = ref.watch(alarmProvider);
+
 
     return SafeArea(
       child: Column(
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
-            height: height * 0.07,
+            height: kToolbarHeight,
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-         
                 Text('Alarm', style: Theme.of(context).textTheme.headlineLarge),
                 PopupMenuButton(
-                  
                   itemBuilder: (context) => [
                     PopupMenuItem(child: Text('data')),
                   ],
@@ -111,160 +108,169 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                       width: double.infinity,
                       child: Stack(
                         children: [
-                          alarmsData.when(
-                            data: (alarms) {
-                              if (alarms.isEmpty) {
-                                return _buildEmptyAlarms();
-                              }
-                              return SingleChildScrollView(
-                                padding: EdgeInsets.only(bottom: 15),
-                                child: Column(
-                                  children: alarms
-                                      .map(
-                                        (alarm) => Dismissible(
-                                          confirmDismiss: (direction) async {
-                                            //  await  direction.
-                                            return true;
-                                          },
-                                          onDismissed: (direction) {
-                                            debugPrint("Hello dismissble");
-                                          },
-                                          key: GlobalKey(
-                                            debugLabel: alarm.alarmId
-                                                .toString(),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(9.0),
-                                            child: Container(
-                                              constraints: BoxConstraints(
-                                                maxHeight: height * .17,
-                                                minHeight: height * .15,
+                          Consumer(
+                            builder: (context,ref,w) {
+    final alarmsData = ref.watch(alarmProvider);
+                              return alarmsData.when(
+                                data: (alarms) {
+                                  if (alarms.isEmpty) {
+                                    return _buildEmptyAlarms();
+                                  }
+                                  return SingleChildScrollView(
+                                    padding: EdgeInsets.only(bottom: 15),
+                                    child: Column(
+                                      children: alarms
+                                          .map(
+                                            (alarm) => Dismissible(
+                                              confirmDismiss: (direction) async {
+                                                //  await  direction.
+                                                
+                                                return true;
+                                              },
+                                              onDismissed: (direction) {
+                                                debugPrint("Hello dismissble");
+                                              },
+                                              key: GlobalKey(
+                                                debugLabel: alarm.alarmId
+                                                    .toString(),
                                               ),
-                                            
-                                              padding: EdgeInsets.all(7),
-
-                                              decoration: BoxDecoration(
-                                                color: alarm.isEnabled
-                                                    ? AppColors.containerBg
-                                                    : AppColors
-                                                          .containerBgPale95,
-
-                                          
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-
-                                              child: InkWell(
-                                                onTap: () async {
-                                                  showModalBottomSheet(
-                                                    showDragHandle: true,
-                                                    isScrollControlled: true,
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        AlarmBottomSheet(
-                                                          alarm: alarm,
-                                                        ),
-                                                  );
-                                                },
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      _checkNextTriggerDay(
-                                                        alarm,
-                                                      ),
-                                                      style: Theme.of(
-                                                        context,
-                                                      ).textTheme.titleLarge,
-                                                    ),
-
-                                                    Text(
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      alarm.name,
-                                                    ),
-
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(9.0),
+                                                child: Container(
+                                                  constraints: BoxConstraints(
+                                                    maxHeight: 17.sh,
+                                                    minHeight: 15.sh,
+                                                  ),
+                              
+                                                  padding: EdgeInsets.all(7),
+                              
+                                                  decoration: BoxDecoration(
+                                                    color: alarm.isEnabled
+                                                        ? AppColors.containerBg
+                                                        : AppColors.surfaceDark,
+                              
+                                                    borderRadius:
+                                                        BorderRadius.circular(12),
+                                                  ),
+                              
+                                                  child: InkWell(
+                                                    onTap: () async {
+                                                      showModalBottomSheet(
+                                                        useSafeArea: false,
+                                                        showDragHandle: true,
+                                                        isScrollControlled: true,
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlarmBottomSheet(
+                                                            alarm: alarm,
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    child: Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
+                                                          CrossAxisAlignment.start,
                                                       children: [
-                                                        Row(
-                                                          textBaseline:
-                                                              TextBaseline
-                                                                  .alphabetic,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .baseline,
-                                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              TimeManager.formatTimeShow(
-                                                                alarm.firedTime,
-                                                                context,
-                                                              ),
-                                                              style:
-                                                                  Theme.of(
-                                                                        context,
-                                                                      )
-                                                                      .textTheme
-                                                                      .titleLarge,
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets.only(
-                                                                    left: 0,
-                                                                  ),
-                                                              child: Text(
-                                                                alarm
-                                                                    .firedTime
-                                                                    .period
-                                                                    .name
-                                                                    .toUpperCase(),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        Text(
+                                                          _checkNextTriggerDay(
+                                                            alarm,
+                                                          ),
+                                                          style: Theme.of(
+                                                            context,
+                                                          ).textTheme.titleLarge,
                                                         ),
-                                                        Switch(
-                                                          value:
-                                                              alarm.isEnabled,
-                                                          onChanged: (_) async {
-                                                            await ref
-                                                                .read<
-                                                                  AlarmController
-                                                                >(
-                                                                  alarmControllerProvider,
-                                                                )
-                                                                .toggleAlarm(
-                                                                  alarm,
-                                                                );
-                                                          },
+                              
+                                                        Text(
+                                                          //Alarm Name------------=
+                                                          maxLines: 2,
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                          alarm.name,
+                                                        ),
+                              
+                                                        Expanded(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Row(
+                                                                textBaseline:
+                                                                    TextBaseline
+                                                                        .alphabetic,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .baseline,
+                                                          
+                                                                children: [
+                                                                  Text(
+                                                                    TimeManager.formatTimeShow(
+                                                                      alarm.firedTime,
+                                                                      context,
+                                                                    ),
+                                                                    style:
+                                                                        Theme.of(
+                                                                              context,
+                                                                            )
+                                                                            .textTheme
+                                                                            .titleLarge,
+                                                                  ),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.only(
+                                                                          left: 0,
+                                                                        ),
+                                                                    child: Text(
+                                                                      alarm
+                                                                          .firedTime
+                                                                          .period
+                                                                          .name
+                                                                          .toUpperCase(),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Switch(
+                                                                value:
+                                                                    alarm.isEnabled,
+                                                                onChanged: (_) async {
+                                                                  await ref
+                                                                      .read<
+                                                                        AlarmController
+                                                                      >(
+                                                                        alarmControllerProvider,
+                                                                      )
+                                                                      .toggleAlarm(
+                                                                        alarm,
+                                                                      );
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  );
+                                },
+                                error: (error, _) => Text('Error:'),
+                                loading: () => _buildEmptyAlarms(),
                               );
-                            },
-                            error: (error, _) => Text('Error:'),
-                            loading: () => _buildEmptyAlarms(),
+                            }
                           ),
 
                           Positioned(
                             bottom: 1,
-                            left: width * 0.04,
+                            left: 4.sw,
                             // right: 0,
                             child: Container(
                               decoration: const BoxDecoration(
@@ -273,8 +279,8 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                               ),
                               // alignment: Alignment.bottomCenter,
                               margin: const EdgeInsets.only(bottom: 3),
-                              height: 70,
-                              width: 70,
+                              height: 16.sw,
+                              width: 16.sw,
 
                               child: Center(
                                 child: IconButton(
@@ -314,8 +320,9 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
 
   String _checkNextTriggerDay(AlarmModel alarm) {
     final now = tz.TZDateTime.now(tz.local);
+
     if (alarm.isEnabled && alarm.alarmDaysModel.isEmpty) {
-      if (now.isAfter(alarm.nextTrigger)) {
+      if (now.day < alarm.nextTrigger.day) {
         return 'Tomorrow';
       }
       return 'Today';
@@ -348,10 +355,9 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
       bool allowed = false;
 
       allowed = await _requestPermissions(context);
-      debugPrint("Permissions allowed: $allowed");
+  
 
       if (allowed) {
-        debugPrint('alarms.nextTrigg selected is $fireAt');
         final isAdded = await ref
             .read<AlarmController>(alarmControllerProvider)
             .addAlarm(
@@ -368,14 +374,16 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
             'Alarm Set for ${messageHuors ?? ''} ${fireAt.difference(nowDateTime).inMinutes} minutes from now',
           );
         }
-        debugPrint(
-          'current DateTime.NotificationService().addAlarm():$isAdded',
-        );
+        debugPrint('added is $isAdded');
       }
     }
   }
 
   Future<bool> _requestPermissions(BuildContext context) async {
+    if (Platform.isIOS) {
+      return _requestIOSPermissions(context);
+    }
+
     final hasExact = await Permission.scheduleExactAlarm.isGranted;
     final hasNotif = await Permission.notification.isGranted;
 
@@ -384,6 +392,69 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     }
 
     if (!context.mounted) return false;
+    final result = await _showPermissionDialog(context);
+
+    if (result != true) {
+      return false;
+    }
+
+    if (!context.mounted) return false;
+    bool finalNotif = await AlarmPermission.requestNotificationPermission();
+    bool hasBatteyOptimization =
+        await Permission.ignoreBatteryOptimizations.isGranted;
+    if (!hasBatteyOptimization) {
+      hasBatteyOptimization =
+          await AlarmPermission.checkBatteryOptimizationDisabled();//Only for Android 
+    }
+
+    debugPrint(
+      'Final requestNotificationPermission - Notif: $finalNotif, hasBatteyOptimization $hasBatteyOptimization:',
+    );
+
+    return finalNotif;
+  }
+
+  Future<bool> _requestIOSPermissions(BuildContext context) async {
+    PermissionStatus status = await Permission.notification.status;
+    if (status.isGranted) return true;
+
+    if (status.isPermanentlyDenied) {
+      if (!context.mounted) return false;
+      final result = await _showPermissionDialog(context);
+
+      if (result != true) return false;
+      if (!context.mounted) return false;
+      await AlarmPermission.showPermissionHelpDialog(context);
+      status = await Permission.notification.status;
+
+      if (status.isGranted) {
+        await _checkAndRequestCriticalAlerts();
+        return status.isGranted;
+      }
+    } //Here OpenSetting
+
+    if (status.isDenied ||
+        status.isLimited ||
+        status.isRestricted ||
+        status.isProvisional) {
+      status = await Permission.notification.request();
+    }
+
+    //
+    if (status.isGranted) {
+      await _checkAndRequestCriticalAlerts();
+    }
+
+    return status.isGranted;
+  }
+
+  Future<void> _checkAndRequestCriticalAlerts() async {
+    if (await Permission.criticalAlerts.isDenied) {
+      await Permission.criticalAlerts.request();
+    }
+  }
+
+  Future<bool?> _showPermissionDialog(BuildContext context) async {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -434,44 +505,6 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         );
       },
     );
-
-    if (result != true) {
-      return false;
-    }
-
-    // Request permissions
-
-    // final notif = await AlarmPermission.requestNotificationPermission();
-
-    // debugPrint('📢 Requesting exact alarm permission...');
-    // final exact = await AlarmPermission.ensureExactAlarmPermission();
-    // debugPrint('Exact alarm permission result: $exact');
-
-    // Check final status
-
-    bool finalNotif = await Permission.notification.isGranted;
-    final finalExact = await Permission.scheduleExactAlarm.isGranted;
-
-    debugPrint('Final permissions - Notif: $finalNotif, Exact: $finalExact');
-    if (Platform.isAndroid) {
-      if (!finalNotif || !finalExact) {
-        // Some permissions were denied
-        if (context.mounted) {
-          AlarmPermission.showPermissionHelpDialog(context);
-        }
-      }
-      return finalNotif && finalExact;
-    } else {
-      if (!finalNotif) {
-        // Some permissions were denied
-        //  await AlarmPermission.checkBatteryOptimizationDisabled();
-        if (!context.mounted) return false;
-        finalNotif = await AlarmPermission.requestNotificationPermission();
-        debugPrint(
-          'Final requestNotificationPermission - Notif: $finalNotif, Exact:',
-        );
-      }
-      return finalNotif;
-    }
+    return result;
   }
 }

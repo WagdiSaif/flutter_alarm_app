@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
@@ -105,8 +106,8 @@ class AlarmScheduler {
   Future<List<AlarmSettings>> getActiveAlarms() async {
     try {
       return await Alarm.getAlarms();
-    } catch (e) {
-      debugPrint(' Failed to get active alarms: $e');
+    } catch (e,stack) {
+      log(' Failed to get active alarms: $e',stackTrace: stack);
       return [];
     }
   }
@@ -129,6 +130,7 @@ class AlarmScheduler {
     //Here  restores Alarms for Rechedule
     try {
       if (await isRinging || activeAlarms.isEmpty) {
+      
         return activeAlarms;
       }
 
@@ -144,6 +146,7 @@ class AlarmScheduler {
 
   Future<AlarmModel> _recheduleNextOccurrence(AlarmModel alarm) async {
     try {
+      if (!alarm.isEnabled) return alarm;
       if (alarm.alarmDaysModel.isEmpty) {
         final updatedAlarm = await _enureValidNextTriggerTime(alarm);
         await _setAlarm(updatedAlarm);
@@ -151,15 +154,13 @@ class AlarmScheduler {
         return updatedAlarm;
       }
 
-      // return alarm;R
-
       final relatedAlarms = {
         alarm.alarmId,
         ...alarm.alarmDaysModel
             .where((e) => e.excutionId != null)
             .map((alrm) => alrm.excutionId!),
       };
-    
+
       await Future.wait(relatedAlarms.map(Alarm.stop));
 
       final validDays = alarm.alarmDaysModel
@@ -332,7 +333,7 @@ class AlarmScheduler {
     TimeOfDay alarmTime,
   ) {
     final now = tz.TZDateTime.now(tz.local);
-    //Search within the current week (from today to +6 days)
+  
     for (int i = 0; i < 7; i++) {
       final candidate = tz.TZDateTime(
         tz.local,

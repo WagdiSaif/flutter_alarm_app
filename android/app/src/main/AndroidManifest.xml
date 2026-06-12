@@ -10,6 +10,10 @@
     
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
 
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+<uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
@@ -19,7 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">
 
-        <!-- 🟢 Main Activity -->
+     
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -48,23 +52,10 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- 🔁 Restore alarms after reboot -->
-        <!-- <receiver
-            android:name=".AlarmBootReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:directBootAware="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
-            </intent-filter>
-
-        </receiver> -->
 
     </application>
 
-    <!-- Optional (safe to keep) -->
+
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>

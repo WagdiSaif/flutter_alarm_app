@@ -1,7 +1,7 @@
 
 import 'package:alarmapp/core/app_theme/app_theme.dart';
 import 'package:alarmapp/core/extensions.dart';
-import 'package:alarmapp/helper/sizer.dart';
+import 'package:alarmapp/sizer.dart';
 import 'package:alarmapp/services/time_manager.dart';
 import 'package:alarmapp/core/app_theme/app_colors.dart';
 
@@ -23,7 +23,7 @@ class RingingAlarmScreen extends ConsumerWidget {
     final name = data['name'] as String? ?? '';
     final title = data['title'] as String? ?? '';
     final firedTime = data['firedTime'] as TimeOfDay?;
-    debugPrint(' alarmId $alarmId');
+
     return Scaffold(
       backgroundColor: AppTheme.theme.primaryColorDark,
       body: SafeArea(

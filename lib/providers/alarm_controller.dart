@@ -16,7 +16,7 @@ class AlarmController {
   final AlarmService alarmService;
   final AlarmScheduler scheduler;
 
-  Stream<List<AlarmModel>> alarmStream() => alarmService.alarmsWatch();
+  Stream<List<AlarmModel>> get alarmStream => alarmService.alarmsWatch();
 
   Future<bool> addAlarm({
     required TimeOfDay selectedTime,
@@ -52,7 +52,7 @@ class AlarmController {
 
   Future<void> rescheduleActiveAlarms() async {
     if(await scheduler.isRinging)return;
-    var activeAlarms = await alarmService.getActiveAlarms();
+    var activeAlarms = await alarmService.getAllAlarms();
 
     try {
       final restoredAlarms = await scheduler.reschedulePresentAlarms(
@@ -85,8 +85,6 @@ class AlarmController {
 
   
   Future<bool> deleteAlarm(AlarmModel alarm) async {
-  
-   
     try {
       await scheduler.cancelScheduledAlarm(alarm);
     } catch (e, stack) {
@@ -117,20 +115,20 @@ class AlarmController {
     Future<bool> canNavigateToRingingScreen(int id) async {
      bool isNavigationAllowed=true;
      await AlarmSharedPrefs.preferencesReload();
-    //Prevent dublicate Navigation for the Same Alarm
+    ////Prevent duplicate Navigation for the Same Alarm
     if ( AlarmSharedPrefs.isRingingState&&AlarmSharedPrefs.getRingingId == id) {
      
       await scheduler.stopAlarm(id);
      isNavigationAllowed=false;
     }
-    //prevent Navigation Other  Alarm   if any Snooze found
+    //Prevent Navigation Upcoming Alarm if Already any Snooze found
     if ( AlarmSharedPrefs.isSnoozeState&& AlarmSharedPrefs.getSnoozeId != 0 &&
         AlarmSharedPrefs.getSnoozeId != id ) {
      
       await scheduler.stopAlarm(id);
        isNavigationAllowed=false;
     }
-//prevent incoming Alarm Navigation if There is Already Alarm found
+//Prevent incoming Alarm Navigation if There is Already Alarm found
     if (AlarmSharedPrefs.isRingingState&&AlarmSharedPrefs.getRingingId != id ) {
      
       await scheduler.stopAlarm(id);
@@ -139,5 +137,9 @@ class AlarmController {
     return isNavigationAllowed;
   }
 
+//Deal with Sounds Storage
+Stream<List<Map<String,dynamic>>> get streamSounds=> alarmService.watchAlarmSounds();
+Future<void>  addSound(String path) async=> alarmService.addSound(path);
+Future<void>  deleteSound(int id) async=> alarmService.removeSound(id);
 
 }

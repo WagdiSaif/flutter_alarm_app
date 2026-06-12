@@ -2,10 +2,15 @@ import 'dart:async';
 import 'package:alarmapp/core/data/models/timer_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-
 class TimerNotifier extends StateNotifier<TimerState> {
-  TimerNotifier() : super(TimerState(selectedDuration: const Duration(minutes: 5), remaining: Duration.zero, isRunning: false));
+  TimerNotifier()
+    : super(
+        TimerState(
+          selectedDuration: const Duration(minutes: 5),
+          remaining: Duration.zero,
+          isRunning: false,
+        ),
+      );
 
   Timer? _timer;
 
@@ -19,7 +24,9 @@ class TimerNotifier extends StateNotifier<TimerState> {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (state.remaining.inSeconds > 0) {
-        state = state.copyWith(remaining: state.remaining - const Duration(seconds: 1));
+        state = state.copyWith(
+          remaining: state.remaining - const Duration(seconds: 1),
+        );
       } else {
         _finish();
       }
@@ -33,10 +40,7 @@ class TimerNotifier extends StateNotifier<TimerState> {
 
   void reset() {
     _timer?.cancel();
-    state = state.copyWith(
-      remaining: Duration.zero,
-      isRunning: false,
-    );
+    state = state.copyWith(remaining: Duration.zero, isRunning: false);
   }
 
   void selectPreset(Duration duration) {
@@ -51,7 +55,6 @@ class TimerNotifier extends StateNotifier<TimerState> {
   void _finish() {
     _timer?.cancel();
     state = state.copyWith(isRunning: false);
-    // Optional: trigger a callback or notification
   }
 
   @override

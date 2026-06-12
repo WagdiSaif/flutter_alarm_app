@@ -10,14 +10,17 @@ import 'package:drift/drift.dart';
 
 import 'package:rxdart/rxdart.dart';
 
-class ImpAlarmRepository implements AlarmRepository {
+class ImplAlarmRepository implements AlarmRepository {
   final AlarmDatabase db;
-  ImpAlarmRepository(this.db);
+  ImplAlarmRepository(this.db);
   @override
   Future<void> saveAlarm(AlarmModel alarmDetails) async {
     try {
       List<AlarmDaysTableCompanion> repeatDays = [];
       final alarm = AlarmsTableCompanion(
+        soundPath: Value(alarmDetails.soundPath),
+        vibrate: Value(alarmDetails.vibrate),
+        
         isEnabled: Value(alarmDetails.isEnabled),
         firedTimeMinutes: Value(alarmDetails.firedTime.toMinutes),
         name: Value(alarmDetails.name),
@@ -169,6 +172,7 @@ class ImpAlarmRepository implements AlarmRepository {
           //  await db.fetchAlarmRepeatedDays(alarm.alarmId);
          
           var allAlarms = AlarmModel(
+            name: alarm.name,
             alarmId: alarm.alarmId,
             firedTime: alarm.firedTimeMinutes.toTimeOfDay,
             nextTrigger: alarm.nextTrigger.toLocalTz,
@@ -190,7 +194,9 @@ class ImpAlarmRepository implements AlarmRepository {
   }
 
    AlarmModel extractRepeatDays(List<AlarmDaysTableData> alarmRepeatDays, AlarmsTableData alarm, AlarmModel allAlarms) {
-      if (alarmRepeatDays.isNotEmpty) {
+      if (alarmRepeatDays.isEmpty) {
+         return allAlarms;
+      }
      
         final alarmDays = alarmRepeatDays.where((d)=>d.alarmId==alarm.alarmId).toList();
         if(alarmDays.isNotEmpty){
@@ -204,7 +210,7 @@ class ImpAlarmRepository implements AlarmRepository {
            )
            .toList();
        allAlarms=allAlarms.copyWith(alarmDaysModel: days);
-     }}
+     }
      return allAlarms;
    }
 
@@ -218,6 +224,8 @@ class ImpAlarmRepository implements AlarmRepository {
         activeAlarms.map((alarm) async {
        
           var allAlarms = AlarmModel(
+         
+            name: alarm.name,
             alarmId: alarm.alarmId,
             firedTime: alarm.firedTimeMinutes.toTimeOfDay,
             nextTrigger: alarm.nextTrigger.toLocalTz,
@@ -273,5 +281,35 @@ class ImpAlarmRepository implements AlarmRepository {
     } catch (_) {
       rethrow;
     }
+  }
+  
+  @override
+  Future<void> addAlarmSound(String soundPath)async {
+ try {
+  final sound=AlarmSoundsTableCompanion( soundFilePath: Value(soundPath), createDateTime: Value(DateTime.now().toLocalTz));
+  await db.insertSound(sound);
+ } catch (_) {
+   rethrow;
+ }
+  }
+  
+  @override
+  Stream<List<Map<String, dynamic>>> alarmsSlounds() {
+ final sounds= db.watchAlarmSounds();
+
+final data= sounds.map((s)=>s.map((sound)=><String,dynamic>{'id':sound.id,'path' :sound.soundFilePath,'createDateTime': sound.createDateTime} ).toList() );
+
+return data;
+  }
+  
+  @override
+  Future<void> removeSoundById(int id)async {
+
+ try {
+  
+  await db.deleteSound(id);
+ } catch (_) {
+   rethrow;
+ }
   }
 }

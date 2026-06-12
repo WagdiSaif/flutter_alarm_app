@@ -16,12 +16,15 @@ class SizerUitles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final w = MediaQuery.of(context).size.width;
-      final h = MediaQuery.of(context).size.height;
-      SizerModel.initSize(h, w);
-      return builder(context);
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = MediaQuery.of(context).size.width;
+        final h = MediaQuery.of(context).size.height;
+
+        SizerModel.initSize(h, w);
+        return builder(context);
+      },
+    );
   }
 }
 
@@ -30,3 +33,11 @@ extension ResponseSize on num {
 
   double get sw => (SizerModel.width * (this / 100));
 }
+
+
+
+
+
+//------------------
+
+

@@ -5,6 +5,7 @@ import 'package:alarmapp/core/app_theme/app_texts_styles.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/utils/alarm_set.dart';
 import 'package:alarmapp/services/alarm_shared_preference.dart';
+import 'package:alarmapp/sizer.dart';
 
 
 import 'package:alarmapp/ui/stopwatch_screen.dart';
@@ -24,12 +25,16 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final List<BottomNavigationBarItem> _bottomNavigationItems = const [
-    BottomNavigationBarItem(icon: Icon(Icons.alarm), label: 'Alarms'),
-    BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Timer'),
 
-    BottomNavigationBarItem(icon: Icon(Icons.stop_circle), label: 'Stopwatch'),
-  ];
+    final List<BottomNavigationBarItem> _bottomNavigationItems =  [
+    BottomNavigationBarItem(icon: Icon(Icons.alarm,),label: "Alarm",
+    ),
+    BottomNavigationBarItem(icon: Icon(Icons.timer),label: "Timer"),
+
+    BottomNavigationBarItem(icon: Icon(Icons.stop_circle),label: "StopWatch"),
+    ]
+  ;
+
 
   final List<Widget> _pages = [
     const AddAlarmScreen(),
@@ -66,6 +71,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await AlarmSharedPrefs.setAlarmState(ringing, id);
 
     if (!context.mounted) return;
+
     Navigator.of(context)
         .pushNamed(
           '/ringingScreen',
@@ -94,9 +100,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onAlarmRinging(event.alarms.first, context);
     });
 
-    Future.microtask(() async {
-      await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
-    });
+WidgetsBinding.instance.addPostFrameCallback((_)async{
+   //await Future.delayed(const Duration(milliseconds: 100));
+
+ await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
+});
+    // Future.microtask(() async {
+    //   await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
+    // });
   }
 
   @override
@@ -109,22 +120,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(pageIndexProvider);
 
+
     return Scaffold(
+     
       backgroundColor: AppColors.backgroundDark,
-      body: _pages[currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentIndex,
-        onTap: (index) => ref.read(pageIndexProvider.notifier).state = index,
-        items: _bottomNavigationItems,
-        backgroundColor: AppColors.surfaceDark,
-        selectedItemColor: AppColors.primaryBlue,
-        unselectedItemColor: AppColors.textDisabled,
-        showUnselectedLabels: true,
-        elevation: 8,
-        selectedLabelStyle: AppTextStyles.labelMedium,
-        unselectedLabelStyle: AppTextStyles.labelMedium,
-      ),
-    );
+      body: 
+    
+              
+            _pages[currentIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              currentIndex: currentIndex,
+              onTap: (index) => ref.read(pageIndexProvider.notifier).state = index,
+              items: _bottomNavigationItems,
+              backgroundColor: AppColors.surfaceDark,
+              selectedItemColor: AppColors.primaryBlue,
+              unselectedItemColor: AppColors.textDisabled,
+              showUnselectedLabels: true,
+              elevation: 8,
+              selectedLabelStyle: AppTextStyles.labelMedium,
+              unselectedLabelStyle: AppTextStyles.labelMedium,
+            ),
+  
+      
+      );
   }
 }

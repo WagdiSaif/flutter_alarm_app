@@ -1,6 +1,6 @@
 import 'package:alarmapp/core/data/models/alarm_model.dart';
 
-abstract class AlarmRepository {
+abstract interface class AlarmRepository {
   Future<void> saveAlarm(AlarmModel alarm);
   Stream<List<AlarmModel>> alarmsStream();
   Future<List<AlarmModel>> fetchAllAlarms();
@@ -9,4 +9,7 @@ abstract class AlarmRepository {
   Future<void> saveAllAlarms(List<AlarmModel> alarm);
   Future<int> removeAlarmById(int alarmId);
   Future<void> updateAlarm(AlarmModel alarm);
+  Stream<List<Map<String, dynamic>>> alarmsSlounds();
+  Future<void> removeSoundById(int alarmId);
+  Future<void> addAlarmSound(String soundPath);
 }

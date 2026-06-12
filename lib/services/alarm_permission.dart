@@ -1,53 +1,41 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 
 class AlarmPermission {
-  // static Future<void> checkBatteryOptimizationDisabled() async {
-  //   bool? isAutoStartEnabled =
-  //       await DisableBatteryOptimization.isAutoStartEnabled;
-  //   if (!(isAutoStartEnabled ?? false)) {
-  //     await DisableBatteryOptimization.showEnableAutoStartSettings(
-  //       "Enable Auto Start",
-  //       "Follow the steps and enable the auto start of this app",
-  //     );
-  //   }
-  // }
+  static Future<bool> checkBatteryOptimizationDisabled() async {
+    PermissionStatus status =
+        await Permission.ignoreBatteryOptimizations.status;
 
-  //  Future<bool?> androidRequestNotifictionPermission()async{
-  //   FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.hasNotificationPolicyAccess();
-  // final isAllow=   await FlutterLocalNotificationsPlugin()
-  //         .resolvePlatformSpecificImplementation<
-  //           AndroidFlutterLocalNotificationsPlugin
-  //         >()
-  //         ?.requestNotificationsPermission();
+    if (status.isDenied) {
+      status = await Permission.ignoreBatteryOptimizations.request();
+    }
 
-  // return isAllow;
-  // }
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+
+    return status.isGranted;
+  }
+
   static Future<bool> requestNotificationPermission() async {
-    final status = await Permission.notification.status;
+    PermissionStatus status = await Permission.notification.status;
 
     if (status.isGranted) {
       return true;
     }
-    if (status.isPermanentlyDenied || status.isLimited) {
+    if (status.isPermanentlyDenied ) {
       return await openAppSettings();
     }
 
-    final result = await Permission.notification.request();
-     if (await Permission.criticalAlerts.isDenied) {
-    await Permission.criticalAlerts.request();
-  }
+    status = await Permission.notification.request();
 
-    return result.isGranted;
+    return status.isGranted;
   }
 
   static Future<bool> ensureExactAlarmPermission() async {
-    // For Android 12+
     if (await Permission.scheduleExactAlarm.isGranted) return true;
 
-    // Check if we can request
     final status = await Permission.scheduleExactAlarm.status;
 
     if (status.isPermanentlyDenied) {
@@ -59,8 +47,8 @@ class AlarmPermission {
     return result.isGranted;
   }
 
-  static void showPermissionHelpDialog(BuildContext context) {
-    showDialog(
+  static Future<void> showPermissionHelpDialog(BuildContext context) async {
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Permissions Required"),
@@ -74,8 +62,10 @@ class AlarmPermission {
           ),
           ElevatedButton(
             onPressed: () async {
-              Navigator.pop(context);
               await openAppSettings();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
             },
             child: const Text("Open Settings"),
           ),

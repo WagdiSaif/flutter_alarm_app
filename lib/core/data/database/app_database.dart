@@ -1,23 +1,23 @@
-
 import 'dart:async';
 
 import 'package:alarmapp/core/exceptions/database_exceptions.dart';
 import 'package:alarmapp/core/data/database/tables/alarms_table.dart';
 
 import 'package:drift/drift.dart';
-import 'package:alarmapp/helper/constants.dart';
+import 'package:alarmapp/core/constant/constant.dart';
 import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:alarmapp/core/enum/enums.dart';
 
 import 'tables/alarm_days_table.dart';
+import 'tables/alarm_sounds_table.dart';
 
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [AlarmsTable, AlarmDaysTable],
-) // To inform The generator class
+  tables: [AlarmsTable, AlarmDaysTable, AlarmSoundsTable],
+) 
 class AlarmDatabase extends _$AlarmDatabase {
   AlarmDatabase() : super(driftDatabase(name: 'alarm_db'));
 
@@ -25,10 +25,10 @@ class AlarmDatabase extends _$AlarmDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
     onUpgrade: (m, from, to) async {
-      debugPrint('Upgrading database from $from to $to');
+      
     },
     beforeOpen: (details) async {
-      debugPrint('Opening database version ${details.versionNow}');
+ 
     },
   );
 
@@ -107,14 +107,12 @@ class AlarmDatabase extends _$AlarmDatabase {
         await (delete(
           alarmDaysTable,
         )..where((tbl) => tbl.alarmId.equals(alarm.alarmId.value))).go();
-       await into(alarmsTable).insertOnConflictUpdate(alarm);
+        await into(alarmsTable).insertOnConflictUpdate(alarm);
 
-     await (delete(
+        await (delete(
           alarmDaysTable,
         )..where((tbl) => tbl.alarmId.equals(alarm.alarmId.value))).go();
 
-        
- 
         if (repeatedDay.isNotEmpty) {
           await batch((b) {
             b.insertAll(alarmDaysTable, repeatedDay);
@@ -129,15 +127,13 @@ class AlarmDatabase extends _$AlarmDatabase {
   }
 
   Future<List<AlarmDaysTableData>?> getAlarmDaysByAlarmId(int alarmId) {
-    return   (select(
+    return (select(
       alarmDaysTable,
     )..where((t) => t.alarmId.equals(alarmId))).get();
   }
 
   Future<List<AlarmDaysTableData>> getAllAlarmsDays() {
-    return  (select(
-      alarmDaysTable,
-    ).get());
+    return (select(alarmDaysTable).get());
   }
 
   Future<List<AlarmsTableData>> getAllAlarms() async {
@@ -165,8 +161,8 @@ class AlarmDatabase extends _$AlarmDatabase {
     return select(alarmDaysTable).watch();
   }
 
-  Future<int> upsertAlarm(AlarmsTableCompanion alarm) {
-    return into(alarmsTable).insertOnConflictUpdate(alarm);
+  Future<int> upsertAlarm(AlarmsTableCompanion alarm) async {
+    return await into(alarmsTable).insertOnConflictUpdate(alarm);
   }
 
   //  Delete
@@ -221,5 +217,36 @@ class AlarmDatabase extends _$AlarmDatabase {
 
   void updateAlarmById(int id) async {
     (update((alarmsTable))..where((u) => u.alarmId.equals(id)));
+  }
+
+  //Deal with Alarm Sound Storage in  Local  File Path
+  Future<void> insertSound(AlarmSoundsTableCompanion sound) async {
+    try {
+      await into(alarmSoundsTable).insertOnConflictUpdate(sound);
+    } on SqliteException catch (e, stack) {
+      throw DataBaseFailure(e, stack);
+    } catch (e, stack) {
+      throw UnExcepectedFailure(e, stack);
+    }
+  }
+
+  Future<void> deleteSound(int id) async {
+    try {
+      await (delete(alarmSoundsTable)..where((u) => u.id.equals(id))).go();
+    } on SqliteException catch (e, stack) {
+      throw DataBaseFailure(e, stack);
+    } catch (e, stack) {
+      throw UnExcepectedFailure(e, stack);
+    }
+  }
+
+  Stream<List<AlarmSoundsTableData>> watchAlarmSounds() {
+    return (select(alarmSoundsTable)..orderBy([
+          (d) => OrderingTerm(
+            expression: d.createDateTime,
+            mode: OrderingMode.asc,
+          ),
+        ]))
+        .watch();
   }
 }

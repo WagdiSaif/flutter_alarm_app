@@ -1,5 +1,5 @@
 import 'package:alarmapp/core/enum/enums.dart';
-import 'package:alarmapp/helper/constants.dart';
+import 'package:alarmapp/core/constant/constant.dart';
 import 'package:alarmapp/core/data/models/alarm_days_model.dart';
 
 import 'package:timezone/timezone.dart' as tz;
@@ -79,6 +79,7 @@ class AlarmModel {
     bool? vibrate,
     TimeOfDay? firedTime,
   }) {
+   
     return AlarmModel(
       repeatDays: repeatDays??this.repeatDays,
       firedTime: firedTime ?? this.firedTime,

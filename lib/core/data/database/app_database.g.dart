@@ -874,11 +874,278 @@ class AlarmDaysTableCompanion extends UpdateCompanion<AlarmDaysTableData> {
   }
 }
 
+class $AlarmSoundsTableTable extends AlarmSoundsTable
+    with TableInfo<$AlarmSoundsTableTable, AlarmSoundsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AlarmSoundsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _soundFilePathMeta = const VerificationMeta(
+    'soundFilePath',
+  );
+  @override
+  late final GeneratedColumn<String> soundFilePath = GeneratedColumn<String>(
+    'sound_file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createDateTimeMeta = const VerificationMeta(
+    'createDateTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createDateTime =
+      GeneratedColumn<DateTime>(
+        'create_date_time',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [id, soundFilePath, createDateTime];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'alarm_sounds_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AlarmSoundsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('sound_file_path')) {
+      context.handle(
+        _soundFilePathMeta,
+        soundFilePath.isAcceptableOrUnknown(
+          data['sound_file_path']!,
+          _soundFilePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_soundFilePathMeta);
+    }
+    if (data.containsKey('create_date_time')) {
+      context.handle(
+        _createDateTimeMeta,
+        createDateTime.isAcceptableOrUnknown(
+          data['create_date_time']!,
+          _createDateTimeMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AlarmSoundsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AlarmSoundsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      soundFilePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sound_file_path'],
+      )!,
+      createDateTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}create_date_time'],
+      )!,
+    );
+  }
+
+  @override
+  $AlarmSoundsTableTable createAlias(String alias) {
+    return $AlarmSoundsTableTable(attachedDatabase, alias);
+  }
+}
+
+class AlarmSoundsTableData extends DataClass
+    implements Insertable<AlarmSoundsTableData> {
+  final int id;
+  final String soundFilePath;
+  final DateTime createDateTime;
+  const AlarmSoundsTableData({
+    required this.id,
+    required this.soundFilePath,
+    required this.createDateTime,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['sound_file_path'] = Variable<String>(soundFilePath);
+    map['create_date_time'] = Variable<DateTime>(createDateTime);
+    return map;
+  }
+
+  AlarmSoundsTableCompanion toCompanion(bool nullToAbsent) {
+    return AlarmSoundsTableCompanion(
+      id: Value(id),
+      soundFilePath: Value(soundFilePath),
+      createDateTime: Value(createDateTime),
+    );
+  }
+
+  factory AlarmSoundsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AlarmSoundsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      soundFilePath: serializer.fromJson<String>(json['soundFilePath']),
+      createDateTime: serializer.fromJson<DateTime>(json['createDateTime']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'soundFilePath': serializer.toJson<String>(soundFilePath),
+      'createDateTime': serializer.toJson<DateTime>(createDateTime),
+    };
+  }
+
+  AlarmSoundsTableData copyWith({
+    int? id,
+    String? soundFilePath,
+    DateTime? createDateTime,
+  }) => AlarmSoundsTableData(
+    id: id ?? this.id,
+    soundFilePath: soundFilePath ?? this.soundFilePath,
+    createDateTime: createDateTime ?? this.createDateTime,
+  );
+  AlarmSoundsTableData copyWithCompanion(AlarmSoundsTableCompanion data) {
+    return AlarmSoundsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      soundFilePath: data.soundFilePath.present
+          ? data.soundFilePath.value
+          : this.soundFilePath,
+      createDateTime: data.createDateTime.present
+          ? data.createDateTime.value
+          : this.createDateTime,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmSoundsTableData(')
+          ..write('id: $id, ')
+          ..write('soundFilePath: $soundFilePath, ')
+          ..write('createDateTime: $createDateTime')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, soundFilePath, createDateTime);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AlarmSoundsTableData &&
+          other.id == this.id &&
+          other.soundFilePath == this.soundFilePath &&
+          other.createDateTime == this.createDateTime);
+}
+
+class AlarmSoundsTableCompanion extends UpdateCompanion<AlarmSoundsTableData> {
+  final Value<int> id;
+  final Value<String> soundFilePath;
+  final Value<DateTime> createDateTime;
+  const AlarmSoundsTableCompanion({
+    this.id = const Value.absent(),
+    this.soundFilePath = const Value.absent(),
+    this.createDateTime = const Value.absent(),
+  });
+  AlarmSoundsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String soundFilePath,
+    this.createDateTime = const Value.absent(),
+  }) : soundFilePath = Value(soundFilePath);
+  static Insertable<AlarmSoundsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? soundFilePath,
+    Expression<DateTime>? createDateTime,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (soundFilePath != null) 'sound_file_path': soundFilePath,
+      if (createDateTime != null) 'create_date_time': createDateTime,
+    });
+  }
+
+  AlarmSoundsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? soundFilePath,
+    Value<DateTime>? createDateTime,
+  }) {
+    return AlarmSoundsTableCompanion(
+      id: id ?? this.id,
+      soundFilePath: soundFilePath ?? this.soundFilePath,
+      createDateTime: createDateTime ?? this.createDateTime,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (soundFilePath.present) {
+      map['sound_file_path'] = Variable<String>(soundFilePath.value);
+    }
+    if (createDateTime.present) {
+      map['create_date_time'] = Variable<DateTime>(createDateTime.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmSoundsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('soundFilePath: $soundFilePath, ')
+          ..write('createDateTime: $createDateTime')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AlarmDatabase extends GeneratedDatabase {
   _$AlarmDatabase(QueryExecutor e) : super(e);
   $AlarmDatabaseManager get managers => $AlarmDatabaseManager(this);
   late final $AlarmsTableTable alarmsTable = $AlarmsTableTable(this);
   late final $AlarmDaysTableTable alarmDaysTable = $AlarmDaysTableTable(this);
+  late final $AlarmSoundsTableTable alarmSoundsTable = $AlarmSoundsTableTable(
+    this,
+  );
   late final Index idxNextTrigger = Index(
     'idx_nextTrigger',
     'CREATE INDEX idx_nextTrigger ON alarms_table (next_trigger)',
@@ -894,6 +1161,7 @@ abstract class _$AlarmDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     alarmsTable,
     alarmDaysTable,
+    alarmSoundsTable,
     idxNextTrigger,
     idxEnabledNext,
   ];
@@ -1613,6 +1881,176 @@ typedef $$AlarmDaysTableTableProcessedTableManager =
       AlarmDaysTableData,
       PrefetchHooks Function({bool alarmId})
     >;
+typedef $$AlarmSoundsTableTableCreateCompanionBuilder =
+    AlarmSoundsTableCompanion Function({
+      Value<int> id,
+      required String soundFilePath,
+      Value<DateTime> createDateTime,
+    });
+typedef $$AlarmSoundsTableTableUpdateCompanionBuilder =
+    AlarmSoundsTableCompanion Function({
+      Value<int> id,
+      Value<String> soundFilePath,
+      Value<DateTime> createDateTime,
+    });
+
+class $$AlarmSoundsTableTableFilterComposer
+    extends Composer<_$AlarmDatabase, $AlarmSoundsTableTable> {
+  $$AlarmSoundsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get soundFilePath => $composableBuilder(
+    column: $table.soundFilePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createDateTime => $composableBuilder(
+    column: $table.createDateTime,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AlarmSoundsTableTableOrderingComposer
+    extends Composer<_$AlarmDatabase, $AlarmSoundsTableTable> {
+  $$AlarmSoundsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get soundFilePath => $composableBuilder(
+    column: $table.soundFilePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createDateTime => $composableBuilder(
+    column: $table.createDateTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AlarmSoundsTableTableAnnotationComposer
+    extends Composer<_$AlarmDatabase, $AlarmSoundsTableTable> {
+  $$AlarmSoundsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get soundFilePath => $composableBuilder(
+    column: $table.soundFilePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createDateTime => $composableBuilder(
+    column: $table.createDateTime,
+    builder: (column) => column,
+  );
+}
+
+class $$AlarmSoundsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AlarmDatabase,
+          $AlarmSoundsTableTable,
+          AlarmSoundsTableData,
+          $$AlarmSoundsTableTableFilterComposer,
+          $$AlarmSoundsTableTableOrderingComposer,
+          $$AlarmSoundsTableTableAnnotationComposer,
+          $$AlarmSoundsTableTableCreateCompanionBuilder,
+          $$AlarmSoundsTableTableUpdateCompanionBuilder,
+          (
+            AlarmSoundsTableData,
+            BaseReferences<
+              _$AlarmDatabase,
+              $AlarmSoundsTableTable,
+              AlarmSoundsTableData
+            >,
+          ),
+          AlarmSoundsTableData,
+          PrefetchHooks Function()
+        > {
+  $$AlarmSoundsTableTableTableManager(
+    _$AlarmDatabase db,
+    $AlarmSoundsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AlarmSoundsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AlarmSoundsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AlarmSoundsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> soundFilePath = const Value.absent(),
+                Value<DateTime> createDateTime = const Value.absent(),
+              }) => AlarmSoundsTableCompanion(
+                id: id,
+                soundFilePath: soundFilePath,
+                createDateTime: createDateTime,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String soundFilePath,
+                Value<DateTime> createDateTime = const Value.absent(),
+              }) => AlarmSoundsTableCompanion.insert(
+                id: id,
+                soundFilePath: soundFilePath,
+                createDateTime: createDateTime,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AlarmSoundsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AlarmDatabase,
+      $AlarmSoundsTableTable,
+      AlarmSoundsTableData,
+      $$AlarmSoundsTableTableFilterComposer,
+      $$AlarmSoundsTableTableOrderingComposer,
+      $$AlarmSoundsTableTableAnnotationComposer,
+      $$AlarmSoundsTableTableCreateCompanionBuilder,
+      $$AlarmSoundsTableTableUpdateCompanionBuilder,
+      (
+        AlarmSoundsTableData,
+        BaseReferences<
+          _$AlarmDatabase,
+          $AlarmSoundsTableTable,
+          AlarmSoundsTableData
+        >,
+      ),
+      AlarmSoundsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AlarmDatabaseManager {
   final _$AlarmDatabase _db;
@@ -1621,4 +2059,6 @@ class $AlarmDatabaseManager {
       $$AlarmsTableTableTableManager(_db, _db.alarmsTable);
   $$AlarmDaysTableTableTableManager get alarmDaysTable =>
       $$AlarmDaysTableTableTableManager(_db, _db.alarmDaysTable);
+  $$AlarmSoundsTableTableTableManager get alarmSoundsTable =>
+      $$AlarmSoundsTableTableTableManager(_db, _db.alarmSoundsTable);
 }
