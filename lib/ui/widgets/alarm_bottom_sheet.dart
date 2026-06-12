@@ -25,7 +25,7 @@ StateProvider<String> selectedSoundPathProvider = StateProvider<String>(
   (ref) => AppConstants.defaultSound,
 );
 //vibrate
-StateProvider<double> maxChildSizeProvider = StateProvider<double>((ref) => 0.70);
+
 StateProvider<TimeOfDay> _timeAlarmUpdate = StateProvider<TimeOfDay>(
   (ref) => TimeOfDay.now(),
 );
@@ -289,9 +289,7 @@ GlobalKey globalKey=GlobalKey();
                                                 onSubmitted: (value) {
                                               
                                                   _focusNode.unfocus();
-                                            final renderBox=     globalKey.currentContext?.findRenderObject() as RenderBox;
-                    ref.read(maxChildSizeProvider.notifier).state=renderBox.size.height;
-                                       
+                          
                                                 },
                                                 onEditingComplete: () {},
                                                 onTapUpOutside: (event) {
@@ -310,8 +308,7 @@ GlobalKey globalKey=GlobalKey();
                                                   contentPadding: EdgeInsets.zero,
                                                 ),
                                                 onTap: () {
-                                                    final renderBox=     globalKey.currentContext?.findRenderObject() as RenderBox;
-                    ref.read(maxChildSizeProvider.notifier).state=renderBox.size.height;
+                                      
                                                 },
                                 
                                                 controller: _nameAlarmController,
