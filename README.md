@@ -1,8 +1,11 @@
 # Flutter Alarm App
 
-A new Flutter project.
+Flutter App for android and IOS provide support repeat Days vibration
 
-## Getting Started
+## Futures
+* Support IOS & android
+* Schedule Alarm
+
 
 This project is a starting point for a Flutter application.
 
