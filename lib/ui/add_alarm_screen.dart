@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:alarmapp/core/app_theme/app_colors.dart';
-import 'package:alarmapp/core/data/database/app_database.dart';
+import 'package:alarmapp/data/database/app_database.dart';
 
 import 'package:alarmapp/core/utils/functions.dart';
-import 'package:alarmapp/core/data/repositories/alarm_repository.dart';
-import 'package:alarmapp/core/data/repositories/impl/impl_alarm_repository.dart';
+import 'package:alarmapp/data/repositories/alarm_repository.dart';
+import 'package:alarmapp/data/repositories/impl/impl_alarm_repository.dart';
 import 'package:alarmapp/sizer.dart';
-import 'package:alarmapp/ui/widgets/helper_message.dart';
-import 'package:alarmapp/core/data/models/alarm_model.dart';
+import 'package:alarmapp/ui/widgets/permissoin_dialog.dart';
+import 'package:alarmapp/ui/widgets/toast_message.dart';
+import 'package:alarmapp/data/models/alarm_model.dart';
 
 import 'package:alarmapp/providers/alarm_controller.dart';
 import 'package:alarmapp/services/time_manager.dart';
@@ -20,6 +21,7 @@ import 'package:alarmapp/ui/widgets/alarm_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -76,8 +78,6 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return SafeArea(
       child: Column(
         children: [
@@ -109,24 +109,25 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                       child: Stack(
                         children: [
                           Consumer(
-                            builder: (context,ref,w) {
-    final alarmsData = ref.watch(alarmProvider);
+                            builder: (context, ref, w) {
+                              final alarmsData = ref.watch(alarmProvider);
                               return alarmsData.when(
                                 data: (alarms) {
                                   if (alarms.isEmpty) {
-                                    return _buildEmptyAlarms();
+                                    return _buildEmptyState();
                                   }
                                   return SingleChildScrollView(
-                                    padding: EdgeInsets.only(bottom: 15),
+                                    padding: EdgeInsets.only(bottom: 16.sw,),
                                     child: Column(
                                       children: alarms
                                           .map(
                                             (alarm) => Dismissible(
-                                              confirmDismiss: (direction) async {
-                                                //  await  direction.
-                                                
-                                                return true;
-                                              },
+                                              confirmDismiss:
+                                                  (direction) async {
+                                                    //  await  direction.
+
+                                                    return true;
+                                                  },
                                               onDismissed: (direction) {
                                                 debugPrint("Hello dismissble");
                                               },
@@ -135,30 +136,35 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                                     .toString(),
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(9.0),
+                                                padding: const EdgeInsets.all(
+                                                  9.0,
+                                                ),
                                                 child: Container(
                                                   constraints: BoxConstraints(
                                                     maxHeight: 17.sh,
                                                     minHeight: 15.sh,
                                                   ),
-                              
+
                                                   padding: EdgeInsets.all(7),
-                              
+
                                                   decoration: BoxDecoration(
                                                     color: alarm.isEnabled
                                                         ? AppColors.containerBg
                                                         : AppColors.surfaceDark,
-                              
+
                                                     borderRadius:
-                                                        BorderRadius.circular(12),
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                   ),
-                              
+
                                                   child: InkWell(
                                                     onTap: () async {
                                                       showModalBottomSheet(
                                                         useSafeArea: false,
                                                         showDragHandle: true,
-                                                        isScrollControlled: true,
+                                                        isScrollControlled:
+                                                            true,
                                                         context: context,
                                                         builder: (context) {
                                                           return AlarmBottomSheet(
@@ -169,25 +175,29 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                                     },
                                                     child: Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                           _checkNextTriggerDay(
                                                             alarm,
                                                           ),
-                                                          style: Theme.of(
-                                                            context,
-                                                          ).textTheme.titleLarge,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .titleLarge,
                                                         ),
-                              
+
                                                         Text(
                                                           //Alarm Name------------=
                                                           maxLines: 2,
-                                                          overflow:
-                                                              TextOverflow.ellipsis,
-                                                          alarm.name,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          alarm.name.isEmpty
+                                                              ? 'Alarm'
+                                                              : alarm.name,
                                                         ),
-                              
+
                                                         Expanded(
                                                           child: Row(
                                                             mainAxisAlignment:
@@ -204,24 +214,23 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                                                 crossAxisAlignment:
                                                                     CrossAxisAlignment
                                                                         .baseline,
-                                                          
+
                                                                 children: [
                                                                   Text(
                                                                     TimeManager.formatTimeShow(
-                                                                      alarm.firedTime,
+                                                                      alarm
+                                                                          .firedTime,
                                                                       context,
                                                                     ),
-                                                                    style:
-                                                                        Theme.of(
-                                                                              context,
-                                                                            )
-                                                                            .textTheme
-                                                                            .titleLarge,
+                                                                    style: Theme.of(
+                                                                      context,
+                                                                    ).textTheme.titleLarge,
                                                                   ),
                                                                   Padding(
                                                                     padding:
                                                                         const EdgeInsets.only(
-                                                                          left: 0,
+                                                                          left:
+                                                                              0,
                                                                         ),
                                                                     child: Text(
                                                                       alarm
@@ -234,8 +243,8 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                                                 ],
                                                               ),
                                                               Switch(
-                                                                value:
-                                                                    alarm.isEnabled,
+                                                                value: alarm
+                                                                    .isEnabled,
                                                                 onChanged: (_) async {
                                                                   await ref
                                                                       .read<
@@ -263,9 +272,9 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                   );
                                 },
                                 error: (error, _) => Text('Error:'),
-                                loading: () => _buildEmptyAlarms(),
+                                loading: () => _buildEmptyState(),
                               );
-                            }
+                            },
                           ),
 
                           Positioned(
@@ -305,7 +314,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     );
   }
 
-  Widget _buildEmptyAlarms() {
+  Widget _buildEmptyState() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -319,12 +328,14 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
   //DateTime.now();
 
   String _checkNextTriggerDay(AlarmModel alarm) {
-    final now = tz.TZDateTime.now(tz.local);
-
     if (alarm.isEnabled && alarm.alarmDaysModel.isEmpty) {
-      if (now.day < alarm.nextTrigger.day) {
+      if (TimeManager.isAfterDaysFromToday(alarm.nextTrigger, day: 1)) {
+        return formateDateMD(alarm.nextTrigger).toString();
+      }
+      if (TimeManager.isAfterDaysFromToday(alarm.nextTrigger, day: 0)) {
         return 'Tomorrow';
       }
+
       return 'Today';
     } else if (alarm.isEnabled && alarm.alarmDaysModel.isNotEmpty) {
       final weakDayAlarms = alarm.alarmDaysModel
@@ -351,11 +362,9 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
       final fireAt = TimeManager.calculateNextTriggerTime(selectedTime);
       if (!context.mounted) return;
       final alarmNote =
-          '${getAlarmDay(fireAt.weekday).shortName}  ${TimeManager.formatTimeShow(selectedTime, context)} ${selectedTime.period.name.toUpperCase()}. Swip to Stop';
-      bool allowed = false;
+          '${getAlarmDay(fireAt.weekday).shortName}  ${TimeManager.formatTimeShow(selectedTime, context)} ${selectedTime.period.name.toUpperCase()}. Click to Stop';
 
-      allowed = await _requestPermissions(context);
-  
+      bool allowed = await _requestPermissions(context);
 
       if (allowed) {
         final isAdded = await ref
@@ -366,13 +375,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
               fireAt: fireAt,
             );
         if (isAdded) {
-          final nowDateTime = tz.TZDateTime.now(tz.local);
-          final hours = fireAt.difference(nowDateTime).inHours;
-          final messageHuors = hours > 0 ? '${hours}hours and' : null;
-
-          HelperMessage.showToastSetAlarmMessage(
-            'Alarm Set for ${messageHuors ?? ''} ${fireAt.difference(nowDateTime).inMinutes} minutes from now',
-          );
+          ToastMessage.showToastNextTriggerTime(fireAt);
         }
         debugPrint('added is $isAdded');
       }
@@ -384,34 +387,31 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
       return _requestIOSPermissions(context);
     }
 
-    final hasExact = await Permission.scheduleExactAlarm.isGranted;
-    final hasNotif = await Permission.notification.isGranted;
+    final initialExact = await Permission.scheduleExactAlarm.isGranted;
+    final initailNotif = await Permission.notification.isGranted;
 
-    if (hasExact && hasNotif) {
+    if (initialExact && initailNotif) {
       return true;
     }
 
     if (!context.mounted) return false;
-    final result = await _showPermissionDialog(context);
+    final result = await PermissoinDialog.showPermissionDialog(context);
 
     if (result != true) {
       return false;
     }
 
     if (!context.mounted) return false;
-    bool finalNotif = await AlarmPermission.requestNotificationPermission();
+    final finalNotif = await AlarmPermission.requestNotificationPermission();
+    final finalExact = await Permission.scheduleExactAlarm.isGranted;
     bool hasBatteyOptimization =
         await Permission.ignoreBatteryOptimizations.isGranted;
     if (!hasBatteyOptimization) {
       hasBatteyOptimization =
-          await AlarmPermission.checkBatteryOptimizationDisabled();//Only for Android 
+          await AlarmPermission.checkBatteryOptimizationDisabled(); //Only for Android
     }
 
-    debugPrint(
-      'Final requestNotificationPermission - Notif: $finalNotif, hasBatteyOptimization $hasBatteyOptimization:',
-    );
-
-    return finalNotif;
+    return finalNotif && finalExact && hasBatteyOptimization;
   }
 
   Future<bool> _requestIOSPermissions(BuildContext context) async {
@@ -420,17 +420,17 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
 
     if (status.isPermanentlyDenied) {
       if (!context.mounted) return false;
-      final result = await _showPermissionDialog(context);
+      final result = await PermissoinDialog.showPermissionDialog(context);
 
       if (result != true) return false;
       if (!context.mounted) return false;
-      await AlarmPermission.showPermissionHelpDialog(context);
+      await PermissoinDialog.showPermissionOpenSettingsDialog(context);
       status = await Permission.notification.status;
 
       if (status.isGranted) {
-        await _checkAndRequestCriticalAlerts();
         return status.isGranted;
       }
+      return false;
     } //Here OpenSetting
 
     if (status.isDenied ||
@@ -441,70 +441,10 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     }
 
     //
-    if (status.isGranted) {
-      await _checkAndRequestCriticalAlerts();
+    if (!status.isGranted) {
+      return false;
     }
 
     return status.isGranted;
-  }
-
-  Future<void> _checkAndRequestCriticalAlerts() async {
-    if (await Permission.criticalAlerts.isDenied) {
-      await Permission.criticalAlerts.request();
-    }
-  }
-
-  Future<bool?> _showPermissionDialog(BuildContext context) async {
-    final result = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Permissions Required"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "This app needs the following permissions to work properly:",
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Icon(Icons.notifications, color: Colors.blue),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      "• Notifications - to alert you when alarm rings",
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.alarm, color: Colors.blue),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text("• Exact alarms - to ring at precise time"),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text("Continue"),
-            ),
-          ],
-        );
-      },
-    );
-    return result;
   }
 }

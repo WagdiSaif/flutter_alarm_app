@@ -8,9 +8,9 @@ import 'package:alarmapp/core/exceptions/database_exceptions.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:alarmapp/core/enum/enums.dart';
-import 'package:alarmapp/core/data/models/alarm_days_model.dart';
+import 'package:alarmapp/data/models/alarm_days_model.dart';
 
-import 'package:alarmapp/core/data/models/alarm_model.dart';
+import 'package:alarmapp/data/models/alarm_model.dart';
 import 'package:alarmapp/services/time_manager.dart';
 
 import 'package:flutter/material.dart';
@@ -35,9 +35,9 @@ class AlarmScheduler {
       warningNotificationOnKill: Platform.isIOS,
       androidFullScreenIntent: true,
       volumeSettings: VolumeSettings.fade(
-        volume: 0.8,
+        volume: 0.7,
         fadeDuration: const Duration(seconds: 5),
-        volumeEnforced: true,
+        // volumeEnforced: true,
       ),
       notificationSettings: NotificationSettings(
         title: alarm.title,
@@ -106,8 +106,8 @@ class AlarmScheduler {
   Future<List<AlarmSettings>> getActiveAlarms() async {
     try {
       return await Alarm.getAlarms();
-    } catch (e,stack) {
-      log(' Failed to get active alarms: $e',stackTrace: stack);
+    } catch (e, stack) {
+      log(' Failed to get active alarms: $e', stackTrace: stack);
       return [];
     }
   }
@@ -130,7 +130,6 @@ class AlarmScheduler {
     //Here  restores Alarms for Rechedule
     try {
       if (await isRinging || activeAlarms.isEmpty) {
-      
         return activeAlarms;
       }
 
@@ -333,7 +332,7 @@ class AlarmScheduler {
     TimeOfDay alarmTime,
   ) {
     final now = tz.TZDateTime.now(tz.local);
-  
+
     for (int i = 0; i < 7; i++) {
       final candidate = tz.TZDateTime(
         tz.local,
@@ -370,7 +369,14 @@ class AlarmScheduler {
     );
     if (nextTrigger.isBefore(now)) {
       //Handle edge case,  same day but missed AM/PM
-      return tz.TZDateTime.from(nextTrigger, tz.local).add(Duration(days: 7));
+      return tz.TZDateTime(
+        tz.local,
+        nextTrigger.year,
+        nextTrigger.month,
+        nextTrigger.day + 7,
+        alarmTime.hour,
+        alarmTime.minute,
+      );
     }
     return nextTrigger;
   }

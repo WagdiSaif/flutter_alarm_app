@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'dart:developer';
 
-import 'package:alarmapp/core/data/repositories/alarm_repository.dart';
+import 'package:alarmapp/data/repositories/alarm_repository.dart';
 
-import 'package:alarmapp/core/data/models/alarm_model.dart';
+import 'package:alarmapp/data/models/alarm_model.dart';
 
 class AlarmService {
   final AlarmRepository _alarmRepository;

@@ -5,7 +5,6 @@ import 'package:alarmapp/core/app_theme/app_texts_styles.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/utils/alarm_set.dart';
 import 'package:alarmapp/services/alarm_shared_preference.dart';
-import 'package:alarmapp/sizer.dart';
 
 
 import 'package:alarmapp/ui/stopwatch_screen.dart';
@@ -101,13 +100,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
 
 WidgetsBinding.instance.addPostFrameCallback((_)async{
-   //await Future.delayed(const Duration(milliseconds: 100));
+
 
  await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
 });
-    // Future.microtask(() async {
-    //   await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
-    // });
+
   }
 
   @override

@@ -1,9 +1,9 @@
-import 'package:alarmapp/core/data/database/app_database.dart';
+import 'package:alarmapp/data/database/app_database.dart';
 import 'package:alarmapp/core/extensions.dart';
-import 'package:alarmapp/core/data/models/alarm_days_model.dart';
-import 'package:alarmapp/core/data/models/alarm_model.dart';
+import 'package:alarmapp/data/models/alarm_days_model.dart';
+import 'package:alarmapp/data/models/alarm_model.dart';
 
-import 'package:alarmapp/core/data/repositories/alarm_repository.dart';
+import 'package:alarmapp/data/repositories/alarm_repository.dart';
 
 import 'package:drift/drift.dart';
 

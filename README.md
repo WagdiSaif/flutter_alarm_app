@@ -6,9 +6,13 @@ Flutter App for android and IOS provide support repeat Days vibration
 * Support IOS & android
 * Schedule Alarm
 
- `Good Head `
-
-
+## Project Structure 
+lib/
+|---core/
+|      |-App Theme
+|      |-consatans
+|      |-data
+|   
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:

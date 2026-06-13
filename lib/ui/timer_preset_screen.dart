@@ -1,6 +1,6 @@
 import 'package:alarmapp/sizer.dart';
 import 'package:alarmapp/core/app_theme/app_texts_styles.dart';
-import 'package:alarmapp/core/data/models/timer_state.dart';
+import 'package:alarmapp/data/models/timer_state.dart';
 import 'package:alarmapp/providers/timer_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

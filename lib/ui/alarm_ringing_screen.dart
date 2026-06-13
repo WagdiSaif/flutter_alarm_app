@@ -1,4 +1,3 @@
-
 import 'package:alarmapp/core/app_theme/app_theme.dart';
 import 'package:alarmapp/core/extensions.dart';
 import 'package:alarmapp/sizer.dart';
@@ -40,17 +39,12 @@ class RingingAlarmScreen extends ConsumerWidget {
             ),
 
             const SizedBox(height: 16),
-            Text(
-              name,
-              style: AppTextStyles.bodySmall,
-            
-            ),
+            Text(name, style: AppTextStyles.bodySmall),
 
             const SizedBox(height: 40),
             Text(
               TimeManager.formatTimeShow(firedTime ?? TimeOfDay.now(), context),
               style: AppTextStyles.headlineLarge,
-           
             ),
             const SizedBox(height: 80),
             Row(
@@ -76,9 +70,10 @@ class RingingAlarmScreen extends ConsumerWidget {
                     if (alarmId == null) return;
 
                     await ref.read(schedulerProvider).stopAlarm(alarmId);
-
-                    await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
-                  
+                
+                    await ref
+                        .read(alarmControllerProvider)
+                        .rescheduleActiveAlarms();
 
                     if (context.mounted) Navigator.pop(context);
                   },

@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:alarmapp/core/exceptions/database_exceptions.dart';
-import 'package:alarmapp/core/data/database/tables/alarms_table.dart';
+import 'package:alarmapp/data/database/tables/alarms_table.dart';
 
 import 'package:drift/drift.dart';
-import 'package:alarmapp/core/constant/constant.dart';
+import 'package:alarmapp/core/constants/constant.dart';
 import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:alarmapp/core/enum/enums.dart';
 
 import 'tables/alarm_days_table.dart';

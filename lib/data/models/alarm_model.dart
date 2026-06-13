@@ -1,6 +1,6 @@
 import 'package:alarmapp/core/enum/enums.dart';
-import 'package:alarmapp/core/constant/constant.dart';
-import 'package:alarmapp/core/data/models/alarm_days_model.dart';
+import 'package:alarmapp/core/constants/constant.dart';
+import 'package:alarmapp/data/models/alarm_days_model.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class AlarmModel {
 
  
     this.vibrate = false,
-    this.name = 'Alarm',
+    this.name = '',
     this.isEnabled = true,
     required this.createdDate,
 
