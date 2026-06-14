@@ -33,6 +33,7 @@ ios/.symlinks/
 .pub/
 /build/
 /coverage/
+.vscode/
 
 # Symbolication related
 app.*.symbols

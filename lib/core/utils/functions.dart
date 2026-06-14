@@ -1,7 +1,7 @@
 import 'package:alarmapp/core/enum/enums.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
-import 'package:timezone/timezone.dart' as tz;
+
 
 
 AlarmDays getAlarmDay(int weekday) {

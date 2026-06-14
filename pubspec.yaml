@@ -43,7 +43,6 @@ dependencies:
   timezone: ^0.10.1
   just_audio: ^0.10.5
   audio_session: ^0.2.2
-  # alarm: ^5.2.1
   drift_flutter: ^0.2.8
   drift: ^2.31.0
   rxdart: ^0.28.0
@@ -51,6 +50,9 @@ dependencies:
   file_picker: ^11.0.2
   alarm: ^5.4.1
   intl: ^0.20.2
+  path: ^1.9.1
+  flutter_native_splash: ^2.4.7
+  flutter_foreground_task: ^9.2.2
 
 dev_dependencies:
   flutter_test:
@@ -59,17 +61,29 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   build_runner: 2.10.5
   drift_dev: ^2.30.1
+  flutter_launcher_icons: ^0.14.4
+  rename_app: ^1.6.6
 
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+flutter_launcher_icons:
+ android: "launch_icon"
+ ios: true
+ image_path: "assets/images/launch_icon.png"
+ min_sdk_android : 21 
+ background-color: "#0A2332"
 
-# The following section is specific to Flutter packages.
+
+
+flutter_native_splash:
+  android : true
+  ios : true
+  color: "#0A2332"
+  image: "assets/images/launch_icon.png"
+  android_12:
+      image: "assets/images/launch_icon.png"
+      color: "#0A2332"
+
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

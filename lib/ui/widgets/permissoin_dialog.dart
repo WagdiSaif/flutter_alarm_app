@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart' show openAppSettings;
+import 'package:permission_handler/permission_handler.dart'
+    show openAppSettings;
 
 class PermissoinDialog {
-  static Future<void> showPermissionOpenSettingsDialog(BuildContext context) async {
+  static Future<void> showPermissionOpenSettingsDialog(
+    BuildContext context,
+  ) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -16,10 +19,9 @@ class PermissoinDialog {
             child: const Text("Cancel"),
           ),
           ElevatedButton(
-           onPressed: () async {
-  Navigator.pop(context);
-  await openAppSettings();
-
+            onPressed: () async {
+              Navigator.pop(context);
+              await openAppSettings();
             },
             child: const Text("Open Settings"),
           ),
@@ -28,8 +30,7 @@ class PermissoinDialog {
     );
   }
 
-
- static Future<bool?> showPermissionDialog(BuildContext context) async {
+  static Future<bool?> showPermissionDialog(BuildContext context) async {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,

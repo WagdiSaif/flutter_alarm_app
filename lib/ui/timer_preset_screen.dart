@@ -177,14 +177,14 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
               ),
             ),
 
-            // Timer Display with Progress Ring
+       
             Expanded(
               flex: 2,
               child: Center(
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // Background Circle
+                   
                     Container(
                       width: 80.sw,
                       height: 80.sh,
@@ -201,7 +201,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
                       ),
                     ),
 
-                    // Progress Ring (using LinearProgressIndicator wrapped in Circular)
+            
                     SizedBox(
                       width: 60.sw,
                       height: 60.sh,
@@ -215,7 +215,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
                       ),
                     ),
 
-                    // Timer Text with Animation
+            
                     AnimatedScale(
                       scale: timerState.isRunning ? _scaleAnimation.value : 1.0,
                       duration: const Duration(milliseconds: 300),
@@ -227,7 +227,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
                             style: TextStyle(
                               fontSize: 52,
                               fontWeight: FontWeight.bold,
-                              fontFamily: 'monospace',
+                      
                               color: isLowTime
                                   ? AppColors.error
                                   : AppColors.textPrimary,
@@ -288,7 +288,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
               ),
             ),
 
-            // Presets Section
+            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
