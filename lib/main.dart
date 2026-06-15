@@ -14,8 +14,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final container = ProviderContainer();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -40,7 +38,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Alarm App ',
       theme: AppTheme.theme,
-      navigatorKey: navigatorKey,
+   
       initialRoute: '/',
     );
   }
