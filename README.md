@@ -45,6 +45,9 @@ Due to iOS system restrictions, the `alarm` package uses local notification sche
 - **Limitations**: Background execution is restricted, so exact timing isn't guaranteed
 - **Sound**: Limited to ~30 seconds (notification payload limit)
 
+## Screenshots
+<img src="Screenshots/main_alarm.jpg" width="250" >
+
 ## Getting Started
 
 ```bash
@@ -78,8 +81,7 @@ flutter run
 - iOS behavior is limited by system restrictions
 - Timezone handling is required for correct scheduling across regions
 
-## Screenshots
-<img src="Screenshots/main_alarm.jpg" width="250" >
+
 
 ## License
 
