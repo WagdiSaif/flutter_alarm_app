@@ -34,9 +34,7 @@ ios/.symlinks/
 /build/
 /coverage/
 .vscode/
-/windows/
-/web/
-/linux/
+
 
 # Symbolication related
 app.*.symbols

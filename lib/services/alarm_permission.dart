@@ -15,8 +15,7 @@ static Future<bool> checkBatteryOptimizationDisabled() async {
     }
     if (status.isPermanentlyDenied ) {
        await openAppSettings();
-       status = await Permission.notification.status;
-       return status.isGranted;
+       return false;
     }
 
     status = await Permission.notification.request();

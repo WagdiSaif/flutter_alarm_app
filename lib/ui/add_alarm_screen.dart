@@ -88,10 +88,10 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Alarm', style: Theme.of(context).textTheme.headlineLarge),
+                Text('Alarms', style: Theme.of(context).textTheme.headlineLarge),
                 PopupMenuButton(
                   itemBuilder: (context) => [
-                    PopupMenuItem(child: Text('data')),
+                    PopupMenuItem(child: Text('Settings')),
                   ],
                 ),
               ],
@@ -109,7 +109,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                       child: Stack(
                         children: [
                           Consumer(
-                            builder: (context, ref, w) {
+                            builder: (context, ref, _) {
                               final alarmsData = ref.watch(alarmProvider);
                               return alarmsData.when(
                                 data: (alarms) {
@@ -408,7 +408,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         await Permission.ignoreBatteryOptimizations.isGranted;
     if (!hasBatteyOptimization) {
       hasBatteyOptimization =
-          await AlarmPermission.checkBatteryOptimizationDisabled(); //Only for Android
+          await AlarmPermission.checkBatteryOptimizationDisabled(); 
     }
 
     return finalNotif && finalExact && hasBatteyOptimization;
@@ -431,7 +431,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         return status.isGranted;
       }
       return false;
-    } //Here OpenSetting
+    } 
 
     if (status.isDenied ||
         status.isLimited ||
@@ -440,10 +440,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
       status = await Permission.notification.request();
     }
 
-    //
-    if (!status.isGranted) {
-      return false;
-    }
+   
 
     return status.isGranted;
   }

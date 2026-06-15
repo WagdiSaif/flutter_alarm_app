@@ -78,6 +78,9 @@ flutter run
 - iOS behavior is limited by system restrictions
 - Timezone handling is required for correct scheduling across regions
 
+## Screenshots
+<img src=''>
+
 ## License
 
 MIT
