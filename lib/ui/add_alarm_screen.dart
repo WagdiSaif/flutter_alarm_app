@@ -377,7 +377,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         if (isAdded) {
           ToastMessage.showToastNextTriggerTime(fireAt);
         }
-        debugPrint('added is $isAdded');
+   
       }
     }
   }
