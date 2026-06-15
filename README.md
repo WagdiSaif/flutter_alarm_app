@@ -1,6 +1,5 @@
 
 #  Flutter Alarm App
-
 A cross-platform alarm clock app built with Flutter. Supports reliable scheduling, repeat alarms, and local persistence using Drift.
 
 ## Features
