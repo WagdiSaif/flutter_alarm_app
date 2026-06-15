@@ -323,11 +323,12 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                       ),
                                       Expanded(
                                         child: TextField(
+                                          
                                           maxLines: viewInsetsHeight == 0
                                               ? null
                                               : 1,
                                           focusNode: _focusNode,
-                                          keyboardType: TextInputType.name,
+                                       
                                           onSubmitted: (value) {
                                             FocusManager.instance.primaryFocus
                                                 ?.unfocus();
@@ -339,6 +340,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                           textAlign: TextAlign.end,
 
                                           decoration: InputDecoration(
+                                            
                                             hintText: 'Alarm name',
                                             border: InputBorder.none,
                                             contentPadding: EdgeInsets.all(4),
