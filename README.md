@@ -86,9 +86,10 @@ flutter run
 - iOS behavior is limited by system restrictions
 - Timezone handling is required for correct scheduling across regions
 ## Contact
+
 For questions or suggestions, reach out at:
 
-- Email: wagdisaif121@gmail.com
+- Email: [Wagdi Saif](mailto:wagdisaif121@gmail.com)
 - GitHub: [@WagdiSaif](https://github.com/WagdiSaif)
 
 
