@@ -79,7 +79,7 @@ flutter run
 - Timezone handling is required for correct scheduling across regions
 
 ## Screenshots
-<img src="Screenshots/main_alarm.jpg">
+<img src="Screenshots/main_alarm.jpg" width="250" >
 
 ## License
 
