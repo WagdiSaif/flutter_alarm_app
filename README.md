@@ -89,8 +89,8 @@ flutter run
 
 For questions or suggestions, reach out at:
 
-- Email: [Wagdi Saif](mailto:wagdisaif121@gmail.com)
-- GitHub: [@WagdiSaif](https://github.com/WagdiSaif)
+- Email: [Wagdi](mailto:wagdisaif121@gmail.com)
+- GitHub: [@Wagdi](https://github.com/WagdiSaif)
 
 
 ## License
