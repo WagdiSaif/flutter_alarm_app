@@ -46,7 +46,10 @@ Due to iOS system restrictions, the `alarm` package uses local notification sche
 - **Sound**: Limited to ~30 seconds (notification payload limit)
 
 ## Screenshots
-<img src="Screenshots/main_alarm.jpg" width="250" >
+<table>
+<tr> <td><img src="Screenshots/main_alarm.jpg" width="250" > </td></tr>
+</table>
+
 
 ## Getting Started
 
