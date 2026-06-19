@@ -53,6 +53,7 @@ final alarmControllerProvider = Provider<AlarmController>((ref) {
 });
 final alarmProvider = StreamProvider.autoDispose<List<AlarmModel>>((ref) {
   final alarms = ref.watch(alarmControllerProvider);
+
   return alarms.alarmStream;
 });
 StateProvider<bool> isShowBottomSheetProvider = StateProvider<bool>(
@@ -73,6 +74,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
 
   @override
   void dispose() {
+    
     super.dispose();
   }
 

@@ -14,8 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final filePathProvider = StateProvider<String?>((ref) => null);
-final soundsStreamProvider = StreamProvider.autoDispose(
-  (ref) => ref.watch(alarmControllerProvider).streamSounds,
+final soundsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>(
+  (ref) => ref.watch(alarmControllerProvider.select((sound)=>sound.streamSounds)),
 );
 
 final selectedSoundPathProvider = StateProvider<String>(
