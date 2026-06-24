@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Alarm App ',
       theme: AppTheme.theme,
-   
+
       initialRoute: '/',
     );
   }

@@ -70,7 +70,7 @@ class RingingAlarmScreen extends ConsumerWidget {
                     if (alarmId == null) return;
 
                     await ref.read(schedulerProvider).stopAlarm(alarmId);
-                
+
                     await ref
                         .read(alarmControllerProvider)
                         .rescheduleActiveAlarms();

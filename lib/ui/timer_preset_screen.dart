@@ -177,14 +177,12 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
               ),
             ),
 
-       
             Expanded(
               flex: 2,
               child: Center(
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                   
                     Container(
                       width: 80.sw,
                       height: 80.sh,
@@ -201,7 +199,6 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
                       ),
                     ),
 
-            
                     SizedBox(
                       width: 60.sw,
                       height: 60.sh,
@@ -215,7 +212,6 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
                       ),
                     ),
 
-            
                     AnimatedScale(
                       scale: timerState.isRunning ? _scaleAnimation.value : 1.0,
                       duration: const Duration(milliseconds: 300),
@@ -227,7 +223,7 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
                             style: TextStyle(
                               fontSize: 52,
                               fontWeight: FontWeight.bold,
-                      
+
                               color: isLowTime
                                   ? AppColors.error
                                   : AppColors.textPrimary,
@@ -288,7 +284,6 @@ class _TimerPresetScreenState extends ConsumerState<TimerPresetScreen>
               ),
             ),
 
-            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(

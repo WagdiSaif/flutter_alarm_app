@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:alarmapp/core/app_theme/app_colors.dart';
 import 'package:alarmapp/core/app_theme/app_texts_styles.dart';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 final stopwatchTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
 final stopwatchIsRunningProvider = StateProvider<bool>((ref) => false);
@@ -19,7 +17,8 @@ class StopwatchScreen extends ConsumerStatefulWidget {
   ConsumerState<StopwatchScreen> createState() => _StopwatchScreenState();
 }
 
-class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTickerProviderStateMixin {
+class _StopwatchScreenState extends ConsumerState<StopwatchScreen>
+    with SingleTickerProviderStateMixin {
   Timer? _timer;
   late AnimationController _pulseController;
   late Animation<double> _scaleAnimation;
@@ -31,7 +30,7 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
       duration: const Duration(milliseconds: 800),
       vsync: this,
     )..repeat(reverse: true);
-    
+
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
@@ -44,12 +43,13 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
     super.dispose();
   }
 
-
   String formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
-    final milliseconds = (duration.inMilliseconds.remainder(1000) ~/ 10).toString().padLeft(2, '0');
+    final milliseconds = (duration.inMilliseconds.remainder(1000) ~/ 10)
+        .toString()
+        .padLeft(2, '0');
 
     if (duration.inHours > 0) {
       final hours = twoDigits(duration.inHours);
@@ -97,7 +97,7 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                 ],
               ),
             ),
-            
+
             // Timer Display
             Expanded(
               flex: 2,
@@ -135,7 +135,7 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                 ),
               ),
             ),
-            
+
             // Control Buttons
             Container(
               padding: const EdgeInsets.symmetric(vertical: 24),
@@ -148,13 +148,18 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                       label: 'Start',
                       color: AppColors.success,
                       onPressed: () {
-                        ref.read(stopwatchIsRunningProvider.notifier).state = true;
-                        _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-                          if (ref.read(stopwatchIsRunningProvider)) {
-                            final current = ref.read(stopwatchTimeProvider);
-                            ref.read(stopwatchTimeProvider.notifier).state = current + const Duration(milliseconds: 10);
-                          }
-                        });
+                        ref.read(stopwatchIsRunningProvider.notifier).state =
+                            true;
+                        _timer = Timer.periodic(
+                          const Duration(milliseconds: 10),
+                          (timer) {
+                            if (ref.read(stopwatchIsRunningProvider)) {
+                              final current = ref.read(stopwatchTimeProvider);
+                              ref.read(stopwatchTimeProvider.notifier).state =
+                                  current + const Duration(milliseconds: 10);
+                            }
+                          },
+                        );
                       },
                       isPrimary: true,
                     ),
@@ -164,7 +169,8 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                       label: 'Pause',
                       color: AppColors.warning,
                       onPressed: () {
-                        ref.read(stopwatchIsRunningProvider.notifier).state = false;
+                        ref.read(stopwatchIsRunningProvider.notifier).state =
+                            false;
                         _timer?.cancel();
                       },
                       isPrimary: true,
@@ -176,8 +182,10 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                     color: AppColors.error,
                     onPressed: () {
                       _timer?.cancel();
-                      ref.read(stopwatchIsRunningProvider.notifier).state = false;
-                      ref.read(stopwatchTimeProvider.notifier).state = Duration.zero;
+                      ref.read(stopwatchIsRunningProvider.notifier).state =
+                          false;
+                      ref.read(stopwatchTimeProvider.notifier).state =
+                          Duration.zero;
                       ref.read(stopwatchLapsProvider.notifier).state = [];
                     },
                     isPrimary: false,
@@ -191,14 +199,17 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                       onPressed: () {
                         final current = ref.read(stopwatchTimeProvider);
                         final lapsList = ref.read(stopwatchLapsProvider);
-                        ref.read(stopwatchLapsProvider.notifier).state = [...lapsList, current];
+                        ref.read(stopwatchLapsProvider.notifier).state = [
+                          ...lapsList,
+                          current,
+                        ];
                       },
                       isPrimary: false,
                     ),
                 ],
               ),
             ),
-            
+
             // Laps Section
             if (laps.isNotEmpty)
               Expanded(
@@ -214,7 +225,9 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                         padding: const EdgeInsets.all(12),
                         child: Text(
                           'Laps',
-                          style: AppTextStyles.titleLarge.copyWith(fontSize: 16),
+                          style: AppTextStyles.titleLarge.copyWith(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                       const Divider(color: AppColors.textDisabled),
@@ -225,9 +238,13 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                           itemBuilder: (context, index) {
                             final lap = laps[laps.length - 1 - index];
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Lap ${index + 1}',
@@ -251,7 +268,7 @@ class _StopwatchScreenState extends ConsumerState<StopwatchScreen> with SingleTi
                   ),
                 ),
               ),
-            
+
             const SizedBox(height: 20),
           ],
         ),

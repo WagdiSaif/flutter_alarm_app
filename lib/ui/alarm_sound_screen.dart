@@ -14,17 +14,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final filePathProvider = StateProvider<String?>((ref) => null);
-final soundsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>(
-  (ref) => ref.watch(alarmControllerProvider.select((sound)=>sound.streamSounds)),
-);
+final soundsStreamProvider =
+    StreamProvider.autoDispose<List<Map<String, dynamic>>>(
+      (ref) => ref.watch(
+        alarmControllerProvider.select((sound) => sound.streamSounds),
+      ),
+    );
 
 final selectedSoundPathProvider = StateProvider<String>(
   (ref) => AppConstants.defaultSound,
 );
 
 final alarmSoundPlayerProvider =
-    StateNotifierProvider<AlarmSoundPlayer, (String?, bool)>(
-      (ref) => AlarmSoundPlayer(),
+    NotifierProvider.autoDispose<AlarmSoundPlayer, (String?, bool)>(
+      () => AlarmSoundPlayer(),
     );
 
 class AlarmSoundScreen extends ConsumerStatefulWidget {
@@ -44,12 +47,9 @@ class _AlarmSoundScreen extends ConsumerState<AlarmSoundScreen> {
     });
   }
 
-  String? fileName;
-
   Future<void> _loadSoundFromDevice() async {
     try {
       final pickFile = await FilePicker.pickFiles(
-    
         type: FileType.audio,
         allowMultiple: false,
       );
@@ -72,6 +72,7 @@ class _AlarmSoundScreen extends ConsumerState<AlarmSoundScreen> {
     final (currentSoundPlayer, isPlayingSound) = ref.watch(
       alarmSoundPlayerProvider,
     );
+
     final streamSounds = ref.watch(soundsStreamProvider);
 
     return Scaffold(
@@ -222,7 +223,7 @@ class _AlarmSoundScreen extends ConsumerState<AlarmSoundScreen> {
               final player = ref.read(alarmSoundPlayerProvider.notifier);
 
               ref.read(selectedSoundPathProvider.notifier).state =
-                  alarmSound.value;
+                  alarmSound.value as String;
               if (isPlayingSound) {
                 await player.stop();
               } else {

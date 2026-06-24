@@ -4,7 +4,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class ToastMessage {
-  static Future<void> showToastNextTriggerTime(tz.TZDateTime nextTrigger) async {
+  static Future<void> showToastNextTriggerTime(
+    tz.TZDateTime nextTrigger,
+  ) async {
     //
 
     final nowDateTime = tz.TZDateTime.now(tz.local);

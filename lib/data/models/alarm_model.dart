@@ -9,16 +9,14 @@ class AlarmModel {
   final int alarmId;
 
   final String name;
-   final List<AlarmDays> repeatDays;
+  final List<AlarmDays> repeatDays;
   final String soundPath;
-
-
 
   final bool isEnabled;
 
-  final  tz.TZDateTime nextTrigger;
+  final tz.TZDateTime nextTrigger;
 
-  final  tz.TZDateTime createdDate;
+  final tz.TZDateTime createdDate;
   final List<AlarmDaysModel> alarmDaysModel;
   final String title;
 
@@ -27,7 +25,7 @@ class AlarmModel {
   final TimeOfDay firedTime;
 
   AlarmModel({
-    this.repeatDays=const[],
+    this.repeatDays = const [],
     required this.firedTime,
     this.alarmDaysModel = const [],
 
@@ -35,7 +33,6 @@ class AlarmModel {
     required this.nextTrigger,
     this.soundPath = AppConstants.defaultSound,
 
- 
     this.vibrate = false,
     this.name = '',
     this.isEnabled = true,
@@ -45,8 +42,6 @@ class AlarmModel {
   });
 
   factory AlarmModel.fromJson(Map<String, dynamic> json) {
-
-
     return AlarmModel(
       repeatDays: json['repeatDays'] as List<AlarmDays>,
       firedTime: json['firedTime'] as TimeOfDay,
@@ -54,16 +49,17 @@ class AlarmModel {
       alarmId: json['alarmId'] as int,
       isEnabled: json['isEnabled'] as bool,
 
-      nextTrigger:  tz.TZDateTime.parse(tz.local,json['nextTrigger']),
-    
-      createdDate: tz.TZDateTime.parse(tz.local,json['createdDate']),
+      nextTrigger: tz.TZDateTime.parse(tz.local, json['nextTrigger']),
+
+      createdDate: tz.TZDateTime.parse(tz.local, json['createdDate']),
       soundPath: json['soundPath'] as String,
       name: json['name'] as String,
       title: json['title'] as String,
     );
   }
 
-  AlarmModel copyWith({   List<AlarmDays>?   repeatDays,
+  AlarmModel copyWith({
+    List<AlarmDays>? repeatDays,
     int? alarmId,
     List<AlarmDaysModel>? alarmDaysModel,
 
@@ -75,13 +71,12 @@ class AlarmModel {
     tz.TZDateTime? createdDate,
     tz.TZDateTime? nextTrigger,
     String? title,
-  
+
     bool? vibrate,
     TimeOfDay? firedTime,
   }) {
-   
     return AlarmModel(
-      repeatDays: repeatDays??this.repeatDays,
+      repeatDays: repeatDays ?? this.repeatDays,
       firedTime: firedTime ?? this.firedTime,
       alarmDaysModel: alarmDaysModel ?? this.alarmDaysModel,
       alarmId: alarmId ?? this.alarmId,
@@ -97,6 +92,4 @@ class AlarmModel {
       title: title ?? this.title,
     );
   }
-
-
 }

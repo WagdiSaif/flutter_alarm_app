@@ -10,9 +10,11 @@ class AlarmSharedPrefs {
 
     await removeAllState();
   }
+
   static bool get isRingingState {
     return _sharedPreferences.getInt(ringing) != null;
   }
+
   static bool get isSnoozeState {
     return _sharedPreferences.getInt(snooze) != null;
   }
@@ -40,7 +42,8 @@ class AlarmSharedPrefs {
   static Future<void> removeSnooze() async {
     await _sharedPreferences.remove(snooze);
   }
-   static Future<void> removeAllState() async {
+
+  static Future<void> removeAllState() async {
     await _sharedPreferences.clear();
   }
 }

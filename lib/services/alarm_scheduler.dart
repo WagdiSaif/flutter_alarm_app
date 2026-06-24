@@ -25,6 +25,7 @@ class AlarmScheduler {
 
   Future<void> _setAlarm(AlarmModel alarm) async {
     final alarmSettings = AlarmSettings(
+      androidStopAlarmOnTermination: false,
       id: alarm.alarmId,
       allowAlarmOverlap: false,
       dateTime: alarm.nextTrigger,
@@ -37,7 +38,7 @@ class AlarmScheduler {
       volumeSettings: VolumeSettings.fade(
         volume: 0.7,
         fadeDuration: const Duration(seconds: 5),
-        // volumeEnforced: true,
+        volumeEnforced: false,
       ),
       notificationSettings: NotificationSettings(
         title: alarm.title,

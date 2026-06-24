@@ -34,10 +34,4 @@ extension ResponseSize on num {
   double get sw => (SizerModel.width * (this / 100));
 }
 
-
-
-
-
 //------------------
-
-

@@ -51,7 +51,7 @@ class AlarmController {
   }
 
   Future<void> rescheduleActiveAlarms() async {
-    if(await scheduler.isRinging)return;
+    if (await scheduler.isRinging) return;
     var activeAlarms = await alarmService.getAllAlarms();
 
     try {
@@ -67,14 +67,14 @@ class AlarmController {
 
   Future<bool> updateAlarm(AlarmModel updatedAlarm) async {
     try {
-     if(!updatedAlarm.isEnabled){
-          final updateDB = await alarmService.updateAlarm(updatedAlarm);
-          return updateDB;
-     }
+      if (!updatedAlarm.isEnabled) {
+        final updateDB = await alarmService.updateAlarm(updatedAlarm);
+        return updateDB;
+      }
       final scheduledAlarm = await scheduler.updateScheduledAlarm(updatedAlarm);
-     
+
       final isUpdated = await alarmService.updateAlarm(scheduledAlarm);
-  
+
       return isUpdated;
     } catch (e, stack) {
       log(e.toString(), error: e, stackTrace: stack);
@@ -83,63 +83,57 @@ class AlarmController {
     }
   }
 
-  
   Future<bool> deleteAlarm(AlarmModel alarm) async {
     try {
       await scheduler.cancelScheduledAlarm(alarm);
     } catch (e, stack) {
-   
       log(e.toString(), error: e, stackTrace: stack);
     }
     return await alarmService.deleteAlarmById(alarm.alarmId);
   }
 
-  
   Future<bool> toggleAlarm(AlarmModel alarm) async {
-     final bool newState = !alarm.isEnabled;
-     if(newState){
-    final update= await  updateAlarm(alarm.copyWith(isEnabled: newState));
-    return update;
-     }
+    final bool newState = !alarm.isEnabled;
+    if (newState) {
+      final update = await updateAlarm(alarm.copyWith(isEnabled: newState));
+      return update;
+    }
     try {
-
       await scheduler.cancelScheduledAlarm(alarm);
     } catch (e, stack) {
-       
       log(e.toString(), error: e, stackTrace: stack);
     }
     return await alarmService.updateAlarm(alarm.copyWith(isEnabled: newState));
   }
 
-
-    Future<bool> canNavigateToRingingScreen(int id) async {
-     bool isNavigationAllowed=true;
-     await AlarmSharedPrefs.preferencesReload();
+  Future<bool> canNavigateToRingingScreen(int id) async {
+    bool isNavigationAllowed = true;
+    await AlarmSharedPrefs.preferencesReload();
     ////Prevent duplicate Navigation for the Same Alarm
-    if ( AlarmSharedPrefs.isRingingState&&AlarmSharedPrefs.getRingingId == id) {
-     
+    if (AlarmSharedPrefs.isRingingState &&
+        AlarmSharedPrefs.getRingingId == id) {
       await scheduler.stopAlarm(id);
-     isNavigationAllowed=false;
+      isNavigationAllowed = false;
     }
     //Prevent Navigation Upcoming Alarm if Already any Snooze found
-    if ( AlarmSharedPrefs.isSnoozeState&& AlarmSharedPrefs.getSnoozeId != 0 &&
-        AlarmSharedPrefs.getSnoozeId != id ) {
-     
+    if (AlarmSharedPrefs.isSnoozeState &&
+        AlarmSharedPrefs.getSnoozeId != 0 &&
+        AlarmSharedPrefs.getSnoozeId != id) {
       await scheduler.stopAlarm(id);
-       isNavigationAllowed=false;
+      isNavigationAllowed = false;
     }
-//Prevent incoming Alarm Navigation if There is Already Alarm found
-    if (AlarmSharedPrefs.isRingingState&&AlarmSharedPrefs.getRingingId != id ) {
-     
+    //Prevent incoming Alarm Navigation if There is Already Alarm found
+    if (AlarmSharedPrefs.isRingingState &&
+        AlarmSharedPrefs.getRingingId != id) {
       await scheduler.stopAlarm(id);
-     isNavigationAllowed=false;
+      isNavigationAllowed = false;
     }
     return isNavigationAllowed;
   }
 
-//Deal with Sounds Storage
-Stream<List<Map<String,dynamic>>> get streamSounds=> alarmService.watchAlarmSounds();
-Future<void>  addSound(String path) async=> alarmService.addSound(path);
-Future<void>  deleteSound(int id) async=> alarmService.removeSound(id);
-
+  //Deal with Sounds Storage
+  Stream<List<Map<String, dynamic>>> get streamSounds =>
+      alarmService.watchAlarmSounds();
+  Future<void> addSound(String path) async => alarmService.addSound(path);
+  Future<void> deleteSound(int id) async => alarmService.removeSound(id);
 }

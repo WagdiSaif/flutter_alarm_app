@@ -22,9 +22,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import 'package:permission_handler/permission_handler.dart';
-
 
 final databaseProvider = Provider<AlarmDatabase>((ref) {
   final db = AlarmDatabase();
@@ -74,7 +72,6 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
 
   @override
   void dispose() {
-    
     super.dispose();
   }
 
@@ -90,7 +87,10 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Alarms', style: Theme.of(context).textTheme.headlineLarge),
+                Text(
+                  'Alarms',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
                 PopupMenuButton(
                   itemBuilder: (context) => [
                     PopupMenuItem(child: Text('Settings')),
@@ -119,7 +119,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                     return _buildEmptyState();
                                   }
                                   return SingleChildScrollView(
-                                    padding: EdgeInsets.only(bottom: 16.sw,),
+                                    padding: EdgeInsets.only(bottom: 16.sw),
                                     child: Column(
                                       children: alarms
                                           .map(
@@ -130,9 +130,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
 
                                                     return true;
                                                   },
-                                              onDismissed: (direction) {
-                                                debugPrint("Hello dismissble");
-                                              },
+                                              onDismissed: (direction) {},
                                               key: GlobalKey(
                                                 debugLabel: alarm.alarmId
                                                     .toString(),
@@ -379,7 +377,6 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         if (isAdded) {
           ToastMessage.showToastNextTriggerTime(fireAt);
         }
-   
       }
     }
   }
@@ -410,7 +407,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         await Permission.ignoreBatteryOptimizations.isGranted;
     if (!hasBatteyOptimization) {
       hasBatteyOptimization =
-          await AlarmPermission.checkBatteryOptimizationDisabled(); 
+          await AlarmPermission.checkBatteryOptimizationDisabled();
     }
 
     return finalNotif && finalExact && hasBatteyOptimization;
@@ -433,7 +430,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         return status.isGranted;
       }
       return false;
-    } 
+    }
 
     if (status.isDenied ||
         status.isLimited ||
@@ -441,8 +438,6 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
         status.isProvisional) {
       status = await Permission.notification.request();
     }
-
-   
 
     return status.isGranted;
   }

@@ -6,7 +6,6 @@ enum AlarmDays {
   friday,
   saturday,
   sunday;
-  
 
   String get shortName {
     return switch (this) {
@@ -18,7 +17,5 @@ enum AlarmDays {
       AlarmDays.saturday => 'Sat',
       AlarmDays.sunday => 'Sun',
     };
- 
   }
-
 }

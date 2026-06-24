@@ -6,7 +6,6 @@ import 'package:alarm/alarm.dart';
 import 'package:alarm/utils/alarm_set.dart';
 import 'package:alarmapp/services/alarm_shared_preference.dart';
 
-
 import 'package:alarmapp/ui/stopwatch_screen.dart';
 import 'package:alarmapp/ui/timer_preset_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,16 +23,12 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final List<BottomNavigationBarItem> _bottomNavigationItems = [
+    BottomNavigationBarItem(icon: Icon(Icons.alarm), label: "Alarm"),
+    BottomNavigationBarItem(icon: Icon(Icons.timer), label: "Timer"),
 
-    final List<BottomNavigationBarItem> _bottomNavigationItems =  [
-    BottomNavigationBarItem(icon: Icon(Icons.alarm,),label: "Alarm",
-    ),
-    BottomNavigationBarItem(icon: Icon(Icons.timer),label: "Timer"),
-
-    BottomNavigationBarItem(icon: Icon(Icons.stop_circle),label: "StopWatch"),
-    ]
-  ;
-
+    BottomNavigationBarItem(icon: Icon(Icons.stop_circle), label: "StopWatch"),
+  ];
 
   final List<Widget> _pages = [
     const AddAlarmScreen(),
@@ -99,12 +94,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onAlarmRinging(event.alarms.first, context);
     });
 
-WidgetsBinding.instance.addPostFrameCallback((_)async{
-
-
- await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
-});
-
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
+    });
   }
 
   @override
@@ -117,29 +109,22 @@ WidgetsBinding.instance.addPostFrameCallback((_)async{
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(pageIndexProvider);
 
-
     return Scaffold(
-     
       backgroundColor: AppColors.backgroundDark,
-      body: 
-    
-              
-            _pages[currentIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              currentIndex: currentIndex,
-              onTap: (index) => ref.read(pageIndexProvider.notifier).state = index,
-              items: _bottomNavigationItems,
-              backgroundColor: AppColors.surfaceDark,
-              selectedItemColor: AppColors.primaryBlue,
-              unselectedItemColor: AppColors.textDisabled,
-              showUnselectedLabels: true,
-              elevation: 8,
-              selectedLabelStyle: AppTextStyles.labelMedium,
-              unselectedLabelStyle: AppTextStyles.labelMedium,
-            ),
-  
-      
-      );
+      body: _pages[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentIndex,
+        onTap: (index) => ref.read(pageIndexProvider.notifier).state = index,
+        items: _bottomNavigationItems,
+        backgroundColor: AppColors.surfaceDark,
+        selectedItemColor: AppColors.primaryBlue,
+        unselectedItemColor: AppColors.textDisabled,
+        showUnselectedLabels: true,
+        elevation: 8,
+        selectedLabelStyle: AppTextStyles.labelMedium,
+        unselectedLabelStyle: AppTextStyles.labelMedium,
+      ),
+    );
   }
 }

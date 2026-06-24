@@ -25,7 +25,6 @@ StateProvider<String> selectedSoundPathProvider = StateProvider<String>(
   (ref) => AppConstants.defaultSound,
 );
 
-
 StateProvider<TimeOfDay> _timeAlarmUpdate = StateProvider<TimeOfDay>(
   (ref) => TimeOfDay.now(),
 );
@@ -36,8 +35,7 @@ StateProvider<TZDateTime?> customAlarmDateProvider = StateProvider<TZDateTime?>(
   (ref) => null,
 );
 
-class AlarmBottomSheet extends ConsumerStatefulWidget with RouteAware {
-
+class AlarmBottomSheet extends ConsumerStatefulWidget {
   const AlarmBottomSheet({super.key, required this.alarm});
   final AlarmModel alarm;
 
@@ -56,7 +54,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
       ref.read(repeatDayMark.notifier).state = [...widget.alarm.repeatDays];
       ref.read(selectedSoundPathProvider.notifier).state =
           widget.alarm.soundPath;
-      
+
       if (widget.alarm.repeatDays.isEmpty &&
           TimeManager.isAfterDaysFromToday(widget.alarm.nextTrigger)) {
         ref.read(customAlarmDateProvider.notifier).state =
@@ -90,7 +88,6 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
     final timeAlarmUpdate = ref.watch(_timeAlarmUpdate);
     final vibrate = ref.watch(vibrateUpdate);
 
-
     double viewInsetsHeight = MediaQuery.of(context).viewInsets.bottom;
 
     final alarm = widget.alarm;
@@ -103,7 +100,6 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
       expand: false,
 
       builder: (context, scrollController) {
-       
         return Column(
           children: [
             Expanded(
@@ -158,7 +154,6 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                     ),
                                     IconButton(
                                       onPressed: () async {
-                                 
                                         await _updateTimeOfAlarm(
                                           context,
                                           alarm.firedTime,
@@ -323,12 +318,11 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                       ),
                                       Expanded(
                                         child: TextField(
-                                          
                                           maxLines: viewInsetsHeight == 0
                                               ? null
                                               : 1,
                                           focusNode: _focusNode,
-                                       
+
                                           onSubmitted: (value) {
                                             FocusManager.instance.primaryFocus
                                                 ?.unfocus();
@@ -340,7 +334,6 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                           textAlign: TextAlign.end,
 
                                           decoration: InputDecoration(
-                                            
                                             hintText: 'Alarm name',
                                             border: InputBorder.none,
                                             contentPadding: EdgeInsets.all(4),
@@ -502,7 +495,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
     );
 
     ref.read(selectedSoundPathProvider.notifier).state =
-        selectedSound as String;
+        selectedSound as String? ?? sound;
   }
 
   void _scheduleSelectedDay(AlarmDays day, WidgetRef ref) {

@@ -59,7 +59,7 @@
 		</array>
 		<key>AudioServicesPlaySystemSound</key>
 		<string>Used for vibration</string>
-		<!-- Timezone (no permission, but keep for clarity if needed) -->
+
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Used to determine timezone for alarms.</string>
 		<key>UIStatusBarHidden</key>

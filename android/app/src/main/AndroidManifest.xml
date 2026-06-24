@@ -7,7 +7,7 @@
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    
+    <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
 
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -19,16 +19,17 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
 
-    <!-- notifictions -->
+    <!-- notifications -->
 <!-- <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> -->
 
 
     <application android:name="${applicationName}" android:label="الساعة" android:icon="@mipmap/launch_icon" android:enableOnBackInvokedCallback="true">
-<!-- notifictions -->
+<!-- notifications -->
 
 
-<!-- noitiff -->
+<!-- 
+ -->
      
         <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop" android:taskAffinity="" android:theme="@style/LaunchTheme" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize" android:showWhenLocked="true" android:turnScreenOn="true" android:excludeFromRecents="true" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
 

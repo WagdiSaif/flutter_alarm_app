@@ -1,12 +1,9 @@
-
 import 'package:alarmapp/core/constants/constant.dart';
 import 'package:drift/drift.dart';
 
 @TableIndex(name: 'idx_nextTrigger', columns: {#nextTrigger})
 @TableIndex(name: 'idx_enabled_next', columns: {#isEnabled, #nextTrigger})
 class AlarmsTable extends Table {
-
-
   IntColumn get alarmId => integer()();
 
   TextColumn get name => text()();
@@ -25,10 +22,4 @@ class AlarmsTable extends Table {
   IntColumn get firedTimeMinutes => integer()();
   @override
   Set<Column> get primaryKey => {alarmId};
-
-   
 }
-
-
-
-

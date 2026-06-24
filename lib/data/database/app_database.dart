@@ -15,21 +15,15 @@ import 'tables/alarm_sounds_table.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(
-  tables: [AlarmsTable, AlarmDaysTable, AlarmSoundsTable],
-) 
+@DriftDatabase(tables: [AlarmsTable, AlarmDaysTable, AlarmSoundsTable])
 class AlarmDatabase extends _$AlarmDatabase {
   AlarmDatabase() : super(driftDatabase(name: 'alarm_db'));
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
-    onUpgrade: (m, from, to) async {
-      
-    },
-    beforeOpen: (details) async {
- 
-    },
+    onUpgrade: (m, from, to) async {},
+    beforeOpen: (details) async {},
   );
 
   @override
