@@ -18,6 +18,7 @@ import 'package:alarmapp/services/alarm_scheduler.dart';
 import 'package:alarmapp/services/alarm_service.dart';
 
 import 'package:alarmapp/ui/widgets/alarm_bottom_sheet.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,13 +77,14 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            height: kToolbarHeight,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+            height: kToolbarHeight + 5,
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,213 +102,201 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Stack(
-                        children: [
-                          Consumer(
-                            builder: (context, ref, _) {
-                              final alarmsData = ref.watch(alarmProvider);
-                              return alarmsData.when(
-                                data: (alarms) {
-                                  if (alarms.isEmpty) {
-                                    return _buildEmptyState();
-                                  }
-                                  return SingleChildScrollView(
-                                    padding: EdgeInsets.only(bottom: 16.sw),
-                                    child: Column(
-                                      children: alarms
-                                          .map(
-                                            (alarm) => Dismissible(
-                                              confirmDismiss:
-                                                  (direction) async {
-                                                    //  await  direction.
+            child: Stack(
+              children: [
+                Consumer(
+                  builder: (context, ref, _) {
+                    final alarmsData = ref.watch(alarmProvider);
 
-                                                    return true;
-                                                  },
-                                              onDismissed: (direction) {},
-                                              key: GlobalKey(
-                                                debugLabel: alarm.alarmId
-                                                    .toString(),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  9.0,
-                                                ),
-                                                child: Container(
-                                                  constraints: BoxConstraints(
-                                                    maxHeight: 17.sh,
-                                                    minHeight: 15.sh,
-                                                  ),
+                    return alarmsData.when(
+                      data: (alarms) {
+                        if (alarms.isEmpty) {
+                          return _buildEmptyState();
+                        }
+                        return SingleChildScrollView(
+                          padding: EdgeInsets.only(bottom: 19.sw),
+                          child: Column(
+                            children: alarms.map((alarm) {
+                              return Padding(
+                                padding: const EdgeInsets.all(9.0),
+                                child: Dismissible(
+                                  background: Container(
+                                    height: 15.sh,
 
-                                                  padding: EdgeInsets.all(7),
-
-                                                  decoration: BoxDecoration(
-                                                    color: alarm.isEnabled
-                                                        ? AppColors.containerBg
-                                                        : AppColors.surfaceDark,
-
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
-                                                  ),
-
-                                                  child: InkWell(
-                                                    onTap: () async {
-                                                      showModalBottomSheet(
-                                                        useSafeArea: false,
-                                                        showDragHandle: true,
-                                                        isScrollControlled:
-                                                            true,
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlarmBottomSheet(
-                                                            alarm: alarm,
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          _checkNextTriggerDay(
-                                                            alarm,
-                                                          ),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .titleLarge,
-                                                        ),
-
-                                                        Text(
-                                                          //Alarm Name------------=
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          alarm.name.isEmpty
-                                                              ? 'Alarm'
-                                                              : alarm.name,
-                                                        ),
-
-                                                        Expanded(
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .end,
-                                                            children: [
-                                                              Row(
-                                                                textBaseline:
-                                                                    TextBaseline
-                                                                        .alphabetic,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .baseline,
-
-                                                                children: [
-                                                                  Text(
-                                                                    TimeManager.formatTimeShow(
-                                                                      alarm
-                                                                          .firedTime,
-                                                                      context,
-                                                                    ),
-                                                                    style: Theme.of(
-                                                                      context,
-                                                                    ).textTheme.titleLarge,
-                                                                  ),
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.only(
-                                                                          left:
-                                                                              0,
-                                                                        ),
-                                                                    child: Text(
-                                                                      alarm
-                                                                          .firedTime
-                                                                          .period
-                                                                          .name
-                                                                          .toUpperCase(),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              Switch(
-                                                                value: alarm
-                                                                    .isEnabled,
-                                                                onChanged: (_) async {
-                                                                  await ref
-                                                                      .read<
-                                                                        AlarmController
-                                                                      >(
-                                                                        alarmControllerProvider,
-                                                                      )
-                                                                      .toggleAlarm(
-                                                                        alarm,
-                                                                      );
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
+                                    width: 70.sw,
+                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryBlue,
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  );
-                                },
-                                error: (error, _) => Text('Error:'),
-                                loading: () => _buildEmptyState(),
-                              );
-                            },
-                          ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(Icons.delete, size: 20),
+                                        Icon(Icons.delete, size: 20),
+                                      ],
+                                    ),
+                                  ),
 
-                          Positioned(
-                            bottom: 1,
-                            left: 4.sw,
-                            // right: 0,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: AppColors.primaryBlue,
-                                shape: BoxShape.circle,
-                              ),
-                              // alignment: Alignment.bottomCenter,
-                              margin: const EdgeInsets.only(bottom: 3),
-                              height: 16.sw,
-                              width: 16.sw,
-
-                              child: Center(
-                                child: IconButton(
-                                  onPressed: () async {
-                                    await pickTimeAndCreateAlarm(context, ref);
+                            
+                                  onDismissed: (direction) async {
+                                    final isDeleted = await ref
+                                        .read<AlarmController>(
+                                          alarmControllerProvider,
+                                        )
+                                        .deleteAlarm(alarm);
+                                    if (isDeleted) {
+                                      ToastMessage.showToastMessage(
+                                        'Alarm deleted',
+                                      );
+                                    }
                                   },
-                                  icon: const Icon(Icons.add, size: 20),
+                                  key: ValueKey(alarm.alarmId.toString()),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                      maxHeight: 18.sh,
+                                      minHeight: 15.sh,
+                                    ),
+
+                                    padding: EdgeInsets.all(7),
+
+                                    decoration: BoxDecoration(
+                                      color: alarm.isEnabled
+                                          ? AppColors.containerBg
+                                          : AppColors.surfaceDark,
+
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+
+                                    child: InkWell(
+                                      onTap: () async {
+                                        showModalBottomSheet(
+                                          useSafeArea: false,
+                                          showDragHandle: true,
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) {
+                                            return AlarmBottomSheet(
+                                              alarm: alarm,
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            _checkNextTriggerDay(alarm),
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.titleLarge,
+                                          ),
+
+                                          Text(
+                                            //Alarm Name------------=
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            alarm.name.isEmpty
+                                                ? 'Alarm'
+                                                : alarm.name,
+                                          ),
+
+                                          Expanded(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  textBaseline:
+                                                      TextBaseline.alphabetic,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .baseline,
+
+                                                  children: [
+                                                    Text(
+                                                      TimeManager.formatTimeShow(
+                                                        alarm.firedTime,
+                                                        context,
+                                                      ),
+                                                      style: Theme.of(
+                                                        context,
+                                                      ).textTheme.titleLarge,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            left: 0,
+                                                          ),
+                                                      child: Text(
+                                                        alarm
+                                                            .firedTime
+                                                            .period
+                                                            .name
+                                                            .toUpperCase(),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Switch(
+                                                  value: alarm.isEnabled,
+                                                  onChanged: (_) async {
+                                                    await ref
+                                                        .read<AlarmController>(
+                                                          alarmControllerProvider,
+                                                        )
+                                                        .toggleAlarm(alarm);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }).toList(),
                           ),
-                        ],
+                        );
+                      },
+                      error: (error, _) => Text('Error:'),
+                      loading: () => _buildEmptyState(),
+                    );
+                  },
+                ),
+
+                Positioned(
+                  bottom: 1,
+                  right: 4.sw,
+                  // right: 0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: AppColors.primaryBlue,
+                      shape: BoxShape.circle,
+                    ),
+                    // alignment: Alignment.bottomCenter,
+                    margin: const EdgeInsets.only(bottom: 5),
+                    height: 16.sw,
+                    width: 16.sw,
+
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () async {
+                          await pickTimeAndCreateAlarm(context, ref);
+                        },
+                        icon: const Icon(Icons.add, size: 20),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -325,12 +315,11 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
       ),
     );
   }
-  //DateTime.now();
 
   String _checkNextTriggerDay(AlarmModel alarm) {
     if (alarm.isEnabled && alarm.alarmDaysModel.isEmpty) {
       if (TimeManager.isAfterDaysFromToday(alarm.nextTrigger, day: 1)) {
-        return formateDateMD(alarm.nextTrigger).toString();
+        return formatDateMD(alarm.nextTrigger).toString();
       }
       if (TimeManager.isAfterDaysFromToday(alarm.nextTrigger, day: 0)) {
         return 'Tomorrow';

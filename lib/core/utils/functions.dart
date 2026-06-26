@@ -6,6 +6,6 @@ AlarmDays getAlarmDay(int weekday) {
   return AlarmDays.values[weekday - 1];
 }
 
-String formateDateMD(TZDateTime time) {
+String formatDateMD(TZDateTime time) {
   return DateFormat.MMMd().format(time);
 }

@@ -224,7 +224,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                                     )
                                                   : Text(
                                                       customAlarmDate != null
-                                                          ? formateDateMD(
+                                                          ? formatDateMD(
                                                               alarm.nextTrigger,
                                                             )
                                                           : alarm

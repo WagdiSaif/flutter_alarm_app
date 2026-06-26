@@ -4,11 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class ToastMessage {
-  static Future<void> showToastNextTriggerTime(
-    tz.TZDateTime nextTrigger,
-  ) async {
-    //
-
+  static void showToastNextTriggerTime(tz.TZDateTime nextTrigger) {
     final nowDateTime = tz.TZDateTime.now(tz.local);
     final nextFireInminutes = nextTrigger.difference(nowDateTime).inMinutes;
     final hours = nextFireInminutes ~/ 60;
@@ -21,6 +17,10 @@ class ToastMessage {
         : 'less than 1 Mnutes';
 
     final message = 'Alarm Set for $nextFireAt  from now';
+    showToastMessage(message);
+  }
+
+  static void showToastMessage(String message) {
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_LONG,
