@@ -16,7 +16,7 @@ class AlarmController {
   final AlarmService alarmService;
   final AlarmScheduler scheduler;
 
-  Stream<List<AlarmModel>> get alarmStream => alarmService.alarmsWatch();
+  Stream<List<AlarmModel>> get alarmStream => alarmService.watchAlarms();
 
   Future<bool> addAlarm({
     required TimeOfDay selectedTime,
@@ -50,7 +50,7 @@ class AlarmController {
     }
   }
 
-  Future<void> rescheduleActiveAlarms() async {
+  Future<void> rescheduleAlarms() async {
     if (await scheduler.isRinging) return;
     var activeAlarms = await alarmService.getAllAlarms();
 
@@ -68,8 +68,8 @@ class AlarmController {
   Future<bool> updateAlarm(AlarmModel updatedAlarm) async {
     try {
       if (!updatedAlarm.isEnabled) {
-        final updateDB = await alarmService.updateAlarm(updatedAlarm);
-        return updateDB;
+        final isUpdated = await alarmService.updateAlarm(updatedAlarm);
+        return isUpdated;
       }
       final scheduledAlarm = await scheduler.updateScheduledAlarm(updatedAlarm);
 
@@ -131,9 +131,7 @@ class AlarmController {
     return isNavigationAllowed;
   }
 
-  //Deal with Sounds Storage
-  Stream<List<Map<String, dynamic>>> get streamSounds =>
-      alarmService.watchAlarmSounds();
-  Future<void> addSound(String path) async => alarmService.addSound(path);
+  Stream<List<Map<String, dynamic>>> get sounds => alarmService.streamSounds();
+  Future<void> addCustomSound(String path) async => alarmService.addSound(path);
   Future<void> deleteSound(int id) async => alarmService.removeSound(id);
 }

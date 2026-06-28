@@ -91,7 +91,7 @@ class AlarmDatabase extends _$AlarmDatabase {
     }
   }
 
-  Future<void> updateAlarm(
+  Future<void> saveUpdated(
     AlarmsTableCompanion alarm,
     List<AlarmDaysTableCompanion> repeatedDay,
   ) async {
@@ -151,7 +151,7 @@ class AlarmDatabase extends _$AlarmDatabase {
         .watch();
   }
 
-  Stream<List<AlarmDaysTableData>> watchAlarmsRepeatedDays() {
+  Stream<List<AlarmDaysTableData>> streamRepeatedDays() {
     return select(alarmDaysTable).watch();
   }
 

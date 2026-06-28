@@ -39,7 +39,7 @@ class TimeManager {
     tz.setLocalLocation(tz.getLocation(localTimezone.identifier));
   }
 
-  static String formatTimeShow(TimeOfDay time, BuildContext context) {
+  static String formatTime(TimeOfDay time, BuildContext context) {
     final use24Hour = MediaQuery.of(context).alwaysUse24HourFormat;
 
     if (use24Hour) {

@@ -43,7 +43,7 @@ class RingingAlarmScreen extends ConsumerWidget {
 
             const SizedBox(height: 40),
             Text(
-              TimeManager.formatTimeShow(firedTime ?? TimeOfDay.now(), context),
+              TimeManager.formatTime(firedTime ?? TimeOfDay.now(), context),
               style: AppTextStyles.headlineLarge,
             ),
             const SizedBox(height: 80),
@@ -71,9 +71,7 @@ class RingingAlarmScreen extends ConsumerWidget {
 
                     await ref.read(schedulerProvider).stopAlarm(alarmId);
 
-                    await ref
-                        .read(alarmControllerProvider)
-                        .rescheduleActiveAlarms();
+                    await ref.read(alarmControllerProvider).rescheduleAlarms();
 
                     if (context.mounted) Navigator.pop(context);
                   },

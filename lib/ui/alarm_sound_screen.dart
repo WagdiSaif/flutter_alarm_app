@@ -16,9 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final filePathProvider = StateProvider<String?>((ref) => null);
 final soundsStreamProvider =
     StreamProvider.autoDispose<List<Map<String, dynamic>>>(
-      (ref) => ref.watch(
-        alarmControllerProvider.select((sound) => sound.streamSounds),
-      ),
+      (ref) => ref.watch(alarmControllerProvider.select((s) => s.sounds)),
     );
 
 final selectedSoundPathProvider = StateProvider<String>(
@@ -58,7 +56,7 @@ class _AlarmSoundScreen extends ConsumerState<AlarmSoundScreen> {
 
         ref.read(filePathProvider.notifier).state = filePth.path;
         if (filePth.path != null) {
-          await ref.read(alarmControllerProvider).addSound(filePth.path!);
+          await ref.read(alarmControllerProvider).addCustomSound(filePth.path!);
         }
       }
     } catch (e, stack) {

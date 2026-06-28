@@ -3,9 +3,7 @@ import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 
 class PermissoinDialog {
-  static Future<void> showPermissionOpenSettingsDialog(
-    BuildContext context,
-  ) async {
+  static Future<void> showOpenSettingsPermission(BuildContext context) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -30,7 +28,7 @@ class PermissoinDialog {
     );
   }
 
-  static Future<bool?> showPermissionDialog(BuildContext context) async {
+  static Future<bool?> showPermissionGuideline(BuildContext context) async {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,

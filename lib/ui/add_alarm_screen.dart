@@ -139,7 +139,6 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                     ),
                                   ),
 
-                            
                                   onDismissed: (direction) async {
                                     final isDeleted = await ref
                                         .read<AlarmController>(
@@ -147,9 +146,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
                                         )
                                         .deleteAlarm(alarm);
                                     if (isDeleted) {
-                                      ToastMessage.showToastMessage(
-                                        'Alarm deleted',
-                                      );
+                                      ToastMessage.showMessage('Alarm deleted');
                                     }
                                   },
                                   key: ValueKey(alarm.alarmId.toString()),
@@ -220,7 +217,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
 
                                                   children: [
                                                     Text(
-                                                      TimeManager.formatTimeShow(
+                                                      TimeManager.formatTime(
                                                         alarm.firedTime,
                                                         context,
                                                       ),
@@ -351,9 +348,9 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
       final fireAt = TimeManager.calculateNextTriggerTime(selectedTime);
       if (!context.mounted) return;
       final alarmNote =
-          '${getAlarmDay(fireAt.weekday).shortName}  ${TimeManager.formatTimeShow(selectedTime, context)} ${selectedTime.period.name.toUpperCase()}. Click to Stop';
+          '${getAlarmDay(fireAt.weekday).shortName}  ${TimeManager.formatTime(selectedTime, context)} ${selectedTime.period.name.toUpperCase()}. Click to Stop';
 
-      bool allowed = await _requestPermissions(context);
+      bool allowed = await _requestPlatformPermissions(context);
 
       if (allowed) {
         final isAdded = await ref
@@ -364,15 +361,15 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
               fireAt: fireAt,
             );
         if (isAdded) {
-          ToastMessage.showToastNextTriggerTime(fireAt);
+          ToastMessage.showNextTriggerTime(fireAt);
         }
       }
     }
   }
 
-  Future<bool> _requestPermissions(BuildContext context) async {
+  Future<bool> _requestPlatformPermissions(BuildContext context) async {
     if (Platform.isIOS) {
-      return _requestIOSPermissions(context);
+      return _requestIosPermissions(context);
     }
 
     final initialExact = await Permission.scheduleExactAlarm.isGranted;
@@ -383,7 +380,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     }
 
     if (!context.mounted) return false;
-    final result = await PermissoinDialog.showPermissionDialog(context);
+    final result = await PermissoinDialog.showPermissionGuideline(context);
 
     if (result != true) {
       return false;
@@ -402,17 +399,19 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     return finalNotif && finalExact && hasBatteyOptimization;
   }
 
-  Future<bool> _requestIOSPermissions(BuildContext context) async {
+  Future<bool> _requestIosPermissions(BuildContext context) async {
     PermissionStatus status = await Permission.notification.status;
     if (status.isGranted) return true;
 
     if (status.isPermanentlyDenied) {
       if (!context.mounted) return false;
-      final result = await PermissoinDialog.showPermissionDialog(context);
+      final isConfirmed = await PermissoinDialog.showPermissionGuideline(
+        context,
+      );
 
-      if (result != true) return false;
+      if (isConfirmed != true) return false;
       if (!context.mounted) return false;
-      await PermissoinDialog.showPermissionOpenSettingsDialog(context);
+      await PermissoinDialog.showOpenSettingsPermission(context);
       status = await Permission.notification.status;
 
       if (status.isGranted) {

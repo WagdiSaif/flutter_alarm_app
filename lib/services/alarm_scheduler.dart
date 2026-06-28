@@ -128,7 +128,6 @@ class AlarmScheduler {
   Future<List<AlarmModel>> reschedulePresentAlarms(
     List<AlarmModel> activeAlarms,
   ) async {
-    //Here  restores Alarms for Rechedule
     try {
       if (await isRinging || activeAlarms.isEmpty) {
         return activeAlarms;

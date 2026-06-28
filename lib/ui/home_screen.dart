@@ -95,7 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(alarmControllerProvider).rescheduleActiveAlarms();
+      await ref.read(alarmControllerProvider).rescheduleAlarms();
     });
   }
 

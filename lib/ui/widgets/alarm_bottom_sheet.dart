@@ -18,9 +18,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-StateProvider<List<AlarmDays>> repeatDayMark = StateProvider<List<AlarmDays>>(
-  (ref) => <AlarmDays>[],
-);
+StateProvider<List<AlarmDays>> markedRepeatedDaysProvider =
+    StateProvider<List<AlarmDays>>((ref) => <AlarmDays>[]);
 StateProvider<String> selectedSoundPathProvider = StateProvider<String>(
   (ref) => AppConstants.defaultSound,
 );
@@ -51,7 +50,9 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
     super.initState();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(repeatDayMark.notifier).state = [...widget.alarm.repeatDays];
+      ref.read(markedRepeatedDaysProvider.notifier).state = [
+        ...widget.alarm.repeatDays,
+      ];
       ref.read(selectedSoundPathProvider.notifier).state =
           widget.alarm.soundPath;
 
@@ -81,7 +82,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final repeatDays = ref.watch(repeatDayMark);
+    final repeatDays = ref.watch(markedRepeatedDaysProvider);
     final customAlarmDate = ref.watch(customAlarmDateProvider);
     final selectSound = ref.watch(selectedSoundPathProvider);
 
@@ -140,7 +141,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                           CrossAxisAlignment.baseline,
                                       children: [
                                         Text(
-                                          TimeManager.formatTimeShow(
+                                          TimeManager.formatTime(
                                             timeAlarmUpdate,
                                             context,
                                           ),
@@ -154,7 +155,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                     ),
                                     IconButton(
                                       onPressed: () async {
-                                        await _updateTimeOfAlarm(
+                                        await _changeAlarmTime(
                                           context,
                                           alarm.firedTime,
                                           ref,
@@ -273,7 +274,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
 
                                                   ref
                                                           .read(
-                                                            repeatDayMark
+                                                            markedRepeatedDaysProvider
                                                                 .notifier,
                                                           )
                                                           .state =
@@ -454,7 +455,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
 
                                       ElevatedButton(
                                         onPressed: () async {
-                                          _saveUpdateAlarm(
+                                          _saveChanges(
                                             customAlarmDate,
                                             vibrate,
                                             ref,
@@ -499,20 +500,20 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
   }
 
   void _scheduleSelectedDay(AlarmDays day, WidgetRef ref) {
-    final repeatDays = ref.read(repeatDayMark);
+    final repeatDays = ref.read(markedRepeatedDaysProvider);
     ref.read(customAlarmDateProvider.notifier).state = null;
 
     if (repeatDays.contains(day)) {
       repeatDays.remove(day);
 
-      ref.read(repeatDayMark.notifier).state = [...repeatDays];
+      ref.read(markedRepeatedDaysProvider.notifier).state = [...repeatDays];
       return;
     }
 
-    ref.read(repeatDayMark.notifier).state = [...repeatDays, day];
+    ref.read(markedRepeatedDaysProvider.notifier).state = [...repeatDays, day];
   }
 
-  Future<void> _updateTimeOfAlarm(
+  Future<void> _changeAlarmTime(
     BuildContext context,
     TimeOfDay? timeOfDay,
     WidgetRef ref,
@@ -529,7 +530,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
     }
   }
 
-  Future<void> _saveUpdateAlarm(
+  Future<void> _saveChanges(
     TZDateTime? customAlarmDate,
     bool vibrate,
     WidgetRef ref,
@@ -554,7 +555,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
     if (!context.mounted) return;
 
     final alarmTitle =
-        '${getAlarmDay(fireAt.weekday).shortName}  ${TimeManager.formatTimeShow(timeAlarm, context)} ${timeAlarm.period.name.toUpperCase()}. Swip to Stop';
+        '${getAlarmDay(fireAt.weekday).shortName}  ${TimeManager.formatTime(timeAlarm, context)} ${timeAlarm.period.name.toUpperCase()}. Swip to Stop';
 
     final updatedAlarm = alarm.copyWith(
       vibrate: vibrate,
@@ -572,7 +573,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
         .read<AlarmController>(alarmControllerProvider)
         .updateAlarm(updatedAlarm);
     if (success && updatedAlarm.isEnabled) {
-      ToastMessage.showToastNextTriggerTime(fireAt);
+      ToastMessage.showNextTriggerTime(fireAt);
     }
 
     if (!context.mounted) return;

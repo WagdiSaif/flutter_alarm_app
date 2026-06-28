@@ -11,8 +11,8 @@ class AlarmService {
 
   AlarmService(this._alarmRepository);
 
-  Stream<List<AlarmModel>> alarmsWatch() {
-    return _alarmRepository.alarmsStream();
+  Stream<List<AlarmModel>> watchAlarms() {
+    return _alarmRepository.streamAlarm();
   }
 
   Future<bool> addAlarm(AlarmModel alarm) async {
@@ -65,7 +65,7 @@ class AlarmService {
 
   Future<bool> updateAlarm(AlarmModel alarm) async {
     try {
-      await _alarmRepository.updateAlarm(alarm);
+      await _alarmRepository.saveUpdatedAlarm(alarm);
 
       return true;
     } catch (e, stack) {
@@ -83,13 +83,13 @@ class AlarmService {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> watchAlarmSounds() {
+  Stream<List<Map<String, dynamic>>> streamSounds() {
     return _alarmRepository.alarmsSlounds();
   }
 
   Future<void> addSound(String path) async {
     try {
-      await _alarmRepository.addAlarmSound(path);
+      await _alarmRepository.addSound(path);
     } catch (e, stack) {
       log("Add Alarm Sound Failed", error: e, stackTrace: stack);
     }

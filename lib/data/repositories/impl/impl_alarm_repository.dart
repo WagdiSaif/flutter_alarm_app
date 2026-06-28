@@ -45,10 +45,10 @@ class ImplAlarmRepository implements AlarmRepository {
   }
 
   @override
-  Stream<List<AlarmModel>> alarmsStream() {
+  Stream<List<AlarmModel>> streamAlarm() {
     final alarmsStream = db.watchAlarms();
 
-    final daysStream = db.watchAlarmsRepeatedDays();
+    final daysStream = db.streamRepeatedDays();
 
     return Rx.combineLatest2(alarmsStream, daysStream, ((
       List<AlarmsTableData> alarms,
@@ -130,7 +130,7 @@ class ImplAlarmRepository implements AlarmRepository {
   }
 
   @override
-  Future<void> updateAlarm(AlarmModel alarmDetails) async {
+  Future<void> saveUpdatedAlarm(AlarmModel alarmDetails) async {
     try {
       List<AlarmDaysTableCompanion> repeatDays = [];
       final alarm = AlarmsTableCompanion(
@@ -155,7 +155,7 @@ class ImplAlarmRepository implements AlarmRepository {
             )
             .toList();
       }
-      await db.updateAlarm(alarm, repeatDays);
+      await db.saveUpdated(alarm, repeatDays);
     } catch (_) {
       rethrow;
     }
@@ -291,7 +291,7 @@ class ImplAlarmRepository implements AlarmRepository {
   }
 
   @override
-  Future<void> addAlarmSound(String soundPath) async {
+  Future<void> addSound(String soundPath) async {
     try {
       final sound = AlarmSoundsTableCompanion(
         soundFilePath: Value(soundPath),
