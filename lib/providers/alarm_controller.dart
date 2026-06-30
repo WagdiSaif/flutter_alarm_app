@@ -1,22 +1,25 @@
 import 'dart:async';
 import 'dart:developer';
+
+import 'package:alarmapp/data/repositories/alarm_repository.dart';
 import 'package:alarmapp/services/alarm_shared_preference.dart';
 import 'package:alarmapp/core/extensions.dart';
 
 import 'package:alarmapp/data/models/alarm_model.dart';
 import 'package:alarmapp/services/alarm_scheduler.dart';
-import 'package:alarmapp/services/alarm_service.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 
 class AlarmController {
-  AlarmController(this.alarmService, this.scheduler);
-  final AlarmService alarmService;
-  final AlarmScheduler scheduler;
+  AlarmController(this.scheduler, {required AlarmRepository repository})
+    : _repository = repository;
 
-  Stream<List<AlarmModel>> get alarmStream => alarmService.watchAlarms();
+  final AlarmScheduler scheduler;
+  final AlarmRepository _repository;
+
+  Stream<List<AlarmModel>> get alarmStream => _repository.streamAlarm();
 
   Future<bool> addAlarm({
     required TimeOfDay selectedTime,
@@ -35,7 +38,7 @@ class AlarmController {
     );
 
     // Save to DB
-    final isSaved = await alarmService.addAlarm(alarm);
+    final isSaved = await _repository.saveAlarm(alarm);
 
     if (!isSaved) return false;
 
@@ -45,22 +48,23 @@ class AlarmController {
     } catch (e, stack) {
       log(e.toString(), error: e, stackTrace: stack);
 
-      await alarmService.deleteAlarmById(alarmId);
+      await _repository.deleteAlarmById(alarmId);
+
       return false;
     }
   }
 
   Future<void> rescheduleAlarms() async {
     if (await scheduler.isRinging) return;
-    var activeAlarms = await alarmService.getAllAlarms();
+    var activeAlarms = await _repository.fetchAllAlarms();
 
+    if (activeAlarms.isEmpty) return;
     try {
       final restoredAlarms = await scheduler.reschedulePresentAlarms(
         activeAlarms,
       );
-      await alarmService.insertAll(restoredAlarms);
+      await _repository.saveAllAlarms(restoredAlarms);
     } catch (e, stack) {
-      debugPrintStack(label: e.toString(), stackTrace: stack);
       log(e.toString(), error: e, stackTrace: stack);
     }
   }
@@ -68,12 +72,11 @@ class AlarmController {
   Future<bool> updateAlarm(AlarmModel updatedAlarm) async {
     try {
       if (!updatedAlarm.isEnabled) {
-        final isUpdated = await alarmService.updateAlarm(updatedAlarm);
+        final isUpdated = await _repository.saveUpdatedAlarm(updatedAlarm);
         return isUpdated;
       }
       final scheduledAlarm = await scheduler.updateScheduledAlarm(updatedAlarm);
-
-      final isUpdated = await alarmService.updateAlarm(scheduledAlarm);
+      final isUpdated = await _repository.saveUpdatedAlarm(scheduledAlarm);
 
       return isUpdated;
     } catch (e, stack) {
@@ -89,7 +92,7 @@ class AlarmController {
     } catch (e, stack) {
       log(e.toString(), error: e, stackTrace: stack);
     }
-    return await alarmService.deleteAlarmById(alarm.alarmId);
+    return await _repository.deleteAlarmById(alarm.alarmId);
   }
 
   Future<bool> toggleAlarm(AlarmModel alarm) async {
@@ -103,7 +106,9 @@ class AlarmController {
     } catch (e, stack) {
       log(e.toString(), error: e, stackTrace: stack);
     }
-    return await alarmService.updateAlarm(alarm.copyWith(isEnabled: newState));
+    return await _repository.saveUpdatedAlarm(
+      alarm.copyWith(isEnabled: newState),
+    );
   }
 
   Future<bool> canNavigateToRingingScreen(int id) async {
@@ -131,7 +136,9 @@ class AlarmController {
     return isNavigationAllowed;
   }
 
-  Stream<List<Map<String, dynamic>>> get sounds => alarmService.streamSounds();
-  Future<void> addCustomSound(String path) async => alarmService.addSound(path);
-  Future<void> deleteSound(int id) async => alarmService.removeSound(id);
+  Stream<List<Map<String, dynamic>>> get sounds => _repository.alarmsSlounds();
+  Future<void> addCustomSound(String path) async =>
+      await _repository.addSound(path);
+  Future<void> deleteSound(int id) async =>
+      await _repository.removeSoundById(id);
 }

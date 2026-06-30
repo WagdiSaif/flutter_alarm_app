@@ -15,7 +15,6 @@ import 'package:alarmapp/providers/alarm_controller.dart';
 import 'package:alarmapp/services/time_manager.dart';
 import 'package:alarmapp/services/alarm_permission.dart';
 import 'package:alarmapp/services/alarm_scheduler.dart';
-import 'package:alarmapp/services/alarm_service.dart';
 
 import 'package:alarmapp/ui/widgets/alarm_bottom_sheet.dart';
 
@@ -37,18 +36,16 @@ final alarmRepositoryProvider = Provider<AlarmRepository>((ref) {
 
   return ImplAlarmRepository(db);
 });
-final serviceProvider = Provider<AlarmService>((ref) {
-  final repository = ref.watch(alarmRepositoryProvider);
-  return AlarmService(repository);
-});
+
 final schedulerProvider = Provider<AlarmScheduler>((ref) {
   return AlarmScheduler();
 });
 final alarmControllerProvider = Provider<AlarmController>((ref) {
-  final service = ref.watch(serviceProvider);
+  final repository = ref.watch(alarmRepositoryProvider);
+
   final scheduler = ref.watch(schedulerProvider);
 
-  return AlarmController(service, scheduler);
+  return AlarmController(scheduler, repository: repository);
 });
 final alarmProvider = StreamProvider.autoDispose<List<AlarmModel>>((ref) {
   final alarms = ref.watch(alarmControllerProvider);

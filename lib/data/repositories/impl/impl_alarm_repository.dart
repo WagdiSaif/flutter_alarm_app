@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alarmapp/data/database/app_database.dart';
 import 'package:alarmapp/core/extensions.dart';
 import 'package:alarmapp/data/models/alarm_days_model.dart';
@@ -13,7 +15,7 @@ class ImplAlarmRepository implements AlarmRepository {
   final AlarmDatabase db;
   ImplAlarmRepository(this.db);
   @override
-  Future<void> saveAlarm(AlarmModel alarmDetails) async {
+  Future<bool> saveAlarm(AlarmModel alarmDetails) async {
     try {
       List<AlarmDaysTableCompanion> repeatDays = [];
       final alarm = AlarmsTableCompanion(
@@ -39,8 +41,10 @@ class ImplAlarmRepository implements AlarmRepository {
             .toList();
       }
       await db.saveAlarm(alarm, repeatDays);
-    } catch (_) {
-      rethrow;
+      return true;
+    } catch (e, stack) {
+      log('Failed to Add  an Alarm ', error: e, stackTrace: stack);
+      return false;
     }
   }
 
@@ -93,44 +97,48 @@ class ImplAlarmRepository implements AlarmRepository {
       //First Fetch Alarm Data
       final alarmData = await db.fetchAlarmById(alarmId);
       final repeatedDays = await db.fetchAlarmRepeatedDays(alarmId);
-      if (alarmData != null) {
-        final alarmDetails = AlarmModel(
-          soundPath: alarmData.soundPath,
-          alarmId: alarmData.alarmId,
-          firedTime: alarmData.firedTimeMinutes.toTimeOfDay,
-          nextTrigger: alarmData.nextTrigger.toLocalTz,
-          createdDate: alarmData.createdDate.toLocalTz,
-          title: alarmData.title,
-          name: alarmData.name,
-          isEnabled: alarmData.isEnabled,
-          vibrate: alarmData.vibrate,
-        );
+      if (alarmData == null) return null;
+      final alarmDetails = AlarmModel(
+        soundPath: alarmData.soundPath,
+        alarmId: alarmData.alarmId,
+        firedTime: alarmData.firedTimeMinutes.toTimeOfDay,
+        nextTrigger: alarmData.nextTrigger.toLocalTz,
+        createdDate: alarmData.createdDate.toLocalTz,
+        title: alarmData.title,
+        name: alarmData.name,
+        isEnabled: alarmData.isEnabled,
+        vibrate: alarmData.vibrate,
+      );
 
-        if (repeatedDays.isEmpty) return alarmDetails;
-        final days = repeatedDays
-            .map(
-              (d) => AlarmDaysModel(
-                alarmId: d.alarmId,
-                excutionId: d.excutionId,
-                repeatedDays: d.repeatDays,
-              ),
-            )
-            .toList();
-        return alarmDetails.copyWith(alarmDaysModel: days);
-      }
-    } catch (_) {
-      rethrow;
+      if (repeatedDays.isEmpty) return alarmDetails;
+      final days = repeatedDays
+          .map(
+            (d) => AlarmDaysModel(
+              alarmId: d.alarmId,
+              excutionId: d.excutionId,
+              repeatedDays: d.repeatDays,
+            ),
+          )
+          .toList();
+      return alarmDetails.copyWith(alarmDaysModel: days);
+    } catch (e, stack) {
+      log('Failed to get  an Alarm ', error: e, stackTrace: stack);
+      return null;
     }
-    return null;
   }
 
   @override
-  Future<int> removeAlarmById(int alarmId) async {
-    return await db.deleteAlarmById(alarmId);
+  Future<bool> deleteAlarmById(int alarmId) async {
+    try {
+      return await db.deleteAlarmById(alarmId) > 0;
+    } catch (e, stack) {
+      log('Failed to Delete  an Alarm ', error: e, stackTrace: stack);
+      return false;
+    }
   }
 
   @override
-  Future<void> saveUpdatedAlarm(AlarmModel alarmDetails) async {
+  Future<bool> saveUpdatedAlarm(AlarmModel alarmDetails) async {
     try {
       List<AlarmDaysTableCompanion> repeatDays = [];
       final alarm = AlarmsTableCompanion(
@@ -156,8 +164,10 @@ class ImplAlarmRepository implements AlarmRepository {
             .toList();
       }
       await db.saveUpdated(alarm, repeatDays);
-    } catch (_) {
-      rethrow;
+      return true;
+    } catch (e, stack) {
+      log('Failed to Update  an Alarm ', error: e, stackTrace: stack);
+      return false;
     }
   }
 
@@ -188,8 +198,9 @@ class ImplAlarmRepository implements AlarmRepository {
       );
 
       return data;
-    } catch (_) {
-      rethrow;
+    } catch (e, stack) {
+      log('Failed to fetch   All Alarms ', error: e, stackTrace: stack);
+      return <AlarmModel>[];
     }
   }
 
@@ -245,13 +256,14 @@ class ImplAlarmRepository implements AlarmRepository {
       );
 
       return data;
-    } catch (_) {
-      rethrow;
+    } catch (e, stack) {
+      log('Failed to fetch   Active Alarms ', error: e, stackTrace: stack);
+      return <AlarmModel>[];
     }
   }
 
   @override
-  Future<void> saveAllAlarms(List<AlarmModel> alarm) async {
+  Future<bool> saveAllAlarms(List<AlarmModel> alarm) async {
     List<AlarmDaysTableCompanion> repeatDays = [];
     try {
       final data = await Future.wait(
@@ -285,21 +297,25 @@ class ImplAlarmRepository implements AlarmRepository {
         }).toList(),
       );
       await db.saveAllAlarms(data, repeatDays);
-    } catch (_) {
-      rethrow;
+      return true;
+    } catch (e, stack) {
+      log('Failed to Save   All Alarms ', error: e, stackTrace: stack);
+      return false;
     }
   }
 
   @override
-  Future<void> addSound(String soundPath) async {
+  Future<bool> addSound(String soundPath) async {
     try {
       final sound = AlarmSoundsTableCompanion(
         soundFilePath: Value(soundPath),
         createDateTime: Value(DateTime.now().toLocalTz),
       );
       await db.insertSound(sound);
-    } catch (_) {
-      rethrow;
+      return true;
+    } catch (e, stack) {
+      log('Failed to add Sound ', error: e, stackTrace: stack);
+      return false;
     }
   }
 
@@ -323,11 +339,13 @@ class ImplAlarmRepository implements AlarmRepository {
   }
 
   @override
-  Future<void> removeSoundById(int id) async {
+  Future<bool> removeSoundById(int id) async {
     try {
       await db.deleteSound(id);
-    } catch (_) {
-      rethrow;
+      return true;
+    } catch (e, stack) {
+      log('Failed to remove Sound ', error: e, stackTrace: stack);
+      return false;
     }
   }
 }

@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
+
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
 import 'package:alarmapp/services/alarm_shared_preference.dart';
-import 'package:alarmapp/core/exceptions/database_exceptions.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:alarmapp/core/enum/enums.dart';
@@ -59,31 +58,17 @@ class AlarmScheduler {
   }
 
   Future<void> cancelScheduledAlarm(AlarmModel dbAlarm) async {
-    try {
-      if (dbAlarm.alarmDaysModel.isEmpty) {
-        await stopAlarm(dbAlarm.alarmId);
-        return;
-      }
-      final relatedAlarms = {
-        ...dbAlarm.alarmDaysModel
-            .where((e) => e.excutionId != null)
-            .map((exId) => exId.excutionId!),
-      };
-
-      await Future.wait(relatedAlarms.map(Alarm.stop));
-    } catch (e, stack) {
-      throw ScheduleFailure(e, stack);
+    if (dbAlarm.alarmDaysModel.isEmpty) {
+      await stopAlarm(dbAlarm.alarmId);
+      return;
     }
-  }
+    final relatedAlarms = {
+      ...dbAlarm.alarmDaysModel
+          .where((e) => e.excutionId != null)
+          .map((exId) => exId.excutionId!),
+    };
 
-  Future<bool> stopAllAlarms() async {
-    try {
-      await Alarm.stopAll();
-
-      return true;
-    } catch (e) {
-      return false;
-    }
+    await Future.wait(relatedAlarms.map(Alarm.stop));
   }
 
   // Snooze alarm
@@ -104,23 +89,10 @@ class AlarmScheduler {
     );
   }
 
-  Future<List<AlarmSettings>> getActiveAlarms() async {
-    try {
-      return await Alarm.getAlarms();
-    } catch (e, stack) {
-      log(' Failed to get active alarms: $e', stackTrace: stack);
-      return [];
-    }
-  }
-
   Future<void> scheduleAlarm(AlarmModel alarm) async {
-    try {
-      if (!alarm.isEnabled) return;
+    if (!alarm.isEnabled) return;
 
-      await _setAlarm(alarm);
-    } catch (e, stack) {
-      throw ScheduleFailure(e, stack);
-    }
+    await _setAlarm(alarm);
   }
 
   Future<bool> get isRinging async => await Alarm.isRinging();
@@ -128,78 +100,70 @@ class AlarmScheduler {
   Future<List<AlarmModel>> reschedulePresentAlarms(
     List<AlarmModel> activeAlarms,
   ) async {
-    try {
-      if (await isRinging || activeAlarms.isEmpty) {
-        return activeAlarms;
-      }
-
-      return await Future.wait(
-        activeAlarms.map((al) {
-          return _recheduleNextOccurrence(al);
-        }).toList(),
-      );
-    } catch (_) {
-      rethrow;
+    if (await isRinging || activeAlarms.isEmpty) {
+      return activeAlarms;
     }
+
+    return await Future.wait(
+      activeAlarms.map((al) {
+        return _recheduleNextOccurrence(al);
+      }).toList(),
+    );
   }
 
   Future<AlarmModel> _recheduleNextOccurrence(AlarmModel alarm) async {
-    try {
-      if (!alarm.isEnabled) return alarm;
-      if (alarm.alarmDaysModel.isEmpty) {
-        final updatedAlarm = await _enureValidNextTriggerTime(alarm);
-        await _setAlarm(updatedAlarm);
+    if (!alarm.isEnabled) return alarm;
+    if (alarm.alarmDaysModel.isEmpty) {
+      final updatedAlarm = await _enureValidNextTriggerTime(alarm);
+      await _setAlarm(updatedAlarm);
 
-        return updatedAlarm;
-      }
-
-      final relatedAlarms = {
-        alarm.alarmId,
-        ...alarm.alarmDaysModel
-            .where((e) => e.excutionId != null)
-            .map((alrm) => alrm.excutionId!),
-      };
-
-      await Future.wait(relatedAlarms.map(Alarm.stop));
-
-      final validDays = alarm.alarmDaysModel
-          .where((day) => day.repeatedDays != null && day.excutionId != null)
-          .toList();
-
-      final nowDateTime = tz.TZDateTime.now(tz.local);
-      final searchStart = tz.TZDateTime(
-        tz.local,
-        nowDateTime.year,
-        nowDateTime.month,
-        nowDateTime.day,
-        alarm.firedTime.hour,
-        alarm.firedTime.minute,
-      );
-
-      alarm = alarm.copyWith(
-        nextTrigger: searchStart,
-      ); //Move Base Time to Currentlly
-      await Future.wait(
-        validDays.map((day) async {
-          final nextTriggerTime = _calculateNextRepeat(
-            alarm.nextTrigger,
-            day.repeatedDays!,
-            alarm.firedTime,
-          );
-
-          final updatedAlarm = alarm.copyWith(
-            alarmId: day.excutionId!,
-            nextTrigger: nextTriggerTime,
-          );
-
-          return _setAlarm(updatedAlarm);
-        }),
-      );
-
-      return alarm;
-    } catch (e, stack) {
-      throw ScheduleFailure(e, stack);
+      return updatedAlarm;
     }
+
+    final relatedAlarms = {
+      alarm.alarmId,
+      ...alarm.alarmDaysModel
+          .where((e) => e.excutionId != null)
+          .map((alrm) => alrm.excutionId!),
+    };
+
+    await Future.wait(relatedAlarms.map(Alarm.stop));
+
+    final validDays = alarm.alarmDaysModel
+        .where((day) => day.repeatedDays != null && day.excutionId != null)
+        .toList();
+
+    final nowDateTime = tz.TZDateTime.now(tz.local);
+    final searchStart = tz.TZDateTime(
+      tz.local,
+      nowDateTime.year,
+      nowDateTime.month,
+      nowDateTime.day,
+      alarm.firedTime.hour,
+      alarm.firedTime.minute,
+    );
+
+    alarm = alarm.copyWith(
+      nextTrigger: searchStart,
+    ); //Move Base Time to Currentlly
+    await Future.wait(
+      validDays.map((day) async {
+        final nextTriggerTime = _calculateNextRepeat(
+          alarm.nextTrigger,
+          day.repeatedDays!,
+          alarm.firedTime,
+        );
+
+        final updatedAlarm = alarm.copyWith(
+          alarmId: day.excutionId!,
+          nextTrigger: nextTriggerTime,
+        );
+
+        return _setAlarm(updatedAlarm);
+      }),
+    );
+
+    return alarm;
   }
 
   Future<AlarmModel> _enureValidNextTriggerTime(AlarmModel alarm) async {
@@ -274,55 +238,51 @@ class AlarmScheduler {
   }
 
   Future<AlarmModel> updateScheduledAlarm(AlarmModel alarmToSchedule) async {
-    try {
-      if (!alarmToSchedule.isEnabled) alarmToSchedule;
-      var updatedAlarm = await _scheduleRepeatDays(alarmToSchedule);
+    if (!alarmToSchedule.isEnabled) alarmToSchedule;
+    var updatedAlarm = await _scheduleRepeatDays(alarmToSchedule);
 
-      if (updatedAlarm.alarmDaysModel.isEmpty) {
-        final alarm = await _enureValidNextTriggerTime(updatedAlarm);
+    if (updatedAlarm.alarmDaysModel.isEmpty) {
+      final alarm = await _enureValidNextTriggerTime(updatedAlarm);
 
-        await _setAlarm(alarm);
-        return alarm;
-      }
-      final nowDateTime = tz.TZDateTime.now(tz.local);
-      final searchStart = tz.TZDateTime(
-        tz.local,
-        nowDateTime.year,
-        nowDateTime.month,
-        nowDateTime.day,
-        updatedAlarm.firedTime.hour,
-        updatedAlarm.firedTime.minute,
-      );
-      updatedAlarm = updatedAlarm.copyWith(
-        nextTrigger: searchStart,
-      ); //Move Base Time to Current Tiem
-      await stopAlarm(updatedAlarm.alarmId);
-
-      final validDays = updatedAlarm.alarmDaysModel
-          .where((day) => day.repeatedDays != null && day.excutionId != null)
-          .toList();
-
-      await Future.wait(
-        validDays.map((day) async {
-          final nextTriggerTime = _calculateNextRepeat(
-            updatedAlarm.nextTrigger,
-            day.repeatedDays!,
-            updatedAlarm.firedTime,
-          );
-
-          final nextAlarm = updatedAlarm.copyWith(
-            alarmId: day.excutionId!,
-            nextTrigger: nextTriggerTime,
-          );
-
-          return _setAlarm(nextAlarm);
-        }),
-      );
-
-      return updatedAlarm;
-    } catch (e, stack) {
-      throw ScheduleFailure(e, stack);
+      await _setAlarm(alarm);
+      return alarm;
     }
+    final nowDateTime = tz.TZDateTime.now(tz.local);
+    final searchStart = tz.TZDateTime(
+      tz.local,
+      nowDateTime.year,
+      nowDateTime.month,
+      nowDateTime.day,
+      updatedAlarm.firedTime.hour,
+      updatedAlarm.firedTime.minute,
+    );
+    updatedAlarm = updatedAlarm.copyWith(
+      nextTrigger: searchStart,
+    ); //Move Base Time to Current Tiem
+    await stopAlarm(updatedAlarm.alarmId);
+
+    final validDays = updatedAlarm.alarmDaysModel
+        .where((day) => day.repeatedDays != null && day.excutionId != null)
+        .toList();
+
+    await Future.wait(
+      validDays.map((day) async {
+        final nextTriggerTime = _calculateNextRepeat(
+          updatedAlarm.nextTrigger,
+          day.repeatedDays!,
+          updatedAlarm.firedTime,
+        );
+
+        final nextAlarm = updatedAlarm.copyWith(
+          alarmId: day.excutionId!,
+          nextTrigger: nextTriggerTime,
+        );
+
+        return _setAlarm(nextAlarm);
+      }),
+    );
+
+    return updatedAlarm;
   }
 
   tz.TZDateTime _calculateNextRepeat(

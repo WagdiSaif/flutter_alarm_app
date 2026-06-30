@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:alarmapp/core/exceptions/database_exceptions.dart';
 import 'package:alarmapp/data/database/tables/alarms_table.dart';
 
 import 'package:drift/drift.dart';
 import 'package:alarmapp/core/constants/constant.dart';
-import 'package:drift/native.dart';
+
 import 'package:drift_flutter/drift_flutter.dart';
 
 import 'package:alarmapp/core/enum/enums.dart';
@@ -44,10 +43,8 @@ class AlarmDatabase extends _$AlarmDatabase {
           });
         });
       }
-    } on SqliteException catch (e, stack) {
-      throw DataBaseFailure(e, stack);
-    } catch (e, stack) {
-      throw UnExcepectedFailure(e, stack);
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -84,10 +81,8 @@ class AlarmDatabase extends _$AlarmDatabase {
           });
         });
       }
-    } on SqliteException catch (e, stack) {
-      throw DataBaseFailure(e, stack);
-    } catch (e, stack) {
-      throw UnExcepectedFailure(e, stack);
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -113,10 +108,8 @@ class AlarmDatabase extends _$AlarmDatabase {
           });
         }
       });
-    } on SqliteException catch (e, stack) {
-      throw DataBaseFailure(e, stack);
-    } catch (e, stack) {
-      throw UnExcepectedFailure(e, stack);
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -190,10 +183,8 @@ class AlarmDatabase extends _$AlarmDatabase {
       return await (select(
         (alarmsTable),
       )..where((u) => u.alarmId.equals(id))).getSingleOrNull();
-    } on SqliteException catch (e, stack) {
-      throw DataBaseFailure(e, stack);
-    } catch (e, stack) {
-      throw UnExcepectedFailure(e, stack);
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -202,10 +193,8 @@ class AlarmDatabase extends _$AlarmDatabase {
       return await (select(
         (alarmDaysTable),
       )..where((u) => u.alarmId.equals(id))).get();
-    } on SqliteException catch (e, stack) {
-      throw DataBaseFailure(e, stack);
-    } catch (e, stack) {
-      throw UnExcepectedFailure(e, stack);
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -217,20 +206,16 @@ class AlarmDatabase extends _$AlarmDatabase {
   Future<void> insertSound(AlarmSoundsTableCompanion sound) async {
     try {
       await into(alarmSoundsTable).insertOnConflictUpdate(sound);
-    } on SqliteException catch (e, stack) {
-      throw DataBaseFailure(e, stack);
-    } catch (e, stack) {
-      throw UnExcepectedFailure(e, stack);
+    } catch (_) {
+      rethrow;
     }
   }
 
   Future<void> deleteSound(int id) async {
     try {
       await (delete(alarmSoundsTable)..where((u) => u.id.equals(id))).go();
-    } on SqliteException catch (e, stack) {
-      throw DataBaseFailure(e, stack);
-    } catch (e, stack) {
-      throw UnExcepectedFailure(e, stack);
+    } catch (_) {
+      rethrow;
     }
   }
 
