@@ -377,9 +377,9 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     }
 
     if (!context.mounted) return false;
-    final result = await PermissoinDialog.showPermissionGuideline(context);
+    final isConfirmed  = await PermissoinDialog.showPermissionGuideline(context);
 
-    if (result != true) {
+    if (isConfirmed!= true) {
       return false;
     }
 
