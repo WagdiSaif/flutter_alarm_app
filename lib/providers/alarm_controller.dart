@@ -137,8 +137,8 @@ class AlarmController {
   }
 
   Stream<List<Map<String, dynamic>>> get sounds => _repository.alarmsSlounds();
-  Future<void> addCustomSound(String path) async =>
-      await _repository.addSound(path);
-  Future<void> deleteSound(int id) async =>
-      await _repository.removeSoundById(id);
+  Future<void> addCustomSound(String path)  =>
+       _repository.addSound(path);
+  Future<void> deleteSound(int id)  =>
+       _repository.removeSoundById(id);
 }
