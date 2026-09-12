@@ -37,14 +37,17 @@ class AlarmScheduler {
 
       warningNotificationOnKill: Platform.isIOS,
       androidFullScreenIntent: true,
+
       volumeSettings: VolumeSettings.fade(
         volume: 0.7,
         fadeDuration: const Duration(seconds: 5),
         volumeEnforced: false,
       ),
       notificationSettings: NotificationSettings(
+        androidStopAlarmOnDismiss: false,
         title: alarm.title,
         body: alarm.name,
+        icon: 'ic_bg_service_notification',
         stopButton: 'STOP',
         androidSnoozeButton: "Snooze",
       ),

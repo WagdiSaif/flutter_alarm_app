@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await PlatformInitializer.instance.initialize();
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => SizerUitles(builder: (context) => HomeScreen()),
         '/ringingScreen': (context) => RingingAlarmScreen(),
       },
-
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Alarm App ',
       theme: AppTheme.theme,

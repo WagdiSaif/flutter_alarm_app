@@ -10,7 +10,6 @@ import 'package:alarmapp/ui/stopwatch_screen.dart';
 import 'package:alarmapp/ui/timer_preset_screeen.dart';
 import 'package:flutter/services.dart';
 
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AppLifecycleHandler {

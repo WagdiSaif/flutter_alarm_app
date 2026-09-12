@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:battery_optimization_helper/battery_optimization_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class AlarmPermission {
-  Future<void> _checkBatteryOptimizationDisabled() async {
+class PermissionHelpers {
+  static Future<void> requestBatteryOptimization() async {
     try {
       bool isEnabled =
           await BatteryOptimizationHelper.isBatteryOptimizationEnabled();
@@ -43,6 +43,7 @@ class AlarmPermission {
     final requestResults = await [
       Permission.scheduleExactAlarm,
       Permission.notification,
+      Permission.systemAlertWindow,
     ].request();
 
     final isAllow = requestResults.values.every(
@@ -50,7 +51,7 @@ class AlarmPermission {
     );
 
     if (isAllow) {
-      await _checkBatteryOptimizationDisabled();
+      await requestBatteryOptimization();
       return true;
     }
     if (requestResults.values.any(

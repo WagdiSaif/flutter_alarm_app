@@ -80,8 +80,7 @@ class AndroidForegroundService {
         eventAction: isRepeat
             ? ForegroundTaskEventAction.repeat(1000) //repeat per second
             : ForegroundTaskEventAction.nothing(),
-        // autoRunOnBoot: true,
-        //  autoRunOnMyPackageReplaced: true,
+
         allowWakeLock: false,
         allowWifiLock: true,
         allowAutoRestart: false,

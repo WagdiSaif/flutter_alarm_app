@@ -15,7 +15,6 @@ import 'package:timezone/timezone.dart' as tz;
 class AlarmController {
   AlarmController(this.scheduler, {required this._repository});
 
-
   final AlarmScheduler scheduler;
   final AlarmRepository _repository;
 

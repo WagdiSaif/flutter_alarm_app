@@ -9,9 +9,10 @@ import 'package:alarmapp/foreground_service/android_platform/android_foreground_
 import 'package:alarmapp/foreground_service/app_lifecycle_handler.dart';
 import 'package:alarmapp/foreground_service/ios_platform/ios_foreground_service.dart';
 import 'package:alarmapp/foreground_service/platform_initializer.dart';
-import 'package:alarmapp/services/alarm_permission.dart';
-import 'package:alarmapp/services/alarm_shared_preference.dart';
+import 'package:alarmapp/main.dart';
 
+import 'package:alarmapp/services/alarm_shared_preference.dart';
+import 'package:alarmapp/services/permission_helper.dart';
 
 import 'package:alarmapp/ui/stopwatch_screen.dart';
 import 'package:alarmapp/ui/timer_preset_screeen.dart';
@@ -84,8 +85,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (!context.mounted) return;
 
-    Navigator.of(context)
-        .pushNamed(
+    navigatorKey.currentState
+        ?.pushNamed(
           '/ringingScreen',
           arguments: <String, dynamic>{
             "firedTime": firedTime,
@@ -140,7 +141,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
     );
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await AlarmPermission().requestNotificationPermission();
+      await PermissionHelpers().requestNotificationPermission();
 
       await ref.read(appLifecycleHandlerProvider).onResume();
 

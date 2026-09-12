@@ -7,6 +7,7 @@ import 'package:alarmapp/data/database/app_database.dart';
 import 'package:alarmapp/core/utils/functions.dart';
 import 'package:alarmapp/data/repositories/alarm_repository.dart';
 import 'package:alarmapp/data/repositories/impl/impl_alarm_repository.dart';
+import 'package:alarmapp/services/permission_helper.dart';
 
 import 'package:alarmapp/sizer.dart';
 import 'package:alarmapp/ui/widgets/permissoin_dialog.dart';
@@ -15,13 +16,11 @@ import 'package:alarmapp/data/models/alarm_model.dart';
 
 import 'package:alarmapp/providers/alarm_controller.dart';
 
-import 'package:alarmapp/services/alarm_permission.dart';
 import 'package:alarmapp/services/alarm_scheduler.dart';
 
 import 'package:alarmapp/ui/widgets/alarm_bottom_sheet.dart';
 
 import 'package:flutter/material.dart';
-
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -393,7 +392,7 @@ class _AddAlarmScreen extends ConsumerState<AddAlarmScreen> {
     }
 
     if (!context.mounted) return false;
-    final requestedPermission = await AlarmPermission()
+    final requestedPermission = await PermissionHelpers()
         .requestNotificationPermission();
 
     return requestedPermission;
