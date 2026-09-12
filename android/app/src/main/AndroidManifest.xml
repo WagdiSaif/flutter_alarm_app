@@ -7,64 +7,62 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
-<!-- services -->
+    
+    <!-- FIX 1: Change USE_EXACT_ALARM to SCHEDULE_EXACT_ALARM for Android 14 compatibility -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+
+    <!-- services -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-<!-- wake up -->
+    
+    <!-- wake up & Xiaomi specific -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <uses-permission android:name="com.miui.securitycenter.permission.AppAutoStart" /> 
-
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application android:name="${applicationName}" android:label="الساعة" android:icon="@mipmap/ic_launcher" android:enableOnBackInvokedCallback="true">
-<!--forground service-->
+        
+        <!-- foreground service -->
         <service
-   
             android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
-            android:foregroundServiceType="dataSync"
-              android:stopWithTask="false" 
+            android:foregroundServiceType="dataSync|mediaPlayback"
+            android:stopWithTask="false" 
             android:exported="false" />
 
-<!--        Alarm-->
+        <!-- Alarm Service -->
+        <service
+            android:name="com.gdelataillade.alarm.services.AlarmService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false" />
 
+<receiver android:name="com.gdelataillade.alarm.services.AlarmReceiver" android:exported="false">
+    <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+    </intent-filter>
+</receiver>
 
-
-    <service
-           android:name="com.gdelataillade.alarm.services.AlarmService"
-           android:foregroundServiceType="mediaPlayback"
-          android:exported="false" />
-
-      
-
-        
-
-<!--local Notification-->
+        <!-- local Notification -->
         <receiver
             android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
             android:exported="false" />
-
-       
             
-        <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop" android:taskAffinity="" android:theme="@style/LaunchTheme" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize" android:showWhenLocked="true" android:turnScreenOn="true" android:excludeFromRecents="true" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
+        <!-- FIX 2: Removed android:excludeFromRecents="true" to prevent Xiaomi from immediately freezing the app -->
+        <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop" android:taskAffinity="" android:theme="@style/LaunchTheme" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize" android:showWhenLocked="true" android:turnScreenOn="true" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
 
             <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme"/>
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-
- 
-               
             </intent-filter>
         </activity>
 
         <!-- Flutter embedding -->
         <meta-data android:name="flutterEmbedding" android:value="2"/>
 
-
     </application>
-
 
     <queries>
         <intent>

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'dart:io';
 
 import 'package:alarm/alarm.dart';
 import 'package:alarmapp/core/utils/functions.dart';
@@ -26,6 +25,8 @@ class AlarmScheduler {
     final alarmSettings = AlarmSettings(
       androidStopAlarmOnTermination: false,
       id: alarm.alarmId,
+
+ 
       allowAlarmOverlap: false,
       dateTime: alarm.nextTrigger,
       assetAudioPath: alarm.soundPath,
@@ -35,7 +36,7 @@ class AlarmScheduler {
       allowSameSecondScheduling: false,
       androidSnoozeDuration: Duration(minutes: 2),
 
-      warningNotificationOnKill: Platform.isIOS,
+      warningNotificationOnKill: true,
       androidFullScreenIntent: true,
 
       volumeSettings: VolumeSettings.fade(
@@ -45,6 +46,7 @@ class AlarmScheduler {
       ),
       notificationSettings: NotificationSettings(
         androidStopAlarmOnDismiss: false,
+        
         title: alarm.title,
         body: alarm.name,
         icon: 'ic_bg_service_notification',

@@ -26,7 +26,7 @@ class AndroidNotifications {
 
   Future<void> createNotification({
     StopwatchButtonAction? buttonAction,
-    int id = 12,
+    int id = 500,
 
     String? title,
     String? body,

@@ -26,8 +26,7 @@ class ForegroundServiceHandler extends TaskHandler {
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     try {
-      await androidForegroundService.reloadPreferences();
-      // await androidForegroundService.clearAllData();
+     
       final service = _activeService = await androidForegroundService
           .determineActiveService();
       String text = androidForegroundService.notificationText(service);
@@ -165,7 +164,8 @@ class ForegroundServiceHandler extends TaskHandler {
 
   @override
   Future<void> onRepeatEvent(DateTime timestamp) async {
-    try {
+    try {    
+    
       //Case 1:Maybe Both services are Runinng or Just Timer.
       if (_activeService == ActiveService.timer ||
           _activeService == ActiveService.both) {
@@ -176,13 +176,14 @@ class ForegroundServiceHandler extends TaskHandler {
           _activeService = ActiveService.stopwatch;
         }
       }
+      
       final stopwatchState = androidForegroundService.retrieveStopwatchSate();
 
       //Case 2:Both Timer and Stopwatch are Running.
       _stopwatch ??= Stopwatch();
       if (_activeService == ActiveService.both) {
         if (stopwatchState != null) {
-          await androidForegroundService.reloadPreferences();
+      
           final action = androidForegroundService.stopwatchButtonAction();
           final name = StopwatchButtonAction.byname(action ?? '');
 
@@ -517,7 +518,7 @@ class ForegroundServiceHandler extends TaskHandler {
 
   Future<void> _onAddLapStopwatch() async {
     await androidForegroundService.addLap();
-    await androidForegroundService.reloadPreferences();
+   
     final data = androidForegroundService.retrieveBackgroundStopwatchState();
 
     if (data == null) return;

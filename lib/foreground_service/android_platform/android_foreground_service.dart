@@ -64,8 +64,8 @@ class AndroidForegroundService {
   static final _androidNotificationOptions = AndroidNotificationOptions(
     channelImportance: NotificationChannelImportance.MIN,
     priority: NotificationPriority.MIN,
-    channelId: 'forground_channel_iden',
-    channelName: 'forground_channel_name_iden',
+    channelId: 'forground_channel_new',
+    channelName: 'forground_channel_name_new',
     playSound: false,
     showWhen: true,
 
@@ -77,13 +77,14 @@ class AndroidForegroundService {
 
   static ForegroundTaskOptions _foregroundTaskOptions([bool isRepeat = true]) =>
       ForegroundTaskOptions(
+        
         eventAction: isRepeat
             ? ForegroundTaskEventAction.repeat(1000) //repeat per second
             : ForegroundTaskEventAction.nothing(),
-
-        allowWakeLock: false,
+autoRunOnBoot: false,
+        allowWakeLock: true,
         allowWifiLock: true,
-        allowAutoRestart: false,
+        allowAutoRestart: true,
       );
 
   static Future<void> initializationService() async {
@@ -91,10 +92,12 @@ class AndroidForegroundService {
     FlutterForegroundTask.initCommunicationPort();
 
     FlutterForegroundTask.init(
+      
       androidNotificationOptions: _androidNotificationOptions,
       iosNotificationOptions: IOSNotificationOptions(
         playSound: false,
         showNotification: false,
+        
       ),
       foregroundTaskOptions: _foregroundTaskOptions(),
     );
@@ -117,8 +120,9 @@ class AndroidForegroundService {
     final text = notificationText(service);
 
     await FlutterForegroundTask.startService(
+      serviceId: 90,
       notificationTitle: '',
-
+serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayback],
       notificationText: text,
       callback: startForgroundService,
     );
@@ -190,10 +194,7 @@ class AndroidForegroundService {
 
   Future<void> saveStopwatchButtonAction(String actionName) async {
     await sharedPreferences.setString(stopwatchButtonActionKey, actionName);
-    // await FlutterForegroundTask.saveData(
-    //   key: stopwatchButtonActionKey,
-    //   value: actionName,
-    // );
+   
   }
 
   String? stopwatchButtonAction() =>
@@ -206,21 +207,18 @@ class AndroidForegroundService {
 
   Future<void> saveTimerButtonAction(String actionName) async {
     await sharedPreferences.setString(timerButtonActionKey, actionName);
-    // await FlutterForegroundTask.saveData(
-    //   key: timerButtonActionKey,
-    //   value: actionName,
-    // );
+
   }
 
   Future<bool> get isRunning => FlutterForegroundTask.isRunningService;
 
   String? timerButtonAction() =>
       sharedPreferences.getString(timerButtonActionKey);
-  // FlutterForegroundTask.getData(key: timerButtonActionKey);
+ 
 
   Future<void> removeTimerButtonAction() =>
       sharedPreferences.remove(timerButtonActionKey);
-  // FlutterForegroundTask.removeData(key: timerButtonActionKey);
+
 
   List<Laps> retrieveLaps() {
     final data = retrieveBackgroundStopwatchState();
@@ -229,7 +227,7 @@ class AndroidForegroundService {
   }
 
   Future<void> addLap() async {
-    await reloadPreferences();
+
 
     final foregroundState = retrieveStopwatchSate();
     final backgroundState = retrieveBackgroundStopwatchState();
@@ -273,10 +271,7 @@ class AndroidForegroundService {
       final dataEncode = jsonEncode(data);
       return await sharedPreferences.setString(stopwatchDataKey, dataEncode);
 
-      // return await FlutterForegroundTask.saveData(
-      //   key: stopwatchDataKey,
-      //   value: dataEncode,
-      // );
+
     } catch (e) {
       log('Failed to Save Lap Data', error: e);
       return false;
@@ -306,10 +301,7 @@ class AndroidForegroundService {
       final dataEncode = jsonEncode(json);
       await sharedPreferences.setString(stopwatchUpdatedDataKey, dataEncode);
 
-      // await FlutterForegroundTask.saveData(
-      //   key: stopwatchUpdatedDataKey,
-      //   value: dataEncode,
-      // );
+      
     } catch (e) {
       log('Failed to Save Background Data', error: e);
     }
@@ -317,9 +309,7 @@ class AndroidForegroundService {
 
   StopwatchState? retrieveBackgroundStopwatchState() {
     final data = sharedPreferences.getString(stopwatchUpdatedDataKey);
-    // final data = await FlutterForegroundTask.getData(
-    //   key: stopwatchUpdatedDataKey,
-    // ) as String?;
+  
     if (data != null) {
       final decodedState = (jsonDecode(data) as Map).cast<String, dynamic>();
 
