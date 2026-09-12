@@ -16,16 +16,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
-//    kotlin {
-//        compilerOptions {
-//            languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_4
-//            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
-//        }
-//    }
-//    kotlinOptions {
-//        jvmTarget = JavaVersion.VERSION_17.toString()
-//
-//    }
+
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -54,9 +45,7 @@ android {
 
         }
     }
-    // lint {
-    //     baseline = file("lint-baseline.xml")
-    // }
+   
 }
 kotlin {
     compilerOptions {
@@ -68,10 +57,9 @@ flutter {
     source = "../.."
 }
 dependencies {
-//    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-//    implementation("androidx.window:window:1.5.1")
-//    implementation("androidx.window:window-java:1.5.1")
+
     implementation("androidx.window:window:1.0.0")
     implementation("androidx.window:window-java:1.0.0")
 }
