@@ -77,11 +77,10 @@ class AndroidForegroundService {
 
   static ForegroundTaskOptions _foregroundTaskOptions([bool isRepeat = true]) =>
       ForegroundTaskOptions(
-        
         eventAction: isRepeat
             ? ForegroundTaskEventAction.repeat(1000) //repeat per second
             : ForegroundTaskEventAction.nothing(),
-autoRunOnBoot: false,
+        autoRunOnBoot: false,
         allowWakeLock: true,
         allowWifiLock: true,
         allowAutoRestart: true,
@@ -92,12 +91,10 @@ autoRunOnBoot: false,
     FlutterForegroundTask.initCommunicationPort();
 
     FlutterForegroundTask.init(
-      
       androidNotificationOptions: _androidNotificationOptions,
       iosNotificationOptions: IOSNotificationOptions(
         playSound: false,
         showNotification: false,
-        
       ),
       foregroundTaskOptions: _foregroundTaskOptions(),
     );
@@ -122,7 +119,10 @@ autoRunOnBoot: false,
     await FlutterForegroundTask.startService(
       serviceId: 90,
       notificationTitle: '',
-serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayback],
+      serviceTypes: [
+        ForegroundServiceTypes.dataSync,
+        ForegroundServiceTypes.mediaPlayback,
+      ],
       notificationText: text,
       callback: startForgroundService,
     );
@@ -194,7 +194,6 @@ serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayb
 
   Future<void> saveStopwatchButtonAction(String actionName) async {
     await sharedPreferences.setString(stopwatchButtonActionKey, actionName);
-   
   }
 
   String? stopwatchButtonAction() =>
@@ -207,18 +206,15 @@ serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayb
 
   Future<void> saveTimerButtonAction(String actionName) async {
     await sharedPreferences.setString(timerButtonActionKey, actionName);
-
   }
 
   Future<bool> get isRunning => FlutterForegroundTask.isRunningService;
 
   String? timerButtonAction() =>
       sharedPreferences.getString(timerButtonActionKey);
- 
 
   Future<void> removeTimerButtonAction() =>
       sharedPreferences.remove(timerButtonActionKey);
-
 
   List<Laps> retrieveLaps() {
     final data = retrieveBackgroundStopwatchState();
@@ -227,8 +223,6 @@ serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayb
   }
 
   Future<void> addLap() async {
-
-
     final foregroundState = retrieveStopwatchSate();
     final backgroundState = retrieveBackgroundStopwatchState();
     if (backgroundState == null || foregroundState == null) return;
@@ -270,8 +264,6 @@ serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayb
     try {
       final dataEncode = jsonEncode(data);
       return await sharedPreferences.setString(stopwatchDataKey, dataEncode);
-
-
     } catch (e) {
       log('Failed to Save Lap Data', error: e);
       return false;
@@ -300,8 +292,6 @@ serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayb
       final json = currentState.toJson();
       final dataEncode = jsonEncode(json);
       await sharedPreferences.setString(stopwatchUpdatedDataKey, dataEncode);
-
-      
     } catch (e) {
       log('Failed to Save Background Data', error: e);
     }
@@ -309,7 +299,7 @@ serviceTypes: [ForegroundServiceTypes.dataSync,ForegroundServiceTypes.mediaPlayb
 
   StopwatchState? retrieveBackgroundStopwatchState() {
     final data = sharedPreferences.getString(stopwatchUpdatedDataKey);
-  
+
     if (data != null) {
       final decodedState = (jsonDecode(data) as Map).cast<String, dynamic>();
 
