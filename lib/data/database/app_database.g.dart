@@ -1,0 +1,1814 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'app_database.dart';
+
+// ignore_for_file: type=lint
+class $AlarmsTableTable extends AlarmsTable
+    with TableInfo<$AlarmsTableTable, AlarmsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AlarmsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _alarmIdMeta = const VerificationMeta(
+    'alarmId',
+  );
+  @override
+  late final GeneratedColumn<int> alarmId = GeneratedColumn<int>(
+    'alarm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _soundPathMeta = const VerificationMeta(
+    'soundPath',
+  );
+  @override
+  late final GeneratedColumn<String> soundPath = GeneratedColumn<String>(
+    'sound_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(AppConstants.defaultSound),
+  );
+  static const VerificationMeta _isEnabledMeta = const VerificationMeta(
+    'isEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> isEnabled = GeneratedColumn<bool>(
+    'is_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _vibrateMeta = const VerificationMeta(
+    'vibrate',
+  );
+  @override
+  late final GeneratedColumn<bool> vibrate = GeneratedColumn<bool>(
+    'vibrate',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("vibrate" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdDateMeta = const VerificationMeta(
+    'createdDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
+    'created_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _nextTriggerMeta = const VerificationMeta(
+    'nextTrigger',
+  );
+  @override
+  late final GeneratedColumn<DateTime> nextTrigger = GeneratedColumn<DateTime>(
+    'next_trigger',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _firedTimeMinutesMeta = const VerificationMeta(
+    'firedTimeMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> firedTimeMinutes = GeneratedColumn<int>(
+    'fired_time_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    alarmId,
+    name,
+    title,
+    soundPath,
+    isEnabled,
+    vibrate,
+    createdDate,
+    nextTrigger,
+    firedTimeMinutes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'alarms_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AlarmsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('alarm_id')) {
+      context.handle(
+        _alarmIdMeta,
+        alarmId.isAcceptableOrUnknown(data['alarm_id']!, _alarmIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('sound_path')) {
+      context.handle(
+        _soundPathMeta,
+        soundPath.isAcceptableOrUnknown(data['sound_path']!, _soundPathMeta),
+      );
+    }
+    if (data.containsKey('is_enabled')) {
+      context.handle(
+        _isEnabledMeta,
+        isEnabled.isAcceptableOrUnknown(data['is_enabled']!, _isEnabledMeta),
+      );
+    }
+    if (data.containsKey('vibrate')) {
+      context.handle(
+        _vibrateMeta,
+        vibrate.isAcceptableOrUnknown(data['vibrate']!, _vibrateMeta),
+      );
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(
+        _createdDateMeta,
+        createdDate.isAcceptableOrUnknown(
+          data['created_date']!,
+          _createdDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('next_trigger')) {
+      context.handle(
+        _nextTriggerMeta,
+        nextTrigger.isAcceptableOrUnknown(
+          data['next_trigger']!,
+          _nextTriggerMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_nextTriggerMeta);
+    }
+    if (data.containsKey('fired_time_minutes')) {
+      context.handle(
+        _firedTimeMinutesMeta,
+        firedTimeMinutes.isAcceptableOrUnknown(
+          data['fired_time_minutes']!,
+          _firedTimeMinutesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_firedTimeMinutesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {alarmId};
+  @override
+  AlarmsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AlarmsTableData(
+      alarmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}alarm_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      soundPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sound_path'],
+      )!,
+      isEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_enabled'],
+      )!,
+      vibrate: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}vibrate'],
+      )!,
+      createdDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_date'],
+      )!,
+      nextTrigger: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}next_trigger'],
+      )!,
+      firedTimeMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}fired_time_minutes'],
+      )!,
+    );
+  }
+
+  @override
+  $AlarmsTableTable createAlias(String alias) {
+    return $AlarmsTableTable(attachedDatabase, alias);
+  }
+}
+
+class AlarmsTableData extends DataClass implements Insertable<AlarmsTableData> {
+  final int alarmId;
+  final String name;
+  final String title;
+  final String soundPath;
+  final bool isEnabled;
+  final bool vibrate;
+  final DateTime createdDate;
+  final DateTime nextTrigger;
+  final int firedTimeMinutes;
+  const AlarmsTableData({
+    required this.alarmId,
+    required this.name,
+    required this.title,
+    required this.soundPath,
+    required this.isEnabled,
+    required this.vibrate,
+    required this.createdDate,
+    required this.nextTrigger,
+    required this.firedTimeMinutes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['alarm_id'] = Variable<int>(alarmId);
+    map['name'] = Variable<String>(name);
+    map['title'] = Variable<String>(title);
+    map['sound_path'] = Variable<String>(soundPath);
+    map['is_enabled'] = Variable<bool>(isEnabled);
+    map['vibrate'] = Variable<bool>(vibrate);
+    map['created_date'] = Variable<DateTime>(createdDate);
+    map['next_trigger'] = Variable<DateTime>(nextTrigger);
+    map['fired_time_minutes'] = Variable<int>(firedTimeMinutes);
+    return map;
+  }
+
+  AlarmsTableCompanion toCompanion(bool nullToAbsent) {
+    return AlarmsTableCompanion(
+      alarmId: Value(alarmId),
+      name: Value(name),
+      title: Value(title),
+      soundPath: Value(soundPath),
+      isEnabled: Value(isEnabled),
+      vibrate: Value(vibrate),
+      createdDate: Value(createdDate),
+      nextTrigger: Value(nextTrigger),
+      firedTimeMinutes: Value(firedTimeMinutes),
+    );
+  }
+
+  factory AlarmsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AlarmsTableData(
+      alarmId: serializer.fromJson<int>(json['alarmId']),
+      name: serializer.fromJson<String>(json['name']),
+      title: serializer.fromJson<String>(json['title']),
+      soundPath: serializer.fromJson<String>(json['soundPath']),
+      isEnabled: serializer.fromJson<bool>(json['isEnabled']),
+      vibrate: serializer.fromJson<bool>(json['vibrate']),
+      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      nextTrigger: serializer.fromJson<DateTime>(json['nextTrigger']),
+      firedTimeMinutes: serializer.fromJson<int>(json['firedTimeMinutes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'alarmId': serializer.toJson<int>(alarmId),
+      'name': serializer.toJson<String>(name),
+      'title': serializer.toJson<String>(title),
+      'soundPath': serializer.toJson<String>(soundPath),
+      'isEnabled': serializer.toJson<bool>(isEnabled),
+      'vibrate': serializer.toJson<bool>(vibrate),
+      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'nextTrigger': serializer.toJson<DateTime>(nextTrigger),
+      'firedTimeMinutes': serializer.toJson<int>(firedTimeMinutes),
+    };
+  }
+
+  AlarmsTableData copyWith({
+    int? alarmId,
+    String? name,
+    String? title,
+    String? soundPath,
+    bool? isEnabled,
+    bool? vibrate,
+    DateTime? createdDate,
+    DateTime? nextTrigger,
+    int? firedTimeMinutes,
+  }) => AlarmsTableData(
+    alarmId: alarmId ?? this.alarmId,
+    name: name ?? this.name,
+    title: title ?? this.title,
+    soundPath: soundPath ?? this.soundPath,
+    isEnabled: isEnabled ?? this.isEnabled,
+    vibrate: vibrate ?? this.vibrate,
+    createdDate: createdDate ?? this.createdDate,
+    nextTrigger: nextTrigger ?? this.nextTrigger,
+    firedTimeMinutes: firedTimeMinutes ?? this.firedTimeMinutes,
+  );
+  AlarmsTableData copyWithCompanion(AlarmsTableCompanion data) {
+    return AlarmsTableData(
+      alarmId: data.alarmId.present ? data.alarmId.value : this.alarmId,
+      name: data.name.present ? data.name.value : this.name,
+      title: data.title.present ? data.title.value : this.title,
+      soundPath: data.soundPath.present ? data.soundPath.value : this.soundPath,
+      isEnabled: data.isEnabled.present ? data.isEnabled.value : this.isEnabled,
+      vibrate: data.vibrate.present ? data.vibrate.value : this.vibrate,
+      createdDate: data.createdDate.present
+          ? data.createdDate.value
+          : this.createdDate,
+      nextTrigger: data.nextTrigger.present
+          ? data.nextTrigger.value
+          : this.nextTrigger,
+      firedTimeMinutes: data.firedTimeMinutes.present
+          ? data.firedTimeMinutes.value
+          : this.firedTimeMinutes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmsTableData(')
+          ..write('alarmId: $alarmId, ')
+          ..write('name: $name, ')
+          ..write('title: $title, ')
+          ..write('soundPath: $soundPath, ')
+          ..write('isEnabled: $isEnabled, ')
+          ..write('vibrate: $vibrate, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('nextTrigger: $nextTrigger, ')
+          ..write('firedTimeMinutes: $firedTimeMinutes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    alarmId,
+    name,
+    title,
+    soundPath,
+    isEnabled,
+    vibrate,
+    createdDate,
+    nextTrigger,
+    firedTimeMinutes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AlarmsTableData &&
+          other.alarmId == this.alarmId &&
+          other.name == this.name &&
+          other.title == this.title &&
+          other.soundPath == this.soundPath &&
+          other.isEnabled == this.isEnabled &&
+          other.vibrate == this.vibrate &&
+          other.createdDate == this.createdDate &&
+          other.nextTrigger == this.nextTrigger &&
+          other.firedTimeMinutes == this.firedTimeMinutes);
+}
+
+class AlarmsTableCompanion extends UpdateCompanion<AlarmsTableData> {
+  final Value<int> alarmId;
+  final Value<String> name;
+  final Value<String> title;
+  final Value<String> soundPath;
+  final Value<bool> isEnabled;
+  final Value<bool> vibrate;
+  final Value<DateTime> createdDate;
+  final Value<DateTime> nextTrigger;
+  final Value<int> firedTimeMinutes;
+  const AlarmsTableCompanion({
+    this.alarmId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.title = const Value.absent(),
+    this.soundPath = const Value.absent(),
+    this.isEnabled = const Value.absent(),
+    this.vibrate = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.nextTrigger = const Value.absent(),
+    this.firedTimeMinutes = const Value.absent(),
+  });
+  AlarmsTableCompanion.insert({
+    this.alarmId = const Value.absent(),
+    required String name,
+    this.title = const Value.absent(),
+    this.soundPath = const Value.absent(),
+    this.isEnabled = const Value.absent(),
+    this.vibrate = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    required DateTime nextTrigger,
+    required int firedTimeMinutes,
+  }) : name = Value(name),
+       nextTrigger = Value(nextTrigger),
+       firedTimeMinutes = Value(firedTimeMinutes);
+  static Insertable<AlarmsTableData> custom({
+    Expression<int>? alarmId,
+    Expression<String>? name,
+    Expression<String>? title,
+    Expression<String>? soundPath,
+    Expression<bool>? isEnabled,
+    Expression<bool>? vibrate,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? nextTrigger,
+    Expression<int>? firedTimeMinutes,
+  }) {
+    return RawValuesInsertable({
+      if (alarmId != null) 'alarm_id': alarmId,
+      if (name != null) 'name': name,
+      if (title != null) 'title': title,
+      if (soundPath != null) 'sound_path': soundPath,
+      if (isEnabled != null) 'is_enabled': isEnabled,
+      if (vibrate != null) 'vibrate': vibrate,
+      if (createdDate != null) 'created_date': createdDate,
+      if (nextTrigger != null) 'next_trigger': nextTrigger,
+      if (firedTimeMinutes != null) 'fired_time_minutes': firedTimeMinutes,
+    });
+  }
+
+  AlarmsTableCompanion copyWith({
+    Value<int>? alarmId,
+    Value<String>? name,
+    Value<String>? title,
+    Value<String>? soundPath,
+    Value<bool>? isEnabled,
+    Value<bool>? vibrate,
+    Value<DateTime>? createdDate,
+    Value<DateTime>? nextTrigger,
+    Value<int>? firedTimeMinutes,
+  }) {
+    return AlarmsTableCompanion(
+      alarmId: alarmId ?? this.alarmId,
+      name: name ?? this.name,
+      title: title ?? this.title,
+      soundPath: soundPath ?? this.soundPath,
+      isEnabled: isEnabled ?? this.isEnabled,
+      vibrate: vibrate ?? this.vibrate,
+      createdDate: createdDate ?? this.createdDate,
+      nextTrigger: nextTrigger ?? this.nextTrigger,
+      firedTimeMinutes: firedTimeMinutes ?? this.firedTimeMinutes,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (alarmId.present) {
+      map['alarm_id'] = Variable<int>(alarmId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (soundPath.present) {
+      map['sound_path'] = Variable<String>(soundPath.value);
+    }
+    if (isEnabled.present) {
+      map['is_enabled'] = Variable<bool>(isEnabled.value);
+    }
+    if (vibrate.present) {
+      map['vibrate'] = Variable<bool>(vibrate.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (nextTrigger.present) {
+      map['next_trigger'] = Variable<DateTime>(nextTrigger.value);
+    }
+    if (firedTimeMinutes.present) {
+      map['fired_time_minutes'] = Variable<int>(firedTimeMinutes.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmsTableCompanion(')
+          ..write('alarmId: $alarmId, ')
+          ..write('name: $name, ')
+          ..write('title: $title, ')
+          ..write('soundPath: $soundPath, ')
+          ..write('isEnabled: $isEnabled, ')
+          ..write('vibrate: $vibrate, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('nextTrigger: $nextTrigger, ')
+          ..write('firedTimeMinutes: $firedTimeMinutes')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AlarmDaysTableTable extends AlarmDaysTable
+    with TableInfo<$AlarmDaysTableTable, AlarmDaysTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AlarmDaysTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _excutionIdMeta = const VerificationMeta(
+    'excutionId',
+  );
+  @override
+  late final GeneratedColumn<int> excutionId = GeneratedColumn<int>(
+    'excution_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<AlarmDays, int> repeatDays =
+      GeneratedColumn<int>(
+        'repeat_days',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<AlarmDays>($AlarmDaysTableTable.$converterrepeatDays);
+  static const VerificationMeta _alarmIdMeta = const VerificationMeta(
+    'alarmId',
+  );
+  @override
+  late final GeneratedColumn<int> alarmId = GeneratedColumn<int>(
+    'alarm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, excutionId, repeatDays, alarmId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'alarm_days_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AlarmDaysTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('excution_id')) {
+      context.handle(
+        _excutionIdMeta,
+        excutionId.isAcceptableOrUnknown(data['excution_id']!, _excutionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_excutionIdMeta);
+    }
+    if (data.containsKey('alarm_id')) {
+      context.handle(
+        _alarmIdMeta,
+        alarmId.isAcceptableOrUnknown(data['alarm_id']!, _alarmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_alarmIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AlarmDaysTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AlarmDaysTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      excutionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}excution_id'],
+      )!,
+      repeatDays: $AlarmDaysTableTable.$converterrepeatDays.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}repeat_days'],
+        )!,
+      ),
+      alarmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}alarm_id'],
+      )!,
+    );
+  }
+
+  @override
+  $AlarmDaysTableTable createAlias(String alias) {
+    return $AlarmDaysTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<AlarmDays, int, int> $converterrepeatDays =
+      const EnumIndexConverter<AlarmDays>(AlarmDays.values);
+}
+
+class AlarmDaysTableData extends DataClass
+    implements Insertable<AlarmDaysTableData> {
+  final int id;
+  final int excutionId;
+  final AlarmDays repeatDays;
+  final int alarmId;
+  const AlarmDaysTableData({
+    required this.id,
+    required this.excutionId,
+    required this.repeatDays,
+    required this.alarmId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['excution_id'] = Variable<int>(excutionId);
+    {
+      map['repeat_days'] = Variable<int>(
+        $AlarmDaysTableTable.$converterrepeatDays.toSql(repeatDays),
+      );
+    }
+    map['alarm_id'] = Variable<int>(alarmId);
+    return map;
+  }
+
+  AlarmDaysTableCompanion toCompanion(bool nullToAbsent) {
+    return AlarmDaysTableCompanion(
+      id: Value(id),
+      excutionId: Value(excutionId),
+      repeatDays: Value(repeatDays),
+      alarmId: Value(alarmId),
+    );
+  }
+
+  factory AlarmDaysTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AlarmDaysTableData(
+      id: serializer.fromJson<int>(json['id']),
+      excutionId: serializer.fromJson<int>(json['excutionId']),
+      repeatDays: $AlarmDaysTableTable.$converterrepeatDays.fromJson(
+        serializer.fromJson<int>(json['repeatDays']),
+      ),
+      alarmId: serializer.fromJson<int>(json['alarmId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'excutionId': serializer.toJson<int>(excutionId),
+      'repeatDays': serializer.toJson<int>(
+        $AlarmDaysTableTable.$converterrepeatDays.toJson(repeatDays),
+      ),
+      'alarmId': serializer.toJson<int>(alarmId),
+    };
+  }
+
+  AlarmDaysTableData copyWith({
+    int? id,
+    int? excutionId,
+    AlarmDays? repeatDays,
+    int? alarmId,
+  }) => AlarmDaysTableData(
+    id: id ?? this.id,
+    excutionId: excutionId ?? this.excutionId,
+    repeatDays: repeatDays ?? this.repeatDays,
+    alarmId: alarmId ?? this.alarmId,
+  );
+  AlarmDaysTableData copyWithCompanion(AlarmDaysTableCompanion data) {
+    return AlarmDaysTableData(
+      id: data.id.present ? data.id.value : this.id,
+      excutionId: data.excutionId.present
+          ? data.excutionId.value
+          : this.excutionId,
+      repeatDays: data.repeatDays.present
+          ? data.repeatDays.value
+          : this.repeatDays,
+      alarmId: data.alarmId.present ? data.alarmId.value : this.alarmId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmDaysTableData(')
+          ..write('id: $id, ')
+          ..write('excutionId: $excutionId, ')
+          ..write('repeatDays: $repeatDays, ')
+          ..write('alarmId: $alarmId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, excutionId, repeatDays, alarmId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AlarmDaysTableData &&
+          other.id == this.id &&
+          other.excutionId == this.excutionId &&
+          other.repeatDays == this.repeatDays &&
+          other.alarmId == this.alarmId);
+}
+
+class AlarmDaysTableCompanion extends UpdateCompanion<AlarmDaysTableData> {
+  final Value<int> id;
+  final Value<int> excutionId;
+  final Value<AlarmDays> repeatDays;
+  final Value<int> alarmId;
+  const AlarmDaysTableCompanion({
+    this.id = const Value.absent(),
+    this.excutionId = const Value.absent(),
+    this.repeatDays = const Value.absent(),
+    this.alarmId = const Value.absent(),
+  });
+  AlarmDaysTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int excutionId,
+    required AlarmDays repeatDays,
+    required int alarmId,
+  }) : excutionId = Value(excutionId),
+       repeatDays = Value(repeatDays),
+       alarmId = Value(alarmId);
+  static Insertable<AlarmDaysTableData> custom({
+    Expression<int>? id,
+    Expression<int>? excutionId,
+    Expression<int>? repeatDays,
+    Expression<int>? alarmId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (excutionId != null) 'excution_id': excutionId,
+      if (repeatDays != null) 'repeat_days': repeatDays,
+      if (alarmId != null) 'alarm_id': alarmId,
+    });
+  }
+
+  AlarmDaysTableCompanion copyWith({
+    Value<int>? id,
+    Value<int>? excutionId,
+    Value<AlarmDays>? repeatDays,
+    Value<int>? alarmId,
+  }) {
+    return AlarmDaysTableCompanion(
+      id: id ?? this.id,
+      excutionId: excutionId ?? this.excutionId,
+      repeatDays: repeatDays ?? this.repeatDays,
+      alarmId: alarmId ?? this.alarmId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (excutionId.present) {
+      map['excution_id'] = Variable<int>(excutionId.value);
+    }
+    if (repeatDays.present) {
+      map['repeat_days'] = Variable<int>(
+        $AlarmDaysTableTable.$converterrepeatDays.toSql(repeatDays.value),
+      );
+    }
+    if (alarmId.present) {
+      map['alarm_id'] = Variable<int>(alarmId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmDaysTableCompanion(')
+          ..write('id: $id, ')
+          ..write('excutionId: $excutionId, ')
+          ..write('repeatDays: $repeatDays, ')
+          ..write('alarmId: $alarmId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AlarmSoundsTableTable extends AlarmSoundsTable
+    with TableInfo<$AlarmSoundsTableTable, AlarmSoundsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AlarmSoundsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _soundFilePathMeta = const VerificationMeta(
+    'soundFilePath',
+  );
+  @override
+  late final GeneratedColumn<String> soundFilePath = GeneratedColumn<String>(
+    'sound_file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createDateTimeMeta = const VerificationMeta(
+    'createDateTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createDateTime =
+      GeneratedColumn<DateTime>(
+        'create_date_time',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        defaultValue: currentDateAndTime,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [id, soundFilePath, createDateTime];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'alarm_sounds_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AlarmSoundsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('sound_file_path')) {
+      context.handle(
+        _soundFilePathMeta,
+        soundFilePath.isAcceptableOrUnknown(
+          data['sound_file_path']!,
+          _soundFilePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_soundFilePathMeta);
+    }
+    if (data.containsKey('create_date_time')) {
+      context.handle(
+        _createDateTimeMeta,
+        createDateTime.isAcceptableOrUnknown(
+          data['create_date_time']!,
+          _createDateTimeMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AlarmSoundsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AlarmSoundsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      soundFilePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sound_file_path'],
+      )!,
+      createDateTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}create_date_time'],
+      )!,
+    );
+  }
+
+  @override
+  $AlarmSoundsTableTable createAlias(String alias) {
+    return $AlarmSoundsTableTable(attachedDatabase, alias);
+  }
+}
+
+class AlarmSoundsTableData extends DataClass
+    implements Insertable<AlarmSoundsTableData> {
+  final int id;
+  final String soundFilePath;
+  final DateTime createDateTime;
+  const AlarmSoundsTableData({
+    required this.id,
+    required this.soundFilePath,
+    required this.createDateTime,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['sound_file_path'] = Variable<String>(soundFilePath);
+    map['create_date_time'] = Variable<DateTime>(createDateTime);
+    return map;
+  }
+
+  AlarmSoundsTableCompanion toCompanion(bool nullToAbsent) {
+    return AlarmSoundsTableCompanion(
+      id: Value(id),
+      soundFilePath: Value(soundFilePath),
+      createDateTime: Value(createDateTime),
+    );
+  }
+
+  factory AlarmSoundsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AlarmSoundsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      soundFilePath: serializer.fromJson<String>(json['soundFilePath']),
+      createDateTime: serializer.fromJson<DateTime>(json['createDateTime']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'soundFilePath': serializer.toJson<String>(soundFilePath),
+      'createDateTime': serializer.toJson<DateTime>(createDateTime),
+    };
+  }
+
+  AlarmSoundsTableData copyWith({
+    int? id,
+    String? soundFilePath,
+    DateTime? createDateTime,
+  }) => AlarmSoundsTableData(
+    id: id ?? this.id,
+    soundFilePath: soundFilePath ?? this.soundFilePath,
+    createDateTime: createDateTime ?? this.createDateTime,
+  );
+  AlarmSoundsTableData copyWithCompanion(AlarmSoundsTableCompanion data) {
+    return AlarmSoundsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      soundFilePath: data.soundFilePath.present
+          ? data.soundFilePath.value
+          : this.soundFilePath,
+      createDateTime: data.createDateTime.present
+          ? data.createDateTime.value
+          : this.createDateTime,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmSoundsTableData(')
+          ..write('id: $id, ')
+          ..write('soundFilePath: $soundFilePath, ')
+          ..write('createDateTime: $createDateTime')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, soundFilePath, createDateTime);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AlarmSoundsTableData &&
+          other.id == this.id &&
+          other.soundFilePath == this.soundFilePath &&
+          other.createDateTime == this.createDateTime);
+}
+
+class AlarmSoundsTableCompanion extends UpdateCompanion<AlarmSoundsTableData> {
+  final Value<int> id;
+  final Value<String> soundFilePath;
+  final Value<DateTime> createDateTime;
+  const AlarmSoundsTableCompanion({
+    this.id = const Value.absent(),
+    this.soundFilePath = const Value.absent(),
+    this.createDateTime = const Value.absent(),
+  });
+  AlarmSoundsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String soundFilePath,
+    this.createDateTime = const Value.absent(),
+  }) : soundFilePath = Value(soundFilePath);
+  static Insertable<AlarmSoundsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? soundFilePath,
+    Expression<DateTime>? createDateTime,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (soundFilePath != null) 'sound_file_path': soundFilePath,
+      if (createDateTime != null) 'create_date_time': createDateTime,
+    });
+  }
+
+  AlarmSoundsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? soundFilePath,
+    Value<DateTime>? createDateTime,
+  }) {
+    return AlarmSoundsTableCompanion(
+      id: id ?? this.id,
+      soundFilePath: soundFilePath ?? this.soundFilePath,
+      createDateTime: createDateTime ?? this.createDateTime,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (soundFilePath.present) {
+      map['sound_file_path'] = Variable<String>(soundFilePath.value);
+    }
+    if (createDateTime.present) {
+      map['create_date_time'] = Variable<DateTime>(createDateTime.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlarmSoundsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('soundFilePath: $soundFilePath, ')
+          ..write('createDateTime: $createDateTime')
+          ..write(')'))
+        .toString();
+  }
+}
+
+abstract class _$AlarmDatabase extends GeneratedDatabase {
+  _$AlarmDatabase(QueryExecutor e) : super(e);
+  $AlarmDatabaseManager get managers => $AlarmDatabaseManager(this);
+  late final $AlarmsTableTable alarmsTable = $AlarmsTableTable(this);
+  late final $AlarmDaysTableTable alarmDaysTable = $AlarmDaysTableTable(this);
+  late final $AlarmSoundsTableTable alarmSoundsTable = $AlarmSoundsTableTable(
+    this,
+  );
+  late final Index idxNextTrigger = Index(
+    'idx_nextTrigger',
+    'CREATE INDEX idx_nextTrigger ON alarms_table (next_trigger)',
+  );
+  late final Index idxEnabledNext = Index(
+    'idx_enabled_next',
+    'CREATE INDEX idx_enabled_next ON alarms_table (is_enabled, next_trigger)',
+  );
+  @override
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    alarmsTable,
+    alarmDaysTable,
+    alarmSoundsTable,
+    idxNextTrigger,
+    idxEnabledNext,
+  ];
+}
+
+typedef $$AlarmsTableTableCreateCompanionBuilder =
+    AlarmsTableCompanion Function({
+      Value<int> alarmId,
+      required String name,
+      Value<String> title,
+      Value<String> soundPath,
+      Value<bool> isEnabled,
+      Value<bool> vibrate,
+      Value<DateTime> createdDate,
+      required DateTime nextTrigger,
+      required int firedTimeMinutes,
+    });
+typedef $$AlarmsTableTableUpdateCompanionBuilder =
+    AlarmsTableCompanion Function({
+      Value<int> alarmId,
+      Value<String> name,
+      Value<String> title,
+      Value<String> soundPath,
+      Value<bool> isEnabled,
+      Value<bool> vibrate,
+      Value<DateTime> createdDate,
+      Value<DateTime> nextTrigger,
+      Value<int> firedTimeMinutes,
+    });
+
+class $$AlarmsTableTableFilterComposer
+    extends Composer<_$AlarmDatabase, $AlarmsTableTable> {
+  $$AlarmsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get alarmId => $composableBuilder(
+    column: $table.alarmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get soundPath => $composableBuilder(
+    column: $table.soundPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get vibrate => $composableBuilder(
+    column: $table.vibrate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get nextTrigger => $composableBuilder(
+    column: $table.nextTrigger,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get firedTimeMinutes => $composableBuilder(
+    column: $table.firedTimeMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AlarmsTableTableOrderingComposer
+    extends Composer<_$AlarmDatabase, $AlarmsTableTable> {
+  $$AlarmsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get alarmId => $composableBuilder(
+    column: $table.alarmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get soundPath => $composableBuilder(
+    column: $table.soundPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get vibrate => $composableBuilder(
+    column: $table.vibrate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get nextTrigger => $composableBuilder(
+    column: $table.nextTrigger,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get firedTimeMinutes => $composableBuilder(
+    column: $table.firedTimeMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AlarmsTableTableAnnotationComposer
+    extends Composer<_$AlarmDatabase, $AlarmsTableTable> {
+  $$AlarmsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get alarmId =>
+      $composableBuilder(column: $table.alarmId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get soundPath =>
+      $composableBuilder(column: $table.soundPath, builder: (column) => column);
+
+  GeneratedColumn<bool> get isEnabled =>
+      $composableBuilder(column: $table.isEnabled, builder: (column) => column);
+
+  GeneratedColumn<bool> get vibrate =>
+      $composableBuilder(column: $table.vibrate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get nextTrigger => $composableBuilder(
+    column: $table.nextTrigger,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get firedTimeMinutes => $composableBuilder(
+    column: $table.firedTimeMinutes,
+    builder: (column) => column,
+  );
+}
+
+class $$AlarmsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AlarmDatabase,
+          $AlarmsTableTable,
+          AlarmsTableData,
+          $$AlarmsTableTableFilterComposer,
+          $$AlarmsTableTableOrderingComposer,
+          $$AlarmsTableTableAnnotationComposer,
+          $$AlarmsTableTableCreateCompanionBuilder,
+          $$AlarmsTableTableUpdateCompanionBuilder,
+          (
+            AlarmsTableData,
+            BaseReferences<_$AlarmDatabase, $AlarmsTableTable, AlarmsTableData>,
+          ),
+          AlarmsTableData,
+          PrefetchHooks Function()
+        > {
+  $$AlarmsTableTableTableManager(_$AlarmDatabase db, $AlarmsTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AlarmsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AlarmsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AlarmsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> alarmId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> soundPath = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
+                Value<bool> vibrate = const Value.absent(),
+                Value<DateTime> createdDate = const Value.absent(),
+                Value<DateTime> nextTrigger = const Value.absent(),
+                Value<int> firedTimeMinutes = const Value.absent(),
+              }) => AlarmsTableCompanion(
+                alarmId: alarmId,
+                name: name,
+                title: title,
+                soundPath: soundPath,
+                isEnabled: isEnabled,
+                vibrate: vibrate,
+                createdDate: createdDate,
+                nextTrigger: nextTrigger,
+                firedTimeMinutes: firedTimeMinutes,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> alarmId = const Value.absent(),
+                required String name,
+                Value<String> title = const Value.absent(),
+                Value<String> soundPath = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
+                Value<bool> vibrate = const Value.absent(),
+                Value<DateTime> createdDate = const Value.absent(),
+                required DateTime nextTrigger,
+                required int firedTimeMinutes,
+              }) => AlarmsTableCompanion.insert(
+                alarmId: alarmId,
+                name: name,
+                title: title,
+                soundPath: soundPath,
+                isEnabled: isEnabled,
+                vibrate: vibrate,
+                createdDate: createdDate,
+                nextTrigger: nextTrigger,
+                firedTimeMinutes: firedTimeMinutes,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AlarmsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AlarmDatabase,
+      $AlarmsTableTable,
+      AlarmsTableData,
+      $$AlarmsTableTableFilterComposer,
+      $$AlarmsTableTableOrderingComposer,
+      $$AlarmsTableTableAnnotationComposer,
+      $$AlarmsTableTableCreateCompanionBuilder,
+      $$AlarmsTableTableUpdateCompanionBuilder,
+      (
+        AlarmsTableData,
+        BaseReferences<_$AlarmDatabase, $AlarmsTableTable, AlarmsTableData>,
+      ),
+      AlarmsTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$AlarmDaysTableTableCreateCompanionBuilder =
+    AlarmDaysTableCompanion Function({
+      Value<int> id,
+      required int excutionId,
+      required AlarmDays repeatDays,
+      required int alarmId,
+    });
+typedef $$AlarmDaysTableTableUpdateCompanionBuilder =
+    AlarmDaysTableCompanion Function({
+      Value<int> id,
+      Value<int> excutionId,
+      Value<AlarmDays> repeatDays,
+      Value<int> alarmId,
+    });
+
+class $$AlarmDaysTableTableFilterComposer
+    extends Composer<_$AlarmDatabase, $AlarmDaysTableTable> {
+  $$AlarmDaysTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get excutionId => $composableBuilder(
+    column: $table.excutionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<AlarmDays, AlarmDays, int> get repeatDays =>
+      $composableBuilder(
+        column: $table.repeatDays,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get alarmId => $composableBuilder(
+    column: $table.alarmId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AlarmDaysTableTableOrderingComposer
+    extends Composer<_$AlarmDatabase, $AlarmDaysTableTable> {
+  $$AlarmDaysTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get excutionId => $composableBuilder(
+    column: $table.excutionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get repeatDays => $composableBuilder(
+    column: $table.repeatDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get alarmId => $composableBuilder(
+    column: $table.alarmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AlarmDaysTableTableAnnotationComposer
+    extends Composer<_$AlarmDatabase, $AlarmDaysTableTable> {
+  $$AlarmDaysTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get excutionId => $composableBuilder(
+    column: $table.excutionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<AlarmDays, int> get repeatDays =>
+      $composableBuilder(
+        column: $table.repeatDays,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<int> get alarmId =>
+      $composableBuilder(column: $table.alarmId, builder: (column) => column);
+}
+
+class $$AlarmDaysTableTableTableManager
+    extends
+        RootTableManager<
+          _$AlarmDatabase,
+          $AlarmDaysTableTable,
+          AlarmDaysTableData,
+          $$AlarmDaysTableTableFilterComposer,
+          $$AlarmDaysTableTableOrderingComposer,
+          $$AlarmDaysTableTableAnnotationComposer,
+          $$AlarmDaysTableTableCreateCompanionBuilder,
+          $$AlarmDaysTableTableUpdateCompanionBuilder,
+          (
+            AlarmDaysTableData,
+            BaseReferences<
+              _$AlarmDatabase,
+              $AlarmDaysTableTable,
+              AlarmDaysTableData
+            >,
+          ),
+          AlarmDaysTableData,
+          PrefetchHooks Function()
+        > {
+  $$AlarmDaysTableTableTableManager(
+    _$AlarmDatabase db,
+    $AlarmDaysTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AlarmDaysTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AlarmDaysTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AlarmDaysTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> excutionId = const Value.absent(),
+                Value<AlarmDays> repeatDays = const Value.absent(),
+                Value<int> alarmId = const Value.absent(),
+              }) => AlarmDaysTableCompanion(
+                id: id,
+                excutionId: excutionId,
+                repeatDays: repeatDays,
+                alarmId: alarmId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int excutionId,
+                required AlarmDays repeatDays,
+                required int alarmId,
+              }) => AlarmDaysTableCompanion.insert(
+                id: id,
+                excutionId: excutionId,
+                repeatDays: repeatDays,
+                alarmId: alarmId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AlarmDaysTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AlarmDatabase,
+      $AlarmDaysTableTable,
+      AlarmDaysTableData,
+      $$AlarmDaysTableTableFilterComposer,
+      $$AlarmDaysTableTableOrderingComposer,
+      $$AlarmDaysTableTableAnnotationComposer,
+      $$AlarmDaysTableTableCreateCompanionBuilder,
+      $$AlarmDaysTableTableUpdateCompanionBuilder,
+      (
+        AlarmDaysTableData,
+        BaseReferences<
+          _$AlarmDatabase,
+          $AlarmDaysTableTable,
+          AlarmDaysTableData
+        >,
+      ),
+      AlarmDaysTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$AlarmSoundsTableTableCreateCompanionBuilder =
+    AlarmSoundsTableCompanion Function({
+      Value<int> id,
+      required String soundFilePath,
+      Value<DateTime> createDateTime,
+    });
+typedef $$AlarmSoundsTableTableUpdateCompanionBuilder =
+    AlarmSoundsTableCompanion Function({
+      Value<int> id,
+      Value<String> soundFilePath,
+      Value<DateTime> createDateTime,
+    });
+
+class $$AlarmSoundsTableTableFilterComposer
+    extends Composer<_$AlarmDatabase, $AlarmSoundsTableTable> {
+  $$AlarmSoundsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get soundFilePath => $composableBuilder(
+    column: $table.soundFilePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createDateTime => $composableBuilder(
+    column: $table.createDateTime,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AlarmSoundsTableTableOrderingComposer
+    extends Composer<_$AlarmDatabase, $AlarmSoundsTableTable> {
+  $$AlarmSoundsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get soundFilePath => $composableBuilder(
+    column: $table.soundFilePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createDateTime => $composableBuilder(
+    column: $table.createDateTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AlarmSoundsTableTableAnnotationComposer
+    extends Composer<_$AlarmDatabase, $AlarmSoundsTableTable> {
+  $$AlarmSoundsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get soundFilePath => $composableBuilder(
+    column: $table.soundFilePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createDateTime => $composableBuilder(
+    column: $table.createDateTime,
+    builder: (column) => column,
+  );
+}
+
+class $$AlarmSoundsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AlarmDatabase,
+          $AlarmSoundsTableTable,
+          AlarmSoundsTableData,
+          $$AlarmSoundsTableTableFilterComposer,
+          $$AlarmSoundsTableTableOrderingComposer,
+          $$AlarmSoundsTableTableAnnotationComposer,
+          $$AlarmSoundsTableTableCreateCompanionBuilder,
+          $$AlarmSoundsTableTableUpdateCompanionBuilder,
+          (
+            AlarmSoundsTableData,
+            BaseReferences<
+              _$AlarmDatabase,
+              $AlarmSoundsTableTable,
+              AlarmSoundsTableData
+            >,
+          ),
+          AlarmSoundsTableData,
+          PrefetchHooks Function()
+        > {
+  $$AlarmSoundsTableTableTableManager(
+    _$AlarmDatabase db,
+    $AlarmSoundsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AlarmSoundsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AlarmSoundsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AlarmSoundsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> soundFilePath = const Value.absent(),
+                Value<DateTime> createDateTime = const Value.absent(),
+              }) => AlarmSoundsTableCompanion(
+                id: id,
+                soundFilePath: soundFilePath,
+                createDateTime: createDateTime,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String soundFilePath,
+                Value<DateTime> createDateTime = const Value.absent(),
+              }) => AlarmSoundsTableCompanion.insert(
+                id: id,
+                soundFilePath: soundFilePath,
+                createDateTime: createDateTime,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AlarmSoundsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AlarmDatabase,
+      $AlarmSoundsTableTable,
+      AlarmSoundsTableData,
+      $$AlarmSoundsTableTableFilterComposer,
+      $$AlarmSoundsTableTableOrderingComposer,
+      $$AlarmSoundsTableTableAnnotationComposer,
+      $$AlarmSoundsTableTableCreateCompanionBuilder,
+      $$AlarmSoundsTableTableUpdateCompanionBuilder,
+      (
+        AlarmSoundsTableData,
+        BaseReferences<
+          _$AlarmDatabase,
+          $AlarmSoundsTableTable,
+          AlarmSoundsTableData
+        >,
+      ),
+      AlarmSoundsTableData,
+      PrefetchHooks Function()
+    >;
+
+class $AlarmDatabaseManager {
+  final _$AlarmDatabase _db;
+  $AlarmDatabaseManager(this._db);
+  $$AlarmsTableTableTableManager get alarmsTable =>
+      $$AlarmsTableTableTableManager(_db, _db.alarmsTable);
+  $$AlarmDaysTableTableTableManager get alarmDaysTable =>
+      $$AlarmDaysTableTableTableManager(_db, _db.alarmDaysTable);
+  $$AlarmSoundsTableTableTableManager get alarmSoundsTable =>
+      $$AlarmSoundsTableTableTableManager(_db, _db.alarmSoundsTable);
+}
