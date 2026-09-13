@@ -19,7 +19,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await PlatformInitializer.instance.initialize();
+  await PlatformInitializer.instance.initialize();
   await Alarm.init();
   await AlarmSharedPrefs.instance.initialize();
   await initTimeZone();

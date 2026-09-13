@@ -41,11 +41,11 @@ class AndroidNotifications {
 
       notificationDetails: AndroidNotificationDetails(
         groupKey: 'android_notifi_group',
-        "notification_id_notifi6",
-        "notification_channel_notifi16",
+        "notification_id_notif_w",
+        "notification_channel__w",
         icon: 'ic_bg_service_notification',
         importance: Importance.min,
-        priority: Priority.max,
+        priority: Priority.min,
 
         channelAction: AndroidNotificationChannelAction.createIfNotExists,
 

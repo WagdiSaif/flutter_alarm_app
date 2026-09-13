@@ -173,6 +173,8 @@ class ForegroundServiceHandler extends TaskHandler {
         } else {
           _activeService = ActiveService.stopwatch;
         }
+
+        
       }
 
       final stopwatchState = androidForegroundService.retrieveStopwatchSate();
@@ -181,6 +183,7 @@ class ForegroundServiceHandler extends TaskHandler {
       _stopwatch ??= Stopwatch();
       if (_activeService == ActiveService.both) {
         if (stopwatchState != null) {
+        await  androidForegroundService.reloadPreferences();
           final action = androidForegroundService.stopwatchButtonAction();
           final name = StopwatchButtonAction.byname(action ?? '');
 
@@ -285,7 +288,7 @@ class ForegroundServiceHandler extends TaskHandler {
     }
 
     final tDuration = Duration(seconds: duration) - Duration(seconds: 1);
-    await androidForegroundService.saveLastTmerDuration(tDuration);
+     await androidForegroundService.saveLastTmerDuration(tDuration);
 
     final isLessThanZero = tDuration < Duration.zero;
 

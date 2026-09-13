@@ -64,12 +64,13 @@ class AndroidForegroundService {
   static final _androidNotificationOptions = AndroidNotificationOptions(
     channelImportance: NotificationChannelImportance.MIN,
     priority: NotificationPriority.MIN,
-    channelId: 'forground_channel_new',
-    channelName: 'forground_channel_name_new',
+    channelId: 'forground_channel_new1',
+    channelName: 'forground_channel_name_new1',
     playSound: false,
     showWhen: true,
 
-    enableVibration: true,
+    enableVibration: false,
+    
     channelDescription:
         'This notification appears when the foreground service is running.',
     onlyAlertOnce: true,
@@ -82,6 +83,7 @@ class AndroidForegroundService {
             : ForegroundTaskEventAction.nothing(),
         autoRunOnBoot: false,
         allowWakeLock: true,
+        
         allowWifiLock: true,
         allowAutoRestart: true,
       );

@@ -44,6 +44,7 @@ class PermissionHelpers {
       Permission.scheduleExactAlarm,
       Permission.notification,
       Permission.systemAlertWindow,
+      
     ].request();
 
     final isAllow = requestResults.values.every(

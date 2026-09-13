@@ -38,8 +38,8 @@ class AlarmScheduler {
       androidFullScreenIntent: true,
 
       volumeSettings: VolumeSettings.fade(
-        volume: 0.7,
-        fadeDuration: const Duration(seconds: 5),
+        volume: 0.5,
+        fadeDuration: const Duration(minutes: 2),
         volumeEnforced: false,
       ),
       notificationSettings: NotificationSettings(
@@ -175,7 +175,7 @@ class AlarmScheduler {
   }
 
   Future<AlarmModel> _enureValidNextTriggerTime(AlarmModel alarm) async {
-    //This will fix if any missed Alarm
+    // fix if any missed Alarm
 
     await Alarm.stop(alarm.alarmId);
     final nowDateTime = tz.TZDateTime.now(tz.local);
