@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:alarm/alarm.dart';
 import 'package:alarmapp/core/utils/functions.dart';
 import 'package:alarmapp/foreground_service/platform_initializer.dart';
@@ -12,6 +14,7 @@ import 'package:alarmapp/ui/alarm_ringing_screen.dart';
 import 'package:alarmapp/ui/home_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,6 +22,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await PlatformInitializer.instance.initialize();
   await Alarm.init();
   await AlarmSharedPrefs.instance.initialize();

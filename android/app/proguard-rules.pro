@@ -1,6 +1,7 @@
 
 -keep class com.wagdi.alarmapp.MainActivity { *; }
--keep class com.wagdi.alarmapp.** { *; }
+-keep class com.gdelataillade.alarm.** { *; }
+
 
 
 -dontwarn com.google.android.play.core.**

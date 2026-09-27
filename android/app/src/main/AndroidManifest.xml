@@ -13,7 +13,7 @@
 
     <!-- services -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     
   
@@ -26,7 +26,7 @@
         <!-- foreground service -->
         <service
             android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
-            android:foregroundServiceType="dataSync|mediaPlayback"
+            android:foregroundServiceType="specialUse|mediaPlayback"
             android:stopWithTask="false" 
             android:exported="false" />
 

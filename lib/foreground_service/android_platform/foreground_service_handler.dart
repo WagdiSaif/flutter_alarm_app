@@ -8,6 +8,7 @@ import 'package:alarmapp/data/models/stopwatch_state.dart';
 import 'package:alarmapp/foreground_service/android_platform/android_foreground_service.dart';
 import 'package:alarmapp/foreground_service/android_platform/android_notifications.dart';
 import 'package:alarmapp/foreground_service/audio_source.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
@@ -164,26 +165,13 @@ class ForegroundServiceHandler extends TaskHandler {
   @override
   Future<void> onRepeatEvent(DateTime timestamp) async {
     try {
-      //Case 1:Maybe Both services are Runinng or Just Timer.
-      if (_activeService == ActiveService.timer ||
-          _activeService == ActiveService.both) {
-        int? duration = androidForegroundService.retrieveLastTimerDuration();
-        if (duration != null) {
-          await _updateRepeatingTimer(duration);
-        } else {
-          _activeService = ActiveService.stopwatch;
-        }
-
-        
-      }
-
       final stopwatchState = androidForegroundService.retrieveStopwatchSate();
 
-      //Case 2:Both Timer and Stopwatch are Running.
+      //Case 1:Both Timer and Stopwatch are Running.
       _stopwatch ??= Stopwatch();
       if (_activeService == ActiveService.both) {
         if (stopwatchState != null) {
-        await  androidForegroundService.reloadPreferences();
+          await androidForegroundService.reloadPreferences();
           final action = androidForegroundService.stopwatchButtonAction();
           final name = StopwatchButtonAction.byname(action ?? '');
 
@@ -229,13 +217,25 @@ class ForegroundServiceHandler extends TaskHandler {
         }
       }
 
+      //Case 2:Maybe Both services are Running or Just Timer.
+
+      if (_activeService == ActiveService.timer ||
+          _activeService == ActiveService.both) {
+        int? duration = androidForegroundService.retrieveLastTimerDuration();
+        if (duration != null) {
+          await _updateRepeatingTimer(duration);
+        } else {
+          _activeService = ActiveService.stopwatch; //is running for stopwatch.
+        }
+      }
       //Case 3:Just Sopwatch is Running.
       if (_activeService == ActiveService.stopwatch) {
-        if (stopwatchState == null) return;
-        await _updateStopwatchState(
-          stopwatchState,
-          areBothServicesActive: false,
-        );
+        if (stopwatchState != null) {
+          await _updateStopwatchState(
+            stopwatchState,
+            areBothServicesActive: false,
+          );
+        }
       }
     } catch (e, stackTrace) {
       log('Failed to   Repeat Event error: $e, $stackTrace: ');
@@ -262,7 +262,7 @@ class ForegroundServiceHandler extends TaskHandler {
     await androidForegroundService.updateStopwatchBackgroundState(newState); //Save  Stopwatch New State That updated By Stopwatch()  for use it later in UI
 
     if (!areBothServicesActive) {
-      //Only stopwatch Running , no need to Local notification just use Foreground notification
+      //Only stopwatch Running , no need to Local notification just use Foreground Service notification
       final title = formatBackgroundDuration(newState.currentDuration);
 
       await FlutterForegroundTask.updateService(notificationTitle: title);
@@ -288,7 +288,7 @@ class ForegroundServiceHandler extends TaskHandler {
     }
 
     final tDuration = Duration(seconds: duration) - Duration(seconds: 1);
-     await androidForegroundService.saveLastTmerDuration(tDuration);
+    await androidForegroundService.saveLastTmerDuration(tDuration);
 
     final isLessThanZero = tDuration < Duration.zero;
 
@@ -517,7 +517,7 @@ class ForegroundServiceHandler extends TaskHandler {
   }
 
   Future<void> _onAddLapStopwatch() async {
-    await androidForegroundService.addLap();
+    await androidForegroundService.addLap(_stopwatch?.elapsedMilliseconds ?? 0);
 
     final data = androidForegroundService.retrieveBackgroundStopwatchState();
 

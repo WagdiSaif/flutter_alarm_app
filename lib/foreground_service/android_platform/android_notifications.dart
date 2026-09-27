@@ -41,8 +41,8 @@ class AndroidNotifications {
 
       notificationDetails: AndroidNotificationDetails(
         groupKey: 'android_notifi_group',
-        "notification_id_notif_w",
-        "notification_channel__w",
+        "notification_id_v2",
+        "notification_channel_v2",
         icon: 'ic_bg_service_notification',
         importance: Importance.min,
         priority: Priority.min,

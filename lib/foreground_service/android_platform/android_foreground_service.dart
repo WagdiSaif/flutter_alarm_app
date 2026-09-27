@@ -64,13 +64,13 @@ class AndroidForegroundService {
   static final _androidNotificationOptions = AndroidNotificationOptions(
     channelImportance: NotificationChannelImportance.MIN,
     priority: NotificationPriority.MIN,
-    channelId: 'forground_channel_new1',
-    channelName: 'forground_channel_name_new1',
+    channelId: 'forground_channel_id_v2',
+    channelName: 'forground_channel_name_v2',
     playSound: false,
     showWhen: true,
 
     enableVibration: false,
-    
+
     channelDescription:
         'This notification appears when the foreground service is running.',
     onlyAlertOnce: true,
@@ -83,7 +83,7 @@ class AndroidForegroundService {
             : ForegroundTaskEventAction.nothing(),
         autoRunOnBoot: false,
         allowWakeLock: true,
-        
+
         allowWifiLock: true,
         allowAutoRestart: true,
       );
@@ -122,7 +122,7 @@ class AndroidForegroundService {
       serviceId: 90,
       notificationTitle: '',
       serviceTypes: [
-        ForegroundServiceTypes.dataSync,
+        ForegroundServiceTypes.specialUse,
         ForegroundServiceTypes.mediaPlayback,
       ],
       notificationText: text,
@@ -167,14 +167,7 @@ class AndroidForegroundService {
     ];
   }
 
-  int? retrieveLastTimerDuration() {
-    int? durationInsecond = sharedPreferences.getInt(timerDataKey);
-
-    if (durationInsecond != null) {
-      return durationInsecond;
-    }
-    return null;
-  }
+  int? retrieveLastTimerDuration() => sharedPreferences.getInt(timerDataKey);
 
   Future<void> removeTimerDuration() => sharedPreferences.remove(timerDataKey);
 
@@ -224,15 +217,14 @@ class AndroidForegroundService {
     return data.laps;
   }
 
-  Future<void> addLap() async {
+  Future<void> addLap(int currentElapsed) async {
     final foregroundState = retrieveStopwatchSate();
     final backgroundState = retrieveBackgroundStopwatchState();
     if (backgroundState == null || foregroundState == null) return;
 
     var laps = backgroundState.laps;
     final realElapsedMilliseconds =
-        backgroundState.currentDuration.inMilliseconds +
-        foregroundState.currentDuration.inMilliseconds;
+        foregroundState.currentDuration.inMilliseconds + currentElapsed;
 
     if (laps.isEmpty) {
       final lapStartDuration = Duration(milliseconds: realElapsedMilliseconds);
@@ -259,7 +251,9 @@ class AndroidForegroundService {
       currentDuration: Duration(milliseconds: realElapsedMilliseconds),
     );
 
-    await updateStopwatchBackgroundState(newState);
+    final json = newState.toJson();
+    final dataEncode = jsonEncode(json);
+    await sharedPreferences.setString(stopwatchUpdatedDataKey, dataEncode);
   }
 
   Future<bool> saveStopwatchStateOnExit(Map<String, dynamic> data) async {

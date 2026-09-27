@@ -42,9 +42,9 @@ class AppLifecycleHandler {
       }
     } on Exception catch (e, stackTrace) {
       log(
-        'Fialed To start Background Service $e stack is $stackTrace',
-        // error: e,
-        // stackTrace: stackTrace,
+        'Fialed To start Background Service  ',
+        error: e,
+        stackTrace: stackTrace,
       );
     }
   }

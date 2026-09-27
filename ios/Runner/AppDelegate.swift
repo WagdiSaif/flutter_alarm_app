@@ -8,8 +8,7 @@ import UIKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-//      GeneratedPluginRegistrant.register(withRegistry:a)
-//      GeneratedPluginRegistrant.register(withRegistry:Any! )
+
       GeneratedPluginRegistrant.register(with: self)
       if let registrar = self.registrar(forPlugin: "LiveActivityPlugin"){
           LiveActivityPlugin.register(with: registrar)

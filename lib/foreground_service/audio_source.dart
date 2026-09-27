@@ -47,7 +47,7 @@ class AudioHandler {
     try {
       await _audioPlayer.play();
     } catch (e) {
-      log('Audio Player Failed $e');
+      log('Audio Player Failed ', error: e);
     }
   }
 
