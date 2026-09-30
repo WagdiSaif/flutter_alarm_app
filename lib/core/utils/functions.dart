@@ -27,6 +27,7 @@ String formatTimerDuration(Duration duration) {
   return '$minutes:$second';
 }
 
+
 String formatStopwatchDuration(Duration duration) {
   final minutes = twoDigits(duration.inMinutes.remainder(60));
   final second = twoDigits(duration.inSeconds.remainder(60));

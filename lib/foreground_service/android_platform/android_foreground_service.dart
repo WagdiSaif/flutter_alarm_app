@@ -173,7 +173,7 @@ class AndroidForegroundService {
 
   Future<void> removeStopwatchData() =>
       sharedPreferences.remove(stopwatchDataKey);
-  //  FlutterForegroundTask.removeData(key: stopwatchDataKey);
+
 
   StopwatchState? retrieveStopwatchSate() {
     final data = sharedPreferences.getString(stopwatchDataKey);

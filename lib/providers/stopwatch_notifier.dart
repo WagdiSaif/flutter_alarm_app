@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:alarmapp/core/enums/stopwatch_enum.dart';
+import 'package:alarmapp/core/utils/functions.dart';
 import 'package:alarmapp/data/models/laps.dart';
 import 'package:alarmapp/data/models/stopwatch_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StopwatchNotifier extends Notifier<StopwatchState> {
@@ -34,9 +36,15 @@ class StopwatchNotifier extends Notifier<StopwatchState> {
         milliseconds:
             (_stopwatch.elapsedMilliseconds + (previousDuration ?? 0)),
       );
-      state = state.copyWith(currentDuration: newDuration);
+
+    
+         if (state.laps.isEmpty) {
+              state = state.copyWith(currentDuration: newDuration);
+         }
+
+  
       if (state.laps.isNotEmpty) {
-        _updateLastLap();
+        _updateLastLap( newDuration);
       }
     });
   }
@@ -49,20 +57,22 @@ class StopwatchNotifier extends Notifier<StopwatchState> {
     }
   }
 
-  void _updateLastLap() {
+  void _updateLastLap(Duration newDuration) {
+      //  state = state.copyWith(currentDuration: newDuration);
     final laps = List<Laps>.from(state.laps);
     final lastRemovedLap = laps.removeLast();
-    final now = state.currentDuration.inMilliseconds;
+    final now = newDuration.inMilliseconds;
 
     final currentElapsed = laps.last.currentLapElapsed;
-
+  
     final updatedLap = lastRemovedLap.copyWith(
       previousLapElapsed: Duration(
-        milliseconds: now - currentElapsed.inMilliseconds,
+        milliseconds:now- currentElapsed.inMilliseconds ,
       ),
-      currentLapElapsed: Duration(milliseconds: now),
+      currentLapElapsed:newDuration ,
     );
-    state = state.copyWith(laps: [...laps, updatedLap]);
+    state = state.copyWith(currentDuration: newDuration,laps: [...laps, updatedLap]);
+
   }
 
   void addLap() {
