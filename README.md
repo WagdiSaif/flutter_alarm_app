@@ -46,10 +46,7 @@ Concurrent Execution: If both the timer and stopwatch run simultaneously, flutte
 
 Battery Optimization: Includes power-management helpers to handle aggressive background restriction layouts on specific OEM devices.
 
-<video width="250" height="240" controls>
-  <source src="Screenshots/android_foreground_service.mp4" type="video/mp4">
-</video>
-
+https://github.com/user-attachments/assets/b008ec01-1ea6-406c-bdc9-8b7878591fa6
 
 ### iOS
 
@@ -60,9 +57,6 @@ Due to iOS system restrictions, the `alarm` package uses local notification sche
 - **Limitations**: Background execution is restricted, so exact timing isn't guaranteed
 - **Sound**: Limited to ~30 seconds (notification payload limit)
 
-<video width="250" height="240" controls>
-  <source src="Screenshots/ios_foreground_service.mp4" type="video/mp4">
-</video>
 
 ## Screenshots
 <table>
