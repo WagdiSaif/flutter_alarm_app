@@ -1,4 +1,3 @@
-
 #  Flutter Alarm App
  Cross-platform alarm clock, stopwatch, and timer application built with Flutter. It uses native background services on Android and Apple's Live Activities on iOS to keep timers running accurately across app states, with graceful fallbacks when platform restrictions apply.
 
@@ -57,7 +56,7 @@ Due to iOS system restrictions, the `alarm` package uses local notification sche
 - **Limitations**: Background execution is restricted, so exact timing isn't guaranteed
 - **Sound**: Limited to ~30 seconds (notification payload limit)
 
-
+https://github.com/user-attachments/assets/4c8233fd-2e63-447a-b322-dc0a4db52da7
 ## Screenshots
 <table>
 <tr> <td><img src="Screenshots/main_alarm.png" width="250" > </td>
