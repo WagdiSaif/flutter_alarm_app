@@ -37,14 +37,12 @@ class StopwatchNotifier extends Notifier<StopwatchState> {
             (_stopwatch.elapsedMilliseconds + (previousDuration ?? 0)),
       );
 
-    
-         if (state.laps.isEmpty) {
-              state = state.copyWith(currentDuration: newDuration);
-         }
+      if (state.laps.isEmpty) {
+        state = state.copyWith(currentDuration: newDuration);
+      }
 
-  
       if (state.laps.isNotEmpty) {
-        _updateLastLap( newDuration);
+        _updateLastLap(newDuration);
       }
     });
   }
@@ -58,21 +56,23 @@ class StopwatchNotifier extends Notifier<StopwatchState> {
   }
 
   void _updateLastLap(Duration newDuration) {
-      //  state = state.copyWith(currentDuration: newDuration);
+    //  state = state.copyWith(currentDuration: newDuration);
     final laps = List<Laps>.from(state.laps);
     final lastRemovedLap = laps.removeLast();
     final now = newDuration.inMilliseconds;
 
     final currentElapsed = laps.last.currentLapElapsed;
-  
+
     final updatedLap = lastRemovedLap.copyWith(
       previousLapElapsed: Duration(
-        milliseconds:now- currentElapsed.inMilliseconds ,
+        milliseconds: now - currentElapsed.inMilliseconds,
       ),
-      currentLapElapsed:newDuration ,
+      currentLapElapsed: newDuration,
     );
-    state = state.copyWith(currentDuration: newDuration,laps: [...laps, updatedLap]);
-
+    state = state.copyWith(
+      currentDuration: newDuration,
+      laps: [...laps, updatedLap],
+    );
   }
 
   void addLap() {

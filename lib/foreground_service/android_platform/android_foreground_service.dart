@@ -174,7 +174,6 @@ class AndroidForegroundService {
   Future<void> removeStopwatchData() =>
       sharedPreferences.remove(stopwatchDataKey);
 
-
   StopwatchState? retrieveStopwatchSate() {
     final data = sharedPreferences.getString(stopwatchDataKey);
     if (data != null) {
