@@ -59,7 +59,7 @@ Due to iOS system restrictions, the `alarm` package uses local notification sche
 https://github.com/user-attachments/assets/4c8233fd-2e63-447a-b322-dc0a4db52da7
 ## Screenshots
 <table>
-<tr> <td><img src="Screenshots/main_alarm.jpg" width="250" > </td>
+<tr> <td><img src="Screenshots/main_alarm.png" width="250" > </td>
 
 <td><img src="Screenshots/bottom_sheet.png" width="250" > </td></tr>
 </table>
