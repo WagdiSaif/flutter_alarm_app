@@ -25,13 +25,6 @@
 | **Permissions** | `permission_handler`, `battery_optimization_helper` |
 | **Utilities & UI Helpers** | `file_picker`, `intl`, `path`, `json_annotation`, `fluttertoast`, `flutter_native_splash` |
 
-## Architecture
-
-```
-UI -> Providers   -> Repository -> Database
-```
-
-
 
 ## Platform Behavior
 
