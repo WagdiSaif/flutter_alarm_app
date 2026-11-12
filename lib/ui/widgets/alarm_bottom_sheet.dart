@@ -239,7 +239,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                                           : 'Today',
                                                     ),
                                             ] else
-                                              (Text(' Alarm is off')),
+                                              Text(' Alarm is off'),
                                             //
                                           ],
                                         ),
@@ -317,7 +317,9 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                       ),
                                       Expanded(
                                         child: TextField(
-                                          maxLines: viewInsetsHeight == 0
+                                          maxLines:
+                                              viewInsetsHeight ==
+                                                  0 // Limits the field to one line while focused, and removes the limit otherwise.
                                               ? null
                                               : 1,
                                           focusNode: _focusNode,
@@ -326,10 +328,7 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                             FocusManager.instance.primaryFocus
                                                 ?.unfocus();
                                           },
-
-                                          onTapAlwaysCalled: true,
-                                          onTapOutside: (event) {},
-
+                                          textInputAction: TextInputAction.done,
                                           textAlign: TextAlign.end,
 
                                           decoration: InputDecoration(
@@ -339,9 +338,6 @@ class _AlarmBottomSheet extends ConsumerState<AlarmBottomSheet> {
                                           ),
 
                                           controller: _nameAlarmController,
-                                          onChanged: (value) {
-                                            _nameAlarmController.text = value;
-                                          },
                                         ),
                                       ),
                                     ],
